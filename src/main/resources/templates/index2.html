@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <title>Hi</title>
+</head>
+<script>
+    function getStore(){
+        $.ajax({
+            type: "GET",
+            url: "/cake",
+            success: function (response){
+                for (let i = 0; i < response.length; i++){
+                    let storename = response[i].storeName;
+                    let imageurl = response[i].imageList;
+                    // for (let j = 0; j < imageurl.length; j++){
+                    //     let image = imageurl[j]
+                    addHTML1(storename)
+                    addHTML2(imageurl)
+                }
+            }
+        })
+    }
+    function addHTML1(storename){
+
+        let tempHtml = `<div>
+                            <H2>${storename}</H2>
+                        </div>`
+        $('#store-box').append(tempHtml);
+    }
+
+    function addHTML2(imageurl) {
+        for (let j = 0; j < imageurl.length; j++) {
+            let image = imageurl[j]
+
+            let tempHtml = `<div>
+                            <div style="width: 200px; height: 200px; object-fit: cover">
+                                <img style="width: 200px; height: 200px; object-fit: cover" src="${image}">
+                            </div>
+                        </div>`
+            $('#store-box').append(tempHtml);
+        }
+    }
+
+
+</script>
+<body>
+<h1>안녕하세용</h1>
+<button onclick="getStore()">클릭하지말아줘</button>
+<div id="store-box">
+    <!--        <div style="width: 1200px; height: 800px; margin: auto">-->
+    <!--            <H2>storename</H2>-->
+    <!--            <div style="width: 200px; height: 200px; object-fit: cover">-->
+    <!--                <img style="width: 200px; height: 200px; object-fit: cover" src="">-->
+    <!--            </div>-->
+    <!--        </div>-->
+</div>
+</body>
+</html>
