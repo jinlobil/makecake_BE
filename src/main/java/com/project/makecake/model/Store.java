@@ -11,7 +11,7 @@ import java.util.List;
 @Getter
 @Setter
 
-public class Store {
+public class Store extends Timestamped{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long storeId;
@@ -41,7 +41,7 @@ public class Store {
     private String mainImg;
 
     @Column
-    private String openTime;
+    private String openTimeString;
 
     @Column
     private String phone;

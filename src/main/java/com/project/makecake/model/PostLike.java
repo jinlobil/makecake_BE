@@ -1,4 +1,4 @@
 package com.project.makecake.model;
 
-public class PostLike {
+public class PostLike  extends Timestamped{
 }

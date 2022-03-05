@@ -1,4 +1,4 @@
 package com.project.makecake.model;
 
-public class Comment {
+public class Comment  extends Timestamped{
 }
