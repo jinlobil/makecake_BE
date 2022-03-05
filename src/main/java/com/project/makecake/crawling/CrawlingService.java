@@ -2,14 +2,8 @@ package com.project.makecake.crawling;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.project.makecake.model.Cake;
-import com.project.makecake.model.Menu;
-import com.project.makecake.model.Store;
-import com.project.makecake.model.StoreUrl;
-import com.project.makecake.repository.CakeRepository;
-import com.project.makecake.repository.MenuRepository;
-import com.project.makecake.repository.StoreRepository;
-import com.project.makecake.repository.StoreUrlRepository;
+import com.project.makecake.model.*;
+import com.project.makecake.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +25,7 @@ public class CrawlingService {
     private final MenuRepository menuRepository;
     private final StoreUrlRepository storeUrlRepository;
     private final StoreRepository storeRepository;
+    private final OpenTimeRepository openTimeRepository;
 
     public String uniToKor(String uni){
         StringBuffer result = new StringBuffer();
@@ -146,9 +141,9 @@ public class CrawlingService {
             mainImg = element.getAsJsonObject().get("imageURL").getAsString();
         }
 
-        String openTime = "";
+        String openTimeString = "";
         if(!element.getAsJsonObject().get("bizhourInfo").isJsonNull()){
-            openTime = element.getAsJsonObject().get("bizhourInfo").getAsString();
+            openTimeString = element.getAsJsonObject().get("bizhourInfo").getAsString();
         }
 
         Store store = new Store();
@@ -161,7 +156,7 @@ public class CrawlingService {
         store.setMainImg(mainImg);
         store.setDescription(description);
         store.setPhone(phone);
-        store.setOpenTime(openTime);
+        store.setOpenTimeString(openTimeString);
 
         storeRepository.save(store);
 
@@ -211,6 +206,30 @@ public class CrawlingService {
 
             cakeRepository.save(cake);
         }
+
+        JsonArray bizhourList = null;
+        if(!element.getAsJsonObject().get("bizHour").isJsonNull()) {
+            bizhourList = element.getAsJsonObject().get("bizHour").getAsJsonArray();
+
+            for(int i=0; i < bizhourList.size(); i++){
+                String type = bizhourList.get(i).getAsJsonObject().get("type").getAsString();
+                String startTime = bizhourList.get(i).getAsJsonObject().get("startTime").getAsString();
+                String endTime = bizhourList.get(i).getAsJsonObject().get("endTime").getAsString();
+                String descriptionTime = bizhourList.get(i).getAsJsonObject().get("description").getAsString();
+                Boolean isDayOff = bizhourList.get(i).getAsJsonObject().get("isDayOff").getAsBoolean();
+
+                OpenTime openTime = new OpenTime();
+                openTime.setType(type);
+                openTime.setStartTime(startTime);
+                openTime.setEndTime(endTime);
+                openTime.setDescriptionTime(descriptionTime);
+                openTime.setIsDayOff(isDayOff);
+                openTime.setStore(store);
+
+                openTimeRepository.save(openTime);
+            }
+        }
+
 
 
 

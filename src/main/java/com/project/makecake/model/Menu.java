@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 @Data
 @Entity
-public class Menu {
+public class Menu  extends Timestamped{
 
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Id

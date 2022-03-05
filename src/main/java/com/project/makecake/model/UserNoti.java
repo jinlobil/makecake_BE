@@ -1,4 +1,4 @@
 package com.project.makecake.model;
 
-public class UserNoti {
+public class UserNoti  extends Timestamped{
 }

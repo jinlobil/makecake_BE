@@ -1,4 +1,4 @@
 package com.project.makecake.model;
 
-public class CakeLike {
+public class CakeLike  extends Timestamped{
 }

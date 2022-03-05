@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 @Data
 @Entity
-public class Cake {
+public class Cake  extends Timestamped{
 
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
