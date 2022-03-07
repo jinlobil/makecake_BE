@@ -8,6 +8,7 @@ import com.project.makecake.repository.CakeRepository;
 import com.project.makecake.repository.UserRepository;
 import com.project.makecake.responseDto.CakeLikeResponseDto;
 import com.project.makecake.responseDto.CakeResponseDto;
+import com.project.makecake.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -47,9 +48,7 @@ public class CakeService {
     }
 
     // 케이크 좋아요
-    public CakeLikeResponseDto cakeLike(Long cakeId, boolean myLike
-                                        UserDetailsImpl userDetails
-    ) {
+    public CakeLikeResponseDto cakeLike(Long cakeId, boolean myLike,UserDetailsImpl userDetails) {
         User user = userDetails.getUser();
 
         Cake foundCake = cakeRepository.findById(cakeId)

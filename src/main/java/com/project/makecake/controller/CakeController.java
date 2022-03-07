@@ -2,8 +2,10 @@ package com.project.makecake.controller;
 
 import com.project.makecake.responseDto.CakeLikeResponseDto;
 import com.project.makecake.responseDto.CakeResponseDto;
+import com.project.makecake.security.UserDetailsImpl;
 import com.project.makecake.service.CakeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,9 +28,7 @@ public class CakeController {
                                         @RequestBody boolean myLike,
                                         @AuthenticationPrincipal UserDetailsImpl userDetails
                                         ) {
-        return cakeService.cakeLike(cakeId,myLike
-                //,userDetails
-        );
+        return cakeService.cakeLike(cakeId,myLike,userDetails);
     }
 
 }

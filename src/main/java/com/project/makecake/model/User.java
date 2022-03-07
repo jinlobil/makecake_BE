@@ -14,19 +14,27 @@ public class User  extends Timestamped{
     @Id
     private Long userId;
 
-    @Column
+    @Column(nullable = false, unique = true)
     private String username;
 
     @Column
     private String nickname;
 
-    @Column
+    @Column(nullable = false)
     private String password;
 
-    // 생성자
-    public User(String username, String nickname, String password) {
+    @Column
+    private String userPicture;
+
+    @Column
+    @Enumerated(value = EnumType.STRING)
+    private UserRoleEnum role;
+
+    public User(String username, String nickname, String password, String userPicture, UserRoleEnum role){
         this.username = username;
         this.nickname = nickname;
         this.password = password;
+        this.userPicture = userPicture;
+        this.role = role;
     }
 }
