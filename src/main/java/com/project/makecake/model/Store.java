@@ -2,6 +2,7 @@ package com.project.makecake.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 
+@DynamicUpdate
 public class Store extends Timestamped{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -55,4 +57,6 @@ public class Store extends Timestamped{
     @OneToMany(mappedBy = "store")
     private List<Cake> cakeList = new ArrayList<>();
 
+    @Column(columnDefinition = "integer default 0")
+    private int likeCnt;
 }

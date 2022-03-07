@@ -15,6 +15,8 @@ public class Cake  extends Timestamped{
     @Column
     private String url;
 
+    @Column(columnDefinition = "integer default 0")
+    private int likeCnt;
 
     @ManyToOne
     @JoinColumn(name = "STORE_ID")
