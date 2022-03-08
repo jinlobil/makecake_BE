@@ -1,5 +1,6 @@
 package com.project.makecake.model;
 
+import com.project.makecake.requestDto.PostRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -23,7 +24,7 @@ public class Post extends Timestamped{
     private User user;
 
     @Column(nullable = false)
-    private String Content;
+    private String content;
 
     @Column(nullable = false)
     private String size;
@@ -50,7 +51,57 @@ public class Post extends Timestamped{
     @Column
     private int commentCnt;
 
-    // 생성자
+    // 제작한 매장 이름이 없는 경우의 생성자
+    public Post(PostRequestDto requestDto, User user, Design design) {
+        this.design = design;
+        this.user = user;
+        this.content = requestDto.getContent();
+        this.size = requestDto.getSize();
+        this.shape = requestDto.getShape();
+        this.purpose = requestDto.getPurpose();
+        this.isMade = requestDto.isMade();
+        this.viewCnt = 0;
+        this.likeCnt = 0;
+        this.commentCnt = 0;
+    }
 
+    // 제작한 매장 이름이 있는 경우의 생성자
+    public Post(PostRequestDto requestDto, User user, Design design, Store store) {
+        this.design = design;
+        this.user = user;
+        this.content = requestDto.getContent();
+        this.size = requestDto.getSize();
+        this.shape = requestDto.getShape();
+        this.purpose = requestDto.getPurpose();
+        this.isMade = requestDto.isMade();
+        this.store = store;
+        this.viewCnt = 0;
+        this.likeCnt = 0;
+        this.commentCnt = 0;
+    }
 
+    // 제작한 매장 이름이 없는 경우의 수정 메소드
+    public void update(PostRequestDto requestDto) {
+        this.content = requestDto.getContent();
+        this.size = requestDto.getSize();
+        this.shape = requestDto.getShape();
+        this.purpose = requestDto.getPurpose();
+        this.isMade = requestDto.isMade();
+    }
+
+    // 제작한 매장 이름이 있는 경우의 수정 메소드
+    public void update(PostRequestDto requestDto, Store store) {
+        this.content = requestDto.getContent();
+        this.size = requestDto.getSize();
+        this.shape = requestDto.getShape();
+        this.purpose = requestDto.getPurpose();
+        this.isMade = requestDto.isMade();
+        this.store = store;
+    }
+
+    // 연관관계 삭제 메소드
+    public void deleteRelation() {
+        this.store = null;
+        this.design = null;
+    }
 }

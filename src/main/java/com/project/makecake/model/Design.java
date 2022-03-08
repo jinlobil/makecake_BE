@@ -36,4 +36,14 @@ public class Design extends Timestamped{
         this.state = DesignState.UNPOST;
         this.user = user;
     }
+
+    // 디자인이 게시되면
+    public void post() {
+        this.state = DesignState.POST;
+    }
+
+    // 디자인 게시글이 지워지면
+    public void unpost() {
+        this.state = DesignState.UNPOST;
+    }
 }

@@ -1,15 +1,13 @@
 package com.project.makecake.controller;
 
+import com.project.makecake.requestDto.PostRequestDto;
 import com.project.makecake.responseDto.DesignResponseDto;
 import com.project.makecake.responseDto.PostSimpleResponseDto;
 import com.project.makecake.security.UserDetailsImpl;
 import com.project.makecake.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -36,5 +34,33 @@ public class PostController {
         return postService.getAllPosts();
     }
 
+    // 도안 게시글 작성 API
+    @PostMapping("/posts/{designId}")
+    public void savePost(
+            @PathVariable Long designId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @RequestBody PostRequestDto requestDto
+    ) {
+        postService.savePost(designId,userDetails,requestDto);
+    }
+
+    // 도안 게시글 수정 API
+    @PutMapping("/posts/{postId}")
+    public void updatePost(
+            @PathVariable Long postId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @RequestBody PostRequestDto requestDto
+    ) {
+        postService.updatePost(postId, userDetails,requestDto);
+    }
+
+    // 도안 게시글 삭제 API
+    @DeleteMapping("/posts/{postId}")
+    public void deletePost(
+            @PathVariable Long postId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        postService.deletePost(postId,userDetails);
+    }
 
 }
