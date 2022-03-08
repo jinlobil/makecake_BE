@@ -7,7 +7,7 @@ import com.project.makecake.model.UserRoleEnum;
 import com.project.makecake.repository.UserRepository;
 import com.project.makecake.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -17,7 +17,7 @@ import java.util.Optional;
 @Service
 public class UserService {
 
-    private final PasswordEncoder passwordEncoder;
+    private final BCryptPasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
 
     // 회원가입
@@ -32,7 +32,13 @@ public class UserService {
 
         UserRoleEnum role = UserRoleEnum.USER;
 
-        User user = new User(username, nickname, password, userPicture, role);
+        User user = User.builder()
+                .username(username)
+                .nickname(nickname)
+                .password(password)
+                .userPicture(userPicture)
+                .role(role)
+                .build();
         return userRepository.save(user);
 
     }
