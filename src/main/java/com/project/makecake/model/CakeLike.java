@@ -1,11 +1,13 @@
 package com.project.makecake.model;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Getter
 @Entity
+@NoArgsConstructor
 public class CakeLike extends Timestamped{
 
     @Id

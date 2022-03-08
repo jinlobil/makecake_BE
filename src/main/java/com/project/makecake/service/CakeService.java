@@ -10,7 +10,12 @@ import com.project.makecake.responseDto.CakeLikeResponseDto;
 import com.project.makecake.responseDto.CakeResponseDto;
 import com.project.makecake.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,21 +30,31 @@ public class CakeService {
     private final CakeLikeRepository cakeLikeRepository;
 
     // 케이크 사진 리스트
-    public List<CakeResponseDto> getAllCakes(UserDetailsImpl userDetails) {
+    @Transactional
+    public List<CakeResponseDto> getAllCakes(UserDetailsImpl userDetails, int page, int size) {
 
-        User user = userDetails.getUser();
+        User user = null;
+
+        if (userDetails!=null) {
+            user = userDetails.getUser();
+        }
 
         // 페이지네이션? 무한 스크롤?
-        List<Cake> foundCakeList = cakeRepository.findAll();
+        Sort sort = Sort.by(Sort.Direction.DESC,"likeCnt");
+        Pageable pageable = PageRequest.of(page,size,sort);
+        Page<Cake> foundCakeList = cakeRepository.findAll(pageable);
 
-        boolean myLike = false;
+
 
         List<CakeResponseDto> responseDtoList = new ArrayList<>();
 
         for (Cake cake : foundCakeList) {
-            Optional<CakeLike> foundCakeLike = cakeLikeRepository.findByUserIdAndCakeId(user.getUserId(),cake.getCakeId());
-            if (foundCakeLike.isPresent()) {
-                myLike = true;
+            boolean myLike = false;
+            if(user!=null) {
+                Optional<CakeLike> foundCakeLike = cakeLikeRepository.findByUserAndCake(user,cake);
+                if (foundCakeLike.isPresent()) {
+                    myLike = true;
+                }
             }
             CakeResponseDto responseDto = new CakeResponseDto(cake,myLike);
             responseDtoList.add(responseDto);
@@ -48,6 +63,7 @@ public class CakeService {
     }
 
     // 케이크 좋아요
+    @Transactional
     public CakeLikeResponseDto cakeLike(Long cakeId, boolean myLike,UserDetailsImpl userDetails) {
         User user = userDetails.getUser();
 
@@ -60,7 +76,7 @@ public class CakeService {
             cakeLikeRepository.save(cakeLike);
         // myLike가 false이면 기존 cakeLike 삭제
         } else {
-            cakeLikeRepository.deleteByUserIdAndCakeId(user.getUserId(),foundCake.getCakeId());
+            cakeLikeRepository.deleteByUserAndCake(user,foundCake);
         }
         // likeCnt 변경
         boolean likeResult = foundCake.likeCake(myLike);
