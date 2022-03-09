@@ -51,7 +51,7 @@ public class PostService {
                     myLike = true;
                 }
             }
-            PostSimpleResponseDto responseDto = new PostSimpleResponseDto(post);
+            PostSimpleResponseDto responseDto = new PostSimpleResponseDto(post,myLike);
             responseDtoList.add(responseDto);
         }
 
