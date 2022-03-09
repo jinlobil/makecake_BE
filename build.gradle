@@ -35,6 +35,12 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'com.auth0:java-jwt:3.13.0'
     implementation 'commons-codec:commons-codec:1.5'
+
+    // https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-aws
+    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-aws', version: '2.2.1.RELEASE'
+
+    // https://mvnrepository.com/artifact/org.apache.tika/tika-core
+    implementation group: 'org.apache.tika', name: 'tika-core', version: '1.24.1'
 }
 
 tasks.named('test') {

@@ -1,4 +1,30 @@
 package com.project.makecake.model;
 
-public class PostLike  extends Timestamped{
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
+
+@NoArgsConstructor
+@Getter
+@Entity
+public class PostLike extends Timestamped{
+
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name="postId")
+    private Post post;
+
+    @ManyToOne
+    @JoinColumn(name="userId")
+    private User user;
+
+    // 생성자
+    public PostLike(Post post, User user) {
+        this.post = post;
+        this.user = user;
+    }
 }

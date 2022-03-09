@@ -200,9 +200,7 @@ public class CrawlingService {
 
         for(int i = 0; i < images.size(); i++){
             String imgUrl = images.get(i).getAsJsonObject().get("url").getAsString();
-            Cake cake = new Cake();
-            cake.setUrl(imgUrl);
-            cake.setStore(store);
+            Cake cake = new Cake(imgUrl,store);
 
             cakeRepository.save(cake);
         }
