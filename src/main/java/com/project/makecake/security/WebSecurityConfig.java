@@ -55,6 +55,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().permitAll()
                 .and().cors()
                 .and()
+                // OAuth2
                 .oauth2Login()
                 .successHandler(oauth2SuccessHandler)
                 .userInfoEndpoint()

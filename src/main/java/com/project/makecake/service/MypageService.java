@@ -14,11 +14,11 @@ import java.util.Optional;
 public class MypageService {
 
     private final UserRepository userRepository;
-    private final DesignRepository designRepository;
-    private final CakeLikeRepository cakeLikeRepository;
-    private final CommentRepository commentRepository;
-    private final StoreLikeRepository storeLikeRepository;
-    private final ReviewRepository reviewRepository;
+//    private final DesignRepository designRepository;
+//    private final CakeLikeRepository cakeLikeRepository;
+//    private final CommentRepository commentRepository;
+//    private final StoreLikeRepository storeLikeRepository;
+//    private final ReviewRepository reviewRepository;
 
     // 마이페이지 조회
     public MypageResponseDto mypage(UserDetailsImpl userDetails) {

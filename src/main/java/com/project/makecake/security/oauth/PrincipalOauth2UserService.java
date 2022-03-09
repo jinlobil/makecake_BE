@@ -33,6 +33,7 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
     // 구글로부터 받은 userRequest 데이터에 대한 후 처리되는 함수
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+        System.out.println("loadUser : OAuth2 로그인 시도중");
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
         OAuth2UserInfo oAuth2UserInfo = null;
