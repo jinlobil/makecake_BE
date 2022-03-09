@@ -61,6 +61,10 @@ public class PostService {
         Design foundDesign = designRepository.findById(designId)
                 .orElseThrow(()->new IllegalArgumentException("존재하지 않는 도안입니다."));
 
+        if (foundDesign.getState().equals(DesignState.POST)) {
+            throw new IllegalArgumentException("이미 게시된 도안입니다.");
+        }
+
         if (requestDto.isMade()&&requestDto.getStoreId()!=null) {
             Store foundStore = storeRepository.findById(requestDto.getStoreId())
                     .orElseThrow(()->new IllegalArgumentException("존재하지 않는 매장입니다."));
