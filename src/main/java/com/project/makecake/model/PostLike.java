@@ -21,4 +21,10 @@ public class PostLike extends Timestamped{
     @ManyToOne
     @JoinColumn(name="userId")
     private User user;
+
+    // 생성자
+    public PostLike(Post post, User user) {
+        this.post = post;
+        this.user = user;
+    }
 }

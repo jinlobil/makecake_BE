@@ -3,10 +3,12 @@ package com.project.makecake.service;
 import com.project.makecake.dto.ImageInfoDto;
 import com.project.makecake.model.*;
 import com.project.makecake.repository.DesignRepository;
+import com.project.makecake.repository.PostLikeRepository;
 import com.project.makecake.repository.PostRepository;
 import com.project.makecake.repository.StoreRepository;
 import com.project.makecake.requestDto.PostRequestDto;
 import com.project.makecake.responseDto.DesignResponseDto;
+import com.project.makecake.responseDto.LikeResponseDto;
 import com.project.makecake.responseDto.PostSimpleResponseDto;
 import com.project.makecake.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,7 @@ public class PostService {
     private final DesignRepository designRepository;
     private final S3UploadService s3UploadService;
     private final StoreRepository storeRepository;
+    private final PostLikeRepository postLikeRepository;
 
     // 게시된 도안 사진 리스트
     public List<PostSimpleResponseDto> getAllPosts() {
@@ -112,4 +115,26 @@ public class PostService {
 
         postRepository.delete(foundPost);
     }
+
+    // 도안 게시글 좋아요
+    @Transactional
+    public LikeResponseDto postLike(Long postId, boolean myLike, UserDetailsImpl userDetails) {
+        User user = userDetails.getUser();
+
+        Post foundPost = postRepository.findById(postId)
+                .orElseThrow(()->new IllegalArgumentException("게시글이 존재하지 않습니다."));
+
+        // myLike가 true이면 새로운 postLike 저장
+        if (myLike) {
+            PostLike postLike = new PostLike(foundPost, user);
+            postLikeRepository.save(postLike);
+            // myLike가 false이면 기존 postLike 삭제
+        } else {
+            postLikeRepository.deleteByUserAndPost(user,foundPost);
+        }
+        // likeCnt 변경
+        boolean likeResult = foundPost.likePost(myLike);
+        return new LikeResponseDto(likeResult);
+    }
+
 }

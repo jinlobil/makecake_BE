@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class CakeLikeResponseDto {
+public class LikeResponseDto {
 
     private boolean myLike;
 }

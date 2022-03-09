@@ -1,7 +1,10 @@
 package com.project.makecake.controller;
 
+import com.project.makecake.requestDto.LikeRequestDto;
 import com.project.makecake.requestDto.PostRequestDto;
 import com.project.makecake.responseDto.DesignResponseDto;
+import com.project.makecake.responseDto.LikeResponseDto;
+import com.project.makecake.responseDto.PostDetailResponseDto;
 import com.project.makecake.responseDto.PostSimpleResponseDto;
 import com.project.makecake.security.UserDetailsImpl;
 import com.project.makecake.service.PostService;
@@ -34,6 +37,10 @@ public class PostController {
         return postService.getAllPosts();
     }
 
+    // 게시된 도안 상세 API
+//    @GetMapping("/api/designs/{postId}")
+//    public PostDetailResponseDto getPost() {    }
+
     // 도안 게시글 작성 API
     @PostMapping("/posts/{designId}")
     public void savePost(
@@ -63,4 +70,13 @@ public class PostController {
         postService.deletePost(postId,userDetails);
     }
 
+    // 도안 게시글 좋아요 API
+    @PostMapping("/posts/like/{postId}")
+    public LikeResponseDto postLike(
+            @PathVariable Long postId,
+            @RequestBody LikeRequestDto likeRequestDto,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        return postService.postLike(postId,likeRequestDto.isMyLike(),userDetails);
+    }
 }

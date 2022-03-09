@@ -17,8 +17,8 @@ public class PostDetailResponseDto {
     private String createdDate;
     private String content;
     private String size;
+    private String shape;
     private String purpose;
     private boolean isMade;
     private String storeName;
-    private List<CommentResponseDto> comments;
 }

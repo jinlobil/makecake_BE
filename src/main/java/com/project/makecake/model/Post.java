@@ -104,4 +104,15 @@ public class Post extends Timestamped{
         this.store = null;
         this.design = null;
     }
+
+    // 좋아요
+    public boolean likePost(boolean myLike) {
+        if (myLike) {
+            this.likeCnt += 1;
+            return false;
+        } else {
+            this.likeCnt -= 1;
+            return true;
+        }
+    }
 }
