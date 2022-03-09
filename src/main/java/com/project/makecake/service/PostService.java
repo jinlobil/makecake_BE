@@ -143,6 +143,8 @@ public class PostService {
         return new LikeResponseDto(likeResult);
     }
 
+    // 도안 게시글 상세
+    @Transactional
     public PostDetailResponseDto getPost(Long postId, UserDetailsImpl userDetails) {
 
         User user = null;
@@ -154,6 +156,9 @@ public class PostService {
         // 게시글 찾기
         Post foundPost = postRepository.findById(postId)
                 .orElseThrow(()->new IllegalArgumentException("게시글이 존재하지 않습니다."));
+
+        // 조회수 추가
+        foundPost.viewPost();
 
         boolean myLike = false;
 

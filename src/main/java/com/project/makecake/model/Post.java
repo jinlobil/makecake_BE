@@ -123,4 +123,9 @@ public class Post extends Timestamped{
             return true;
         }
     }
+
+    // 조회수 올리기
+    public void viewPost() {
+        this.viewCnt +=1;
+    }
 }
