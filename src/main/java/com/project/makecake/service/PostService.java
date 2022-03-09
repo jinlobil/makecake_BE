@@ -9,6 +9,7 @@ import com.project.makecake.repository.StoreRepository;
 import com.project.makecake.requestDto.PostRequestDto;
 import com.project.makecake.responseDto.DesignResponseDto;
 import com.project.makecake.responseDto.LikeResponseDto;
+import com.project.makecake.responseDto.PostDetailResponseDto;
 import com.project.makecake.responseDto.PostSimpleResponseDto;
 import com.project.makecake.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -116,11 +118,6 @@ public class PostService {
 
         // 도안 게시글 좋아요 삭제
         postLikeRepository.deleteAllByPost(foundPost);
-//        List<PostLike> foundPostLikeList = postLikeRepository.findByPost(foundPost);
-//        for (PostLike like : foundPostLikeList) {
-//            postLikeRepository.delete(like);
-//        }
-
 
         postRepository.delete(foundPost);
     }
@@ -146,4 +143,29 @@ public class PostService {
         return new LikeResponseDto(likeResult);
     }
 
+    public PostDetailResponseDto getPost(Long postId, UserDetailsImpl userDetails) {
+
+        User user = null;
+
+        if (userDetails!=null) {
+            user = userDetails.getUser();
+        }
+
+        // 게시글 찾기
+        Post foundPost = postRepository.findById(postId)
+                .orElseThrow(()->new IllegalArgumentException("게시글이 존재하지 않습니다."));
+
+        boolean myLike = false;
+
+        // 로그인한 회원이면 좋아요 내역 찾아서 반영
+        if(user!=null) {
+            Optional<PostLike> foundPostLike = postLikeRepository.findByUserAndPost(user,foundPost);
+            if (foundPostLike.isPresent()) {
+                myLike = true;
+            }
+        }
+
+        return new PostDetailResponseDto(foundPost,myLike);
+
+    }
 }
