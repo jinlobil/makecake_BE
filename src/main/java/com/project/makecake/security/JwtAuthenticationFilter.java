@@ -10,7 +10,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -31,7 +30,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     // /login 요철을 하면 로그인 시도를 위해서 실행되는 함수
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        System.out.println("JwtAuthenticationFilter : 로그인 시도중");
+        System.out.println("attemptAuthentication : 일반 로그인 시도중");
         // 1. username과 password를 받아서 Object에 넣기
         ObjectMapper om = new ObjectMapper();
         LoginRequestDto requestDto = null;
@@ -45,9 +44,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         // loadUserByUsername 실행됨
         Authentication authentication = authenticationManager.authenticate(authenticationToken);
 
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        // 값이 나오면 로그인이 정상적으로 되었다는 뜻
-        System.out.println("로그인 완료됨 :" + userDetails.getUser().getUsername());
         return authentication;
     }
 
@@ -55,7 +51,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     // JWT토큰을 만들어서 request 요청한 사용자에게 JWT토큰을 response해주면 됨.
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-        System.out.println("successfulAuthentication 실행됨 : 인증완료");
+        System.out.println("successfulAuthentication 실행됨 : 일반 로그인 완료");
         UserDetailsImpl userDetails = (UserDetailsImpl) authResult.getPrincipal();
 
         // Hash암호방식
@@ -68,7 +64,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .withClaim("username", userDetails.getUser().getUsername())
                 // HMAC256 복호화
                 .sign(Algorithm.HMAC256(JwtProperties.secretKey));
-
+        System.out.println(jwtToken);
         response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + jwtToken);
     }
 }

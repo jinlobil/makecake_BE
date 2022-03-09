@@ -6,10 +6,7 @@ import com.project.makecake.security.UserDetailsImpl;
 import com.project.makecake.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 
@@ -42,5 +39,11 @@ public class UserController {
     @GetMapping("/user/loginCheck")
     public LoginCheckResponseDto loginCheck(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return userService.loginCheck(userDetails);
+    }
+
+    // 프로필 수정
+    @PutMapping("/profile")
+    public void editProfile(){
+
     }
 }
