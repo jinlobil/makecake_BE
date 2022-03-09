@@ -1,11 +1,14 @@
 package com.project.makecake.controller;
 
 import com.project.makecake.requestDto.CommentRequestDto;
+import com.project.makecake.responseDto.CommentResponseDto;
 import com.project.makecake.security.UserDetailsImpl;
 import com.project.makecake.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -40,5 +43,12 @@ public class CommentController {
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         commentService.deleteComment(commentId,userDetails);
+    }
+
+    // 무한 스크롤 미적용
+    // 도안 댓글 리스트 불러오기 API
+    @GetMapping("/api/designs/{postId}/comments")
+    public List<CommentResponseDto> getAllComments(@PathVariable Long postId) {
+        return commentService.getAllComments(postId);
     }
 }

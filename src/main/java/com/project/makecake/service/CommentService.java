@@ -6,10 +6,14 @@ import com.project.makecake.model.User;
 import com.project.makecake.repository.CommentRepository;
 import com.project.makecake.repository.PostRepository;
 import com.project.makecake.requestDto.CommentRequestDto;
+import com.project.makecake.responseDto.CommentResponseDto;
 import com.project.makecake.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -71,5 +75,21 @@ public class CommentService {
 
         // 댓글 삭제
         commentRepository.delete(foundComment);
+    }
+
+    // 도안 게시글의 댓글 불러오기
+    public List<CommentResponseDto> getAllComments(Long postId) {
+        Post foundPost = postRepository.findById(postId)
+                .orElseThrow(()->new IllegalArgumentException("존재하지 않는 게시글입니다."));
+
+        List<Comment> commentList = commentRepository.findAllByPost(foundPost);
+
+        List<CommentResponseDto> responseDtoList = new ArrayList<>();
+        for (Comment comment:commentList) {
+            CommentResponseDto responseDto = new CommentResponseDto(comment);
+            responseDtoList.add(responseDto);
+        }
+
+        return responseDtoList;
     }
 }
