@@ -15,6 +15,9 @@ public class Post extends Timestamped{
     @Id
     private Long postId;
 
+    @Column(nullable = false)
+    private String title;
+
     @OneToOne
     @JoinColumn(name="designId")
     private Design design;
@@ -53,6 +56,7 @@ public class Post extends Timestamped{
 
     // 제작한 매장 이름이 없는 경우의 생성자
     public Post(PostRequestDto requestDto, User user, Design design) {
+        this.title = requestDto.getTitle();
         this.design = design;
         this.user = user;
         this.content = requestDto.getContent();
@@ -67,6 +71,7 @@ public class Post extends Timestamped{
 
     // 제작한 매장 이름이 있는 경우의 생성자
     public Post(PostRequestDto requestDto, User user, Design design, Store store) {
+        this.title = requestDto.getTitle();
         this.design = design;
         this.user = user;
         this.content = requestDto.getContent();
@@ -82,15 +87,18 @@ public class Post extends Timestamped{
 
     // 제작한 매장 이름이 없는 경우의 수정 메소드
     public void update(PostRequestDto requestDto) {
+        this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
         this.size = requestDto.getSize();
         this.shape = requestDto.getShape();
         this.purpose = requestDto.getPurpose();
         this.isMade = requestDto.isMade();
+        this.store = null;
     }
 
     // 제작한 매장 이름이 있는 경우의 수정 메소드
     public void update(PostRequestDto requestDto, Store store) {
+        this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
         this.size = requestDto.getSize();
         this.shape = requestDto.getShape();

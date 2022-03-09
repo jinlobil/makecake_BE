@@ -109,9 +109,18 @@ public class PostService {
             throw new IllegalArgumentException("다른 사람의 게시글은 삭제할 수 없습니다.");
         }
 
+        // 디자인 UNPOST로 바꾸기
         Design connectDesign = foundPost.getDesign();
         foundPost.deleteRelation();
         connectDesign.unpost();
+
+        // 도안 게시글 좋아요 삭제
+        postLikeRepository.deleteAllByPost(foundPost);
+//        List<PostLike> foundPostLikeList = postLikeRepository.findByPost(foundPost);
+//        for (PostLike like : foundPostLikeList) {
+//            postLikeRepository.delete(like);
+//        }
+
 
         postRepository.delete(foundPost);
     }

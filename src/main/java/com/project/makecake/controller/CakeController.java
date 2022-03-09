@@ -17,6 +17,8 @@ public class CakeController {
 
     private final CakeService cakeService;
 
+    // 일단 페이지네이션
+    //http://localhost:8080/api/cakes?page=0&size=15
     // 케이크 사진 리스트 API
     @GetMapping("/api/cakes")
     public List<CakeResponseDto> getAllCakes(@AuthenticationPrincipal UserDetailsImpl userDetails,
