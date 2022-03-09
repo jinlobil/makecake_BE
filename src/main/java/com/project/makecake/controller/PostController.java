@@ -38,8 +38,13 @@ public class PostController {
     }
 
     // 게시된 도안 상세 API
-//    @GetMapping("/api/designs/{postId}")
-//    public PostDetailResponseDto getPost() {    }
+    @GetMapping("/api/designs/{postId}")
+    public PostDetailResponseDto getPost(
+            @PathVariable Long postId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        return postService.getPost(postId,userDetails);
+    }
 
     // 도안 게시글 작성 API
     @PostMapping("/posts/{designId}")

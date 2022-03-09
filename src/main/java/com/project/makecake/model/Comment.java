@@ -24,4 +24,22 @@ public class Comment extends Timestamped{
     @ManyToOne
     @JoinColumn(name="userId")
     private User user;
+
+    // 생성자
+    public Comment(String content, Post post, User user){
+        this.content = content;
+        this.post = post;
+        this.user = user;
+    }
+
+    // 수정 메소드
+    public void update(String content) {
+        this.content = content;
+    }
+
+    // 연관관계 삭제 메소드
+    public void deleteRelation() {
+        this.post = null;
+        this.user = null;
+    }
 }
