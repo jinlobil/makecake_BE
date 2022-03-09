@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface CakeRepository extends JpaRepository<Cake, Long> {
     List<Cake> findAllByStore(Store store);
+    //List<Cake> findAllByOrderByLikeCntDesc();
 }

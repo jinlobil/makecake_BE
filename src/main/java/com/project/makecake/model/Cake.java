@@ -1,9 +1,12 @@
 package com.project.makecake.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+@NoArgsConstructor
 @Data
 @Entity
 public class Cake  extends Timestamped{
@@ -15,8 +18,27 @@ public class Cake  extends Timestamped{
     @Column
     private String url;
 
-
     @ManyToOne
     @JoinColumn(name = "STORE_ID")
     private Store store;
+
+    @Column
+    private int likeCnt;
+
+    // 생성자
+    public Cake(String url,Store store) {
+        this.url=url;
+        this.store = store;
+    }
+
+    // 좋아요
+    public boolean likeCake(boolean myLike) {
+        if (myLike) {
+            this.likeCnt += 1;
+            return false;
+        } else {
+            this.likeCnt -= 1;
+            return true;
+        }
+    }
 }
