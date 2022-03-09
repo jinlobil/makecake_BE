@@ -31,12 +31,26 @@ public class PostService {
     private final CommentRepository commentRepository;
 
     // 게시된 도안 사진 리스트
-    public List<PostSimpleResponseDto> getAllPosts() {
+    public List<PostSimpleResponseDto> getAllPosts(UserDetailsImpl userDetails) {
+
+        User user = null;
+
+        if (userDetails!=null) {
+            user = userDetails.getUser();
+        }
+
         List<Post> foundPostList = postRepository.findAll();
 
         List<PostSimpleResponseDto> responseDtoList = new ArrayList<>();
 
         for (Post post : foundPostList) {
+            boolean myLike = false;
+            if(user!=null) {
+                Optional<PostLike> foundPostLike = postLikeRepository.findByUserAndPost(user,post);
+                if (foundPostLike.isPresent()) {
+                    myLike = true;
+                }
+            }
             PostSimpleResponseDto responseDto = new PostSimpleResponseDto(post);
             responseDtoList.add(responseDto);
         }

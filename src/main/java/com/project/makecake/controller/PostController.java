@@ -33,8 +33,10 @@ public class PostController {
     // 정렬타입 적용 안함
     // 게시된 도안 사진 리스트 API
     @GetMapping("/api/designs")
-    public List<PostSimpleResponseDto> getAllPosts() {
-        return postService.getAllPosts();
+    public List<PostSimpleResponseDto> getAllPosts(
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        return postService.getAllPosts(userDetails);
     }
 
     // 게시된 도안 상세 API
