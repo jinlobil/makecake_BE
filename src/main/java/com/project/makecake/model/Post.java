@@ -113,7 +113,7 @@ public class Post extends Timestamped{
         this.design = null;
     }
 
-    // 좋아요
+    // 좋아요 카운트
     public boolean likePost(boolean myLike) {
         if (myLike) {
             this.likeCnt += 1;
@@ -127,5 +127,14 @@ public class Post extends Timestamped{
     // 조회수 올리기
     public void viewPost() {
         this.viewCnt +=1;
+    }
+
+    // 댓글 카운트
+    public void comment(boolean comment) {
+        if(comment) {
+            this.commentCnt +=1;
+        } else {
+            this.commentCnt -=1;
+        }
     }
 }

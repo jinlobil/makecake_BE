@@ -2,10 +2,7 @@ package com.project.makecake.service;
 
 import com.project.makecake.dto.ImageInfoDto;
 import com.project.makecake.model.*;
-import com.project.makecake.repository.DesignRepository;
-import com.project.makecake.repository.PostLikeRepository;
-import com.project.makecake.repository.PostRepository;
-import com.project.makecake.repository.StoreRepository;
+import com.project.makecake.repository.*;
 import com.project.makecake.requestDto.PostRequestDto;
 import com.project.makecake.responseDto.DesignResponseDto;
 import com.project.makecake.responseDto.LikeResponseDto;
@@ -31,6 +28,7 @@ public class PostService {
     private final S3UploadService s3UploadService;
     private final StoreRepository storeRepository;
     private final PostLikeRepository postLikeRepository;
+    private final CommentRepository commentRepository;
 
     // 게시된 도안 사진 리스트
     public List<PostSimpleResponseDto> getAllPosts() {
@@ -118,6 +116,9 @@ public class PostService {
 
         // 도안 게시글 좋아요 삭제
         postLikeRepository.deleteAllByPost(foundPost);
+
+        // 도안 게시글 댓글 삭제
+        commentRepository.deleteAllByPost(foundPost);
 
         postRepository.delete(foundPost);
     }
