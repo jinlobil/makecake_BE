@@ -16,6 +16,13 @@ public class CommentController {
 
     private final CommentService commentService;
 
+    // 일단 전부
+    // 도안 댓글 리스트 불러오기 API
+    @GetMapping("/api/designs/{postId}/comments")
+    public List<CommentResponseDto> getAllComments(@PathVariable Long postId) {
+        return commentService.getAllComments(postId);
+    }
+
     // 도안 댓글 작성 API
     @PostMapping("/comments/{postId}")
     public void saveComment(
@@ -43,12 +50,5 @@ public class CommentController {
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         commentService.deleteComment(commentId,userDetails);
-    }
-
-    // 무한 스크롤 미적용
-    // 도안 댓글 리스트 불러오기 API
-    @GetMapping("/api/designs/{postId}/comments")
-    public List<CommentResponseDto> getAllComments(@PathVariable Long postId) {
-        return commentService.getAllComments(postId);
     }
 }
