@@ -51,7 +51,7 @@ public class Store extends Timestamped{
     private int likeCnt;
 
     @Column(columnDefinition = "integer default 0")
-    private int ReviewCnt;
+    private int reviewCnt;
 
 //    @OneToMany(mappedBy = "store")
 //    private List<StoreUrl> storeUrlList = new ArrayList<>();

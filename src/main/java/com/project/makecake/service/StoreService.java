@@ -8,6 +8,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -216,5 +219,44 @@ public class StoreService {
             reviews.add(reviewDto);
         }
         return reviews;
+    }
+
+    public List<SearchResponseDto> getSearchStore(SearchRequestDto requestDto) throws MalformedURLException {
+        List<SearchResponseDto> responseDto = new ArrayList<>();
+        String searchType = requestDto.getSearchType();
+        String sortType = requestDto.getSortType();
+        String searchText = requestDto.getSearchText();
+        List<Store> rawStoreList = new ArrayList<>();
+        if (searchType == "store") {
+            if (sortType != "review") {
+                rawStoreList = storeRepository.findAllByNameStartingWithOrderByLikeCntDesc(searchText);
+            } else {
+                rawStoreList = storeRepository.findAllByNameStartingWithOrderByReviewCntDesc(searchText);
+            }
+        } else if (searchType == "address") {
+            if (sortType != "review") {
+                rawStoreList = storeRepository.findByFullAddressContainingOrderByLikeCntDesc(searchText);
+            } else {
+                rawStoreList = storeRepository.findByFullAddressContainingOrderByReviewCntDesc(searchText);
+            }
+        } else {
+            float minX;
+            float maxX;
+            float minY;
+            float maxY;
+
+            URL url = new URL( "https://map.naver.com/v5/api/search?caller=pcweb&query=" + "searchText" + "&type=all&searchCoord=127.0234346;37.4979517&page=1&displayCount=20&isPlaceRecommendationReplace=true&lang=ko");
+
+//            URL url = new URL( "https://map.naver.com/v5/api/search?caller=pcweb&query=" + URLEncoder.encode(urlResponseDto.getGivenUrl(), "UTF-8") + "&type=all&searchCoord=127.0234346;37.4979517&page=1&displayCount=20&isPlaceRecommendationReplace=true&lang=ko");
+
+//            if (sortType != "review") {
+//                rawStoreList = storeRepository.findByXBetweenAndYBetweenOrderByLikeCntDesc(minX, maxX, minX, minY);
+//            } else {
+//                rawStoreList = storeRepository.findByXBetweenAndYBetweenOrderByLikeCntDesc(minX, maxX, minX, minY);
+//            }
+        }
+
+
+        return responseDto;
     }
 }
