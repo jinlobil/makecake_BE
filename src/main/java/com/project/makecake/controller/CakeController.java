@@ -17,14 +17,12 @@ public class CakeController {
 
     private final CakeService cakeService;
 
-    // 일단 페이지네이션
-    //http://localhost:8080/api/cakes?page=0&size=15
+    // 일단 15개
     // 케이크 사진 리스트 API
     @GetMapping("/api/cakes")
-    public List<CakeResponseDto> getAllCakes(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                             @RequestParam int page,
-                                             @RequestParam int size) {
-        return cakeService.getAllCakes(userDetails,page,size);
+    public List<CakeResponseDto> getAllCakes(
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return cakeService.getAllCakes(userDetails);
     }
 
     // 케이크 좋아요 누르기 API
@@ -33,7 +31,7 @@ public class CakeController {
                                     @RequestBody LikeRequestDto likeRequestDto,
                                     @AuthenticationPrincipal UserDetailsImpl userDetails
                                         ) {
-        return cakeService.cakeLike(cakeId,likeRequestDto.isMyLike(),userDetails);
+        return cakeService.cakeLike(cakeId,likeRequestDto,userDetails);
     }
 
 }

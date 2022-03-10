@@ -1,4 +1,4 @@
-package com.project.makecake.Config;
+package com.project.makecake.config;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;

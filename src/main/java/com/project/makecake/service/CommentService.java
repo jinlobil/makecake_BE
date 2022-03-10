@@ -9,6 +9,9 @@ import com.project.makecake.requestDto.CommentRequestDto;
 import com.project.makecake.responseDto.CommentResponseDto;
 import com.project.makecake.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,16 +25,38 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
 
+    // 도안 게시글의 댓글 불러오기
+    public List<CommentResponseDto> getAllComments(Long postId) {
+
+        // 게시글 찾기
+        Post foundPost = postRepository.findById(postId)
+                .orElseThrow(()->new IllegalArgumentException("존재하지 않는 게시글입니다."));
+
+        // 일단 전부
+        // 해당 게시글에 달린 댓글 리스트 가져오기
+        List<Comment> commentList = commentRepository.findAllByPost(foundPost);
+
+        // 반환 dto에 담기
+        List<CommentResponseDto> responseDtoList = new ArrayList<>();
+        for (Comment comment:commentList) {
+            CommentResponseDto responseDto = new CommentResponseDto(comment);
+            responseDtoList.add(responseDto);
+        }
+
+        return responseDtoList;
+    }
+
     // 도안 댓글 저장
     @Transactional
     public void saveComment(Long postId, UserDetailsImpl userDetails, CommentRequestDto requestDto) {
         User user = userDetails.getUser();
 
+        // 게시글 찾기
         Post foundPost = postRepository.findById(postId)
                 .orElseThrow(()->new IllegalArgumentException("존재하지 않는 게시글입니다."));
 
+        // 댓글 저장
         Comment comment = new Comment(requestDto.getContent(),foundPost,user);
-
         commentRepository.save(comment);
 
         // 도안 게시글 댓글수 증가
@@ -44,9 +69,11 @@ public class CommentService {
 
         User user = userDetails.getUser();
 
+        // 댓글 찾기
         Comment foundComment = commentRepository.findById(commentId)
                 .orElseThrow(()->new IllegalArgumentException("존재하지 않는 댓글입니다."));
 
+        // 동일 유저인지 확인
         if (!user.getUserId().equals(foundComment.getUser().getUserId())) {
             throw new IllegalArgumentException("다른 사람의 댓글은 수정할 수 없습니다.");
         }
@@ -60,9 +87,11 @@ public class CommentService {
 
         User user = userDetails.getUser();
 
+        // 댓글 찾기
         Comment foundComment = commentRepository.findById(commentId)
                 .orElseThrow(()->new IllegalArgumentException("존재하지 않는 댓글입니다."));
 
+        // 동일 유저인지 확인
         if (!user.getUserId().equals(foundComment.getUser().getUserId())) {
             throw new IllegalArgumentException("다른 사람의 댓글은 삭제할 수 없습니다.");
         }
@@ -75,21 +104,5 @@ public class CommentService {
 
         // 댓글 삭제
         commentRepository.delete(foundComment);
-    }
-
-    // 도안 게시글의 댓글 불러오기
-    public List<CommentResponseDto> getAllComments(Long postId) {
-        Post foundPost = postRepository.findById(postId)
-                .orElseThrow(()->new IllegalArgumentException("존재하지 않는 게시글입니다."));
-
-        List<Comment> commentList = commentRepository.findAllByPost(foundPost);
-
-        List<CommentResponseDto> responseDtoList = new ArrayList<>();
-        for (Comment comment:commentList) {
-            CommentResponseDto responseDto = new CommentResponseDto(comment);
-            responseDtoList.add(responseDto);
-        }
-
-        return responseDtoList;
     }
 }
