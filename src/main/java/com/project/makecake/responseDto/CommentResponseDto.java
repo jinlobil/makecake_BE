@@ -14,9 +14,9 @@ public class CommentResponseDto {
     private String createdDate;
 
     // 생성자
-    public CommentResponseDto(Comment comment, User user) {
+    public CommentResponseDto(Comment comment) {
         this.commentId = comment.getCommentId();
-        this.nickname = user.getNickname();
+        this.nickname = comment.getUser().getNickname();
         this.content = comment.getContent();
         this.createdDate = comment.getCreatedAt();
     }

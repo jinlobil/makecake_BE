@@ -2,13 +2,11 @@ package com.project.makecake.service;
 
 import com.project.makecake.dto.ImageInfoDto;
 import com.project.makecake.model.*;
-import com.project.makecake.repository.DesignRepository;
-import com.project.makecake.repository.PostLikeRepository;
-import com.project.makecake.repository.PostRepository;
-import com.project.makecake.repository.StoreRepository;
+import com.project.makecake.repository.*;
 import com.project.makecake.requestDto.PostRequestDto;
 import com.project.makecake.responseDto.DesignResponseDto;
 import com.project.makecake.responseDto.LikeResponseDto;
+import com.project.makecake.responseDto.PostDetailResponseDto;
 import com.project.makecake.responseDto.PostSimpleResponseDto;
 import com.project.makecake.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -29,6 +28,7 @@ public class PostService {
     private final S3UploadService s3UploadService;
     private final StoreRepository storeRepository;
     private final PostLikeRepository postLikeRepository;
+    private final CommentRepository commentRepository;
 
     // 게시된 도안 사진 리스트
     public List<PostSimpleResponseDto> getAllPosts() {
@@ -60,6 +60,10 @@ public class PostService {
         User user = userDetails.getUser();
         Design foundDesign = designRepository.findById(designId)
                 .orElseThrow(()->new IllegalArgumentException("존재하지 않는 도안입니다."));
+
+        if (foundDesign.getState().equals(DesignState.POST)) {
+            throw new IllegalArgumentException("이미 게시된 도안입니다.");
+        }
 
         if (requestDto.isMade()&&requestDto.getStoreId()!=null) {
             Store foundStore = storeRepository.findById(requestDto.getStoreId())
@@ -116,11 +120,9 @@ public class PostService {
 
         // 도안 게시글 좋아요 삭제
         postLikeRepository.deleteAllByPost(foundPost);
-//        List<PostLike> foundPostLikeList = postLikeRepository.findByPost(foundPost);
-//        for (PostLike like : foundPostLikeList) {
-//            postLikeRepository.delete(like);
-//        }
 
+        // 도안 게시글 댓글 삭제
+        commentRepository.deleteAllByPost(foundPost);
 
         postRepository.delete(foundPost);
     }
@@ -146,4 +148,34 @@ public class PostService {
         return new LikeResponseDto(likeResult);
     }
 
+    // 도안 게시글 상세
+    @Transactional
+    public PostDetailResponseDto getPost(Long postId, UserDetailsImpl userDetails) {
+
+        User user = null;
+
+        if (userDetails!=null) {
+            user = userDetails.getUser();
+        }
+
+        // 게시글 찾기
+        Post foundPost = postRepository.findById(postId)
+                .orElseThrow(()->new IllegalArgumentException("게시글이 존재하지 않습니다."));
+
+        // 조회수 추가
+        foundPost.viewPost();
+
+        boolean myLike = false;
+
+        // 로그인한 회원이면 좋아요 내역 찾아서 반영
+        if(user!=null) {
+            Optional<PostLike> foundPostLike = postLikeRepository.findByUserAndPost(user,foundPost);
+            if (foundPostLike.isPresent()) {
+                myLike = true;
+            }
+        }
+
+        return new PostDetailResponseDto(foundPost,myLike);
+
+    }
 }
