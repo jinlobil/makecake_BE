@@ -1,13 +1,19 @@
 package com.project.makecake.controller;
 
+import com.project.makecake.dto.ImageInfoDto;
 import com.project.makecake.dto.LoginCheckResponseDto;
+import com.project.makecake.dto.MypageResponseDto;
 import com.project.makecake.dto.SignupRequestDto;
+import com.project.makecake.model.FolderName;
 import com.project.makecake.security.UserDetailsImpl;
+import com.project.makecake.service.S3UploadService;
 import com.project.makecake.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 
@@ -16,11 +22,12 @@ import java.util.HashMap;
 public class UserController {
 
     private final UserService userService;
+    private final S3UploadService s3UploadService;
 
     // 회원가입
     @PostMapping("/user/signup")
-    public void registerUser(@RequestBody SignupRequestDto requestDto) {
-        userService.registerUser(requestDto);
+    public HashMap<String, Boolean> registerUser(@RequestBody SignupRequestDto requestDto) {
+        return userService.registerUser(requestDto);
     }
 
     // username 중복검사
@@ -43,7 +50,22 @@ public class UserController {
 
     // 프로필 수정
     @PutMapping("/profile")
-    public void editProfile(){
+    public MypageResponseDto editProfile(@RequestParam("nickname") String nickname,
+                                         @RequestParam(value = "img", required = false) MultipartFile multipartFile,
+                                         @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+        return userService.editProfile(nickname, multipartFile, userDetails);
+    }
 
+    // 회원탈퇴
+    @PutMapping("/user/resign")
+    public void resignUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        userService.resignUser(userDetails);
+    }
+
+    // (임시) 이미지 업로드
+    @PostMapping("/user/image")
+    public ImageInfoDto userImage(@RequestParam(value = "imageFile", required = false) MultipartFile multipartFile) throws IOException {
+        ImageInfoDto imageInfoDto = s3UploadService.uploadFile(multipartFile, FolderName.PROFILE.name());
+        return imageInfoDto;
     }
 }
