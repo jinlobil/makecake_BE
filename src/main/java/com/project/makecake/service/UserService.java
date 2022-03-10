@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
@@ -21,7 +22,8 @@ public class UserService {
     private final UserRepository userRepository;
 
     // 회원가입
-    public User registerUser(SignupRequestDto requestDto) {
+    public HashMap<String, Boolean> registerUser(SignupRequestDto requestDto) {
+
         String username = requestDto.getUsername();
 
         String nickname = requestDto.getNickname();
@@ -39,8 +41,11 @@ public class UserService {
                 .userPicture(userPicture)
                 .role(role)
                 .build();
-        return userRepository.save(user);
-
+        User saveUser = userRepository.save(user);
+        Optional<User> findUser = userRepository.findById(saveUser.getUserId());
+        HashMap<String, Boolean> userCheck = new HashMap<>();
+        userCheck.put("signup", findUser.isPresent());
+        return userCheck;
     }
 
     // username 중복검사
@@ -66,6 +71,28 @@ public class UserService {
         LoginCheckResponseDto loginCheck = new LoginCheckResponseDto();
         loginCheck.setUId(userDetails.getUser().getUserId());
         loginCheck.setNickname(userDetails.getNickname());
+        System.out.println(loginCheck);
         return loginCheck;
     }
+
+    // 회원 탈퇴
+    public void resignUser(UserDetailsImpl userDetails) {
+        User findUser = userRepository.findByUsername(userDetails.getUsername()).orElse(null);
+
+        if (findUser != null) {
+            String username = "resignUser_"+findUser.getUserId();
+            String password = passwordEncoder.encode(UUID.randomUUID().toString());
+            findUser = User.builder()
+                    .username(username)
+                    .password(password)
+                    .nickname(null)
+                    .userPicture(null)
+                    .role(null)
+                    .provider(null)
+                    .providerId(null)
+                    .build();
+            userRepository.save(findUser);
+        }
+    }
+
 }

@@ -19,8 +19,8 @@ public class UserController {
 
     // 회원가입
     @PostMapping("/user/signup")
-    public void registerUser(@RequestBody SignupRequestDto requestDto) {
-        userService.registerUser(requestDto);
+    public HashMap<String, Boolean> registerUser(@RequestBody SignupRequestDto requestDto) {
+        return userService.registerUser(requestDto);
     }
 
     // username 중복검사
@@ -45,5 +45,11 @@ public class UserController {
     @PutMapping("/profile")
     public void editProfile(){
 
+    }
+
+    // 회원탈퇴
+    @PutMapping("/user/resign")
+    public void resignUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        userService.resignUser(userDetails);
     }
 }
