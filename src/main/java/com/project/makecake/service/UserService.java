@@ -73,10 +73,14 @@ public class UserService {
     }
 
     // 로그인체크
-    public LoginCheckResponseDto loginCheck(UserDetailsImpl userDetails) {
-        LoginCheckResponseDto loginCheck = new LoginCheckResponseDto();
-        loginCheck.setUId(userDetails.getUser().getUserId());
-        loginCheck.setNickname(userDetails.getNickname());
+    public LoginCheckResponseDto loginChecked(UserDetailsImpl userDetails) {
+        User findUser = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
+                () -> new IllegalArgumentException("유저가 존재하지 않습니다.")
+        );
+        LoginCheckResponseDto loginCheck = LoginCheckResponseDto.builder()
+                        .userId(findUser.getUserId())
+                        .nickname(findUser.getNickname())
+                        .build();
         System.out.println(loginCheck);
         return loginCheck;
     }
@@ -101,44 +105,36 @@ public class UserService {
         }
     }
 
-    public MypageResponseDto editProfile(String nickname, MultipartFile multipartFile, UserDetailsImpl userDetails) throws IOException {
+    // 프로필이미지 수정
+    public MypageResponseDto editProfile(MultipartFile multipartFile, UserDetailsImpl userDetails) throws IOException {
         User findUser = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
                 () -> new IllegalArgumentException("유저가 존재하지 않습니다.")
         );
-
-        if (nickname == null){
-            ImageInfoDto imageInfoDto = s3UploadService.uploadFile(multipartFile, FolderName.PROFILE.name());
-            findUser.setUserPicture(imageInfoDto.getUrl());
-            User saveUser = userRepository.save(findUser);
-            MypageResponseDto responseDto = new MypageResponseDto();
-            responseDto.setNickname(saveUser.getNickname());
-            responseDto.setUserPicture(saveUser.getUserPicture());
-            return responseDto;
-
-        } else if (multipartFile.isEmpty()){
-            Optional<User> findOfNickname = userRepository.findByNickname(nickname);
-            if (findOfNickname.isPresent()) {
-                new IllegalArgumentException("중복된 닉네임이 존재합니다.");
-            }else {
-                findUser.setNickname(nickname);
-                User saveUser = userRepository.save(findUser);
-                MypageResponseDto responseDto = new MypageResponseDto();
-                responseDto.setNickname(saveUser.getNickname());
-                responseDto.setUserPicture(saveUser.getUserPicture());
-                return responseDto;
-            }
-        }
         ImageInfoDto imageInfoDto = s3UploadService.uploadFile(multipartFile, FolderName.PROFILE.name());
-        Optional<User> findOfNickname = userRepository.findByNickname(nickname);
-        if (findOfNickname.isPresent()) {
-            new IllegalArgumentException("중복된 닉네임이 존재합니다.");
-        }
+
         findUser.setUserPicture(imageInfoDto.getUrl());
-        findUser.setNickname(nickname);
         User saveUser = userRepository.save(findUser);
-        MypageResponseDto responseDto = new MypageResponseDto();
-        responseDto.setNickname(saveUser.getNickname());
-        responseDto.setUserPicture(saveUser.getUserPicture());
+        MypageResponseDto responseDto = MypageResponseDto.builder()
+                .nickname(saveUser.getNickname())
+                .userPicture(saveUser.getUserPicture())
+                .build();
+        return responseDto;
+    }
+
+    // 닉네임 수정
+    public MypageResponseDto editNickname(SignupRequestDto signupRequestDto, UserDetailsImpl userDetails) {
+        User findUser = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
+                () -> new IllegalArgumentException("유저가 존재하지 않습니다.")
+        );
+        if (findUser.getNickname().equals(signupRequestDto.getNickname())){
+            throw new IllegalArgumentException("중복된 닉네임이 존재합니다.");
+        }
+        findUser.setNickname(signupRequestDto.getNickname());
+        User saveUser = userRepository.save(findUser);
+        MypageResponseDto responseDto = MypageResponseDto.builder()
+                .nickname(saveUser.getNickname())
+                .userPicture(saveUser.getUserPicture())
+                .build();
         return responseDto;
     }
 }

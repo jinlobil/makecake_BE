@@ -26,10 +26,13 @@ public class MypageService {
 
     // 마이페이지 조회
     public MypageResponseDto mypage(UserDetailsImpl userDetails) {
-        Optional<User> findUser = userRepository.findByUsername(userDetails.getUsername());
-        MypageResponseDto mypage = new MypageResponseDto();
-        mypage.setNickname(findUser.get().getNickname());
-        mypage.setUserPicture(findUser.get().getUserPicture());
+        User findUser = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
+                () -> new IllegalArgumentException("유저가 존재하지 않습니다.")
+        );
+        MypageResponseDto mypage = MypageResponseDto.builder()
+                .nickname(findUser.getNickname())
+                .userPicture(findUser.getUserPicture())
+                .build();
         return mypage;
     }
 
@@ -40,7 +43,7 @@ public class MypageService {
         );
         List<MyDesignResponseDto> designList = new ArrayList<>();
         if (option.equals("nonpost")){
-            List<Design> findDesign = designRepository.findByUserAndStateIsNull(findUser);
+            List<Design> findDesign = designRepository.findByState(DesignState.UNPOST);
             for (Design design : findDesign){
                 MyDesignResponseDto responseDto = MyDesignResponseDto.builder()
                         .designId(design.getDesignId())
