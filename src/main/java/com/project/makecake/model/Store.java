@@ -2,6 +2,7 @@ package com.project.makecake.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -10,7 +11,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-
+@DynamicUpdate
 public class Store extends Timestamped{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -22,7 +23,7 @@ public class Store extends Timestamped{
     @Column(nullable = false)
     private String name;
 
-    @Column()
+    @Column
     private String description;
 
     @Column
@@ -46,13 +47,19 @@ public class Store extends Timestamped{
     @Column
     private String phone;
 
-    @OneToMany(mappedBy = "store")
-    private List<StoreUrl> storeUrlList = new ArrayList<>();
+    @Column(columnDefinition = "integer default 0")
+    private int likeCnt;
 
-    @OneToMany(mappedBy = "store")
-    private List<Menu> menuList = new ArrayList<>();
+    @Column(columnDefinition = "integer default 0")
+    private int ReviewCnt;
 
-    @OneToMany(mappedBy = "store")
-    private List<Cake> cakeList = new ArrayList<>();
+//    @OneToMany(mappedBy = "store")
+//    private List<StoreUrl> storeUrlList = new ArrayList<>();
+//
+//    @OneToMany(mappedBy = "store")
+//    private List<Menu> menuList = new ArrayList<>();
+//
+//    @OneToMany(mappedBy = "store")
+//    private List<Cake> cakeList = new ArrayList<>();
 
 }
