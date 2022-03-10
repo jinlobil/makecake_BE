@@ -45,15 +45,20 @@ public class UserController {
     // 로그인 체크
     @GetMapping("/user/loginCheck")
     public LoginCheckResponseDto loginCheck(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return userService.loginCheck(userDetails);
+        return userService.loginChecked(userDetails);
     }
 
-    // 프로필 수정
-    @PutMapping("/profile")
-    public MypageResponseDto editProfile(@RequestParam("nickname") String nickname,
-                                         @RequestParam(value = "img", required = false) MultipartFile multipartFile,
+    // 프로필이미지 수정
+    @PutMapping("/user/editProfile")
+    public MypageResponseDto editProfile(@RequestParam(value = "img", required = false) MultipartFile multipartFile,
                                          @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
-        return userService.editProfile(nickname, multipartFile, userDetails);
+        return userService.editProfile(multipartFile, userDetails);
+    }
+
+    // 닉네임 수정
+    @PutMapping("/user/editNickname")
+    public MypageResponseDto editNickname(@RequestBody SignupRequestDto signupRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return userService.editNickname(signupRequestDto, userDetails);
     }
 
     // 회원탈퇴
