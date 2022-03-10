@@ -1,7 +1,10 @@
 package com.project.makecake.service;
 
+import com.project.makecake.dto.ImageInfoDto;
 import com.project.makecake.dto.LoginCheckResponseDto;
+import com.project.makecake.dto.MypageResponseDto;
 import com.project.makecake.dto.SignupRequestDto;
+import com.project.makecake.model.FolderName;
 import com.project.makecake.model.User;
 import com.project.makecake.model.UserRoleEnum;
 import com.project.makecake.repository.UserRepository;
@@ -9,7 +12,9 @@ import com.project.makecake.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.UUID;
@@ -20,6 +25,7 @@ public class UserService {
 
     private final BCryptPasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private final S3UploadService s3UploadService;
 
     // 회원가입
     public HashMap<String, Boolean> registerUser(SignupRequestDto requestDto) {
@@ -30,7 +36,7 @@ public class UserService {
 
         String password = passwordEncoder.encode(requestDto.getPassword());
 
-        String userPicture = "";
+        String userPicture = "https://makecake.s3.ap-northeast-2.amazonaws.com/PROFILE/18d2090b-1b98-4c34-b92b-a9f50d03bd53makecake_default.png";
 
         UserRoleEnum role = UserRoleEnum.USER;
 
@@ -95,4 +101,44 @@ public class UserService {
         }
     }
 
+    public MypageResponseDto editProfile(String nickname, MultipartFile multipartFile, UserDetailsImpl userDetails) throws IOException {
+        User findUser = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
+                () -> new IllegalArgumentException("유저가 존재하지 않습니다.")
+        );
+
+        if (nickname == null){
+            ImageInfoDto imageInfoDto = s3UploadService.uploadFile(multipartFile, FolderName.PROFILE.name());
+            findUser.setUserPicture(imageInfoDto.getUrl());
+            User saveUser = userRepository.save(findUser);
+            MypageResponseDto responseDto = new MypageResponseDto();
+            responseDto.setNickname(saveUser.getNickname());
+            responseDto.setUserPicture(saveUser.getUserPicture());
+            return responseDto;
+
+        } else if (multipartFile.isEmpty()){
+            Optional<User> findOfNickname = userRepository.findByNickname(nickname);
+            if (findOfNickname.isPresent()) {
+                new IllegalArgumentException("중복된 닉네임이 존재합니다.");
+            }else {
+                findUser.setNickname(nickname);
+                User saveUser = userRepository.save(findUser);
+                MypageResponseDto responseDto = new MypageResponseDto();
+                responseDto.setNickname(saveUser.getNickname());
+                responseDto.setUserPicture(saveUser.getUserPicture());
+                return responseDto;
+            }
+        }
+        ImageInfoDto imageInfoDto = s3UploadService.uploadFile(multipartFile, FolderName.PROFILE.name());
+        Optional<User> findOfNickname = userRepository.findByNickname(nickname);
+        if (findOfNickname.isPresent()) {
+            new IllegalArgumentException("중복된 닉네임이 존재합니다.");
+        }
+        findUser.setUserPicture(imageInfoDto.getUrl());
+        findUser.setNickname(nickname);
+        User saveUser = userRepository.save(findUser);
+        MypageResponseDto responseDto = new MypageResponseDto();
+        responseDto.setNickname(saveUser.getNickname());
+        responseDto.setUserPicture(saveUser.getUserPicture());
+        return responseDto;
+    }
 }

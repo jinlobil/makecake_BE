@@ -7,9 +7,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @EnableJpaAuditing
 @SpringBootApplication
 public class MakeCakeApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(MakeCakeApplication.class, args);
     }
-
 }

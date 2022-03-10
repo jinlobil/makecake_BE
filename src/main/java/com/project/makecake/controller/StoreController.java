@@ -1,4 +1,66 @@
 package com.project.makecake.controller;
 
+import com.project.makecake.dto.*;
+import com.project.makecake.model.User;
+import com.project.makecake.security.UserDetailsImpl;
+import com.project.makecake.service.CakeService;
+import com.project.makecake.service.ReviewService;
+import com.project.makecake.service.StoreService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@RequiredArgsConstructor
+@RestController
 public class StoreController {
+    private final StoreService storeService;
+    private final CakeService cakeService;
+    private final ReviewService reviewService;
+
+
+    //홈탭(1) 핫매장, 핫케이크 5개씩
+    @GetMapping("/api/home")
+    public HomeResponseDto getHomeStoreAndCake(){
+        List<HomeStoreDto> homeStoreDtoList = storeService.getHomeStoreList();
+        List<HomeCakeDto> homeCakeDtoList = cakeService.getHomeCakeList();
+        HomeResponseDto homeResponseDto = new HomeResponseDto(homeStoreDtoList, homeCakeDtoList);
+
+        return homeResponseDto;
+    }
+
+    //홉탭(2) 최신 리뷰 (페이지네이션)
+    @GetMapping("/api/home/review")
+    public List<HomeReviewDto> getHomeReview(@RequestParam int page, @RequestParam int size){
+        return reviewService.getHomeReviewList(page, size);
+    }
+
+    //매장 상세페이지
+    @GetMapping("/api/stores/{storeId}")
+    public StoreDetailResponseDto getStoreDetail(@PathVariable Long storeId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return storeService.getStoreDetail(storeId, userDetails);
+    }
+
+    //매장 상세페이지 - 매장 케이크 (무한 스크롤 구현 필요) 9개씩
+    @GetMapping("/api/stores/{storeId}/cakes")
+    public List<StoreDetailCakeResponseDto> getStoreDetailCakes(@PathVariable Long storeId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return  storeService.getStoreDetailCakes(storeId, userDetails);
+    }
+
+
+    //매장 상세페이지 - 매장 리뷰 (무한 스크롤 구현 필요) 3개씩
+    @GetMapping("/api/stores/{storeId}/reviews")
+    public List<ReviewResponseDto> getStoreDetailReviews(@PathVariable Long storeId){
+        return  storeService.getStoreDetailReviews(storeId);
+    }
+
+
+    //매장 좋아요
+    @PostMapping("/stores/like/{storeId}")
+    public Boolean likeStore(@RequestBody Boolean myLike, @PathVariable Long storeId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        User user = userDetails.getUser();
+        return storeService.likeStore(myLike, storeId, user);
+    }
 }
