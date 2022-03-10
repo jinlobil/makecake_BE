@@ -33,7 +33,7 @@ public class Design extends Timestamped{
     public Design(ImageInfoDto imgInfo, User user) {
         this.imgUrl = imgInfo.getUrl();
         this.imgName = imgInfo.getName();
-        this.state = DesignState.UNPOST;
+        this.state = null;
         this.user = user;
     }
 
@@ -44,6 +44,6 @@ public class Design extends Timestamped{
 
     // 도안 게시글이 지워지면 상태 UNPOST로 바꾸기
     public void unpost() {
-        this.state = DesignState.UNPOST;
+        this.state = null;
     }
 }
