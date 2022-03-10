@@ -22,7 +22,7 @@ public class PostController {
 
     private final PostService postService;
 
-    // 도안 그리고 저장 API
+    // 도안 그리고 난 후 이미지 저장하는 API
     @PostMapping("/designs")
     public DesignResponseDto saveDesign(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -30,7 +30,7 @@ public class PostController {
         return postService.saveDesign(userDetails,img);
     }
 
-    // 정렬타입 적용 안함
+    // 정렬타입 적용 안함, 일단 15개
     // 게시된 도안 사진 리스트 API
     @GetMapping("/api/designs")
     public List<PostSimpleResponseDto> getAllPosts(
@@ -84,6 +84,6 @@ public class PostController {
             @RequestBody LikeRequestDto likeRequestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        return postService.postLike(postId,likeRequestDto.isMyLike(),userDetails);
+        return postService.postLike(postId,likeRequestDto,userDetails);
     }
 }
