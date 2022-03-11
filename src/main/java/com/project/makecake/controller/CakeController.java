@@ -25,6 +25,15 @@ public class CakeController {
         return cakeService.getAllCakes(userDetails);
     }
 
+    // 케이크 사진 모달 API
+    @GetMapping("/api/cakes/{cakeId}")
+    public CakeResponseDto getCake(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PathVariable Long cakeId
+    ) {
+        return cakeService.getCake(userDetails,cakeId);
+    }
+
     // 케이크 좋아요 누르기 API
     @PostMapping("/cakes/like/{cakeId}")
     public LikeResponseDto cakeLike(@PathVariable Long cakeId,
