@@ -12,7 +12,7 @@ public class SearchResponseDto {
     private String name;
     private float x;
     private float y;
-    private String addressSimple;
+//    private String addressSimple;
     private String roadAddress;
     private String fulAddress;
     private String mainImg;

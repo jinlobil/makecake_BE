@@ -19,19 +19,20 @@ public class ReviewController {
     //매장 후기 쓰기
     @PostMapping("/reviews/{storeId}")
     public void writeReview(@PathVariable long storeId,
-                            @RequestPart(value="requestDto") ReviewRequestDto requestDto,
+                            @RequestPart(value="content") String content,
                             @RequestParam(required = false) List<MultipartFile> imgFiles,
                             @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
-        reviewService.writeReview(storeId, requestDto, imgFiles, userDetails);
+        reviewService.writeReview(storeId, content, imgFiles, userDetails);
     }
 
     //매장 후기 수정
     @PutMapping("/reviews/{reviewId}")
     public void updateReview(@PathVariable long reviewId,
-                             @RequestPart(value="requestDto") ReviewRequestDto requestDto,
+                             @RequestParam(value="content") String content,
                              @RequestPart(required = false) List<MultipartFile> imgFiles,
+                             @RequestPart(value="imgUrls") List<String> imgUrls,
                              @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException{
-        reviewService.updateReview(reviewId, requestDto, imgFiles, userDetails);
+        reviewService.updateReview(reviewId, content, imgFiles, imgUrls, userDetails);
     }
 
 

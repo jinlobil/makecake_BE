@@ -1,5 +1,8 @@
 package com.project.makecake.service;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.project.makecake.dto.*;
 import com.project.makecake.model.*;
 import com.project.makecake.repository.*;
@@ -8,10 +11,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -25,6 +34,33 @@ public class StoreService {
     private final ReviewImgRepository reviewImgRepository;
     private final CakeRepository cakeRepository;
     private final CakeLikeRepository cakeLikeRepository;
+
+    public JsonElement CrawlingSearch(String searchText) throws IOException {
+        URL url = new URL( "https://map.naver.com/v5/api/search?caller=pcweb&query=" + URLEncoder.encode(searchText, "UTF-8") + "&type=all&searchCoord=127.0234346;37.4979517&page=1&displayCount=20&isPlaceRecommendationReplace=true&lang=ko");
+
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+        conn.setRequestMethod("GET");
+        conn.setDoOutput(true);
+
+        //결과 코드가 200이라면 성공
+        int responseCode = conn.getResponseCode();
+        System.out.println("responseCode : " + responseCode);
+
+        //요청을 통해 얻은 JSON타입의 Response 메세지 읽어오기
+        BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        String line = "";
+        String result = "";
+
+        while ((line = br.readLine()) != null) {
+            result += line;
+        }
+
+        //Gson 라이브러리로 JSON파싱
+        JsonParser parser = new JsonParser();
+        JsonElement element = parser.parse(result);
+        return element;
+    }
 
     //홈탭 : 핫 매장 리스트
     @Transactional
@@ -221,8 +257,7 @@ public class StoreService {
         return reviews;
     }
 
-    public List<SearchResponseDto> getSearchStore(SearchRequestDto requestDto) throws MalformedURLException {
-        List<SearchResponseDto> responseDto = new ArrayList<>();
+    public List<SearchResponseDto> getSearchStore(SearchRequestDto requestDto) throws IOException {
         String searchType = requestDto.getSearchType();
         String sortType = requestDto.getSortType();
         String searchText = requestDto.getSearchText();
@@ -239,24 +274,50 @@ public class StoreService {
             } else {
                 rawStoreList = storeRepository.findByFullAddressContainingOrderByReviewCntDesc(searchText);
             }
-        } else {
-            float minX;
-            float maxX;
-            float minY;
-            float maxY;
+        } else { //플레이스로 검색하기
+            float minX = 0;
+            float maxX = 0;
+            float minY = 0;
+            float maxY = 0;
+            JsonElement element = CrawlingSearch(searchText);
+            JsonArray rawJsonArray = element.getAsJsonObject().get("result").getAsJsonObject().get("place").getAsJsonObject().get("boundary").getAsJsonArray();
+            List<Float> rawList = new ArrayList<>();
+            for(int i=0; i< rawJsonArray.size(); i++){
+                String measureString = rawJsonArray.get(i).getAsString();
+                float measure = Float.parseFloat(measureString);
+                rawList.add(measure);
+            }
+            Collections.sort(rawList);
 
-            URL url = new URL( "https://map.naver.com/v5/api/search?caller=pcweb&query=" + "searchText" + "&type=all&searchCoord=127.0234346;37.4979517&page=1&displayCount=20&isPlaceRecommendationReplace=true&lang=ko");
+            minY = rawList.get(0);
+            maxY = rawList.get(1);
+            minX = rawList.get(2);
+            minY = rawList.get(3);
 
-//            URL url = new URL( "https://map.naver.com/v5/api/search?caller=pcweb&query=" + URLEncoder.encode(urlResponseDto.getGivenUrl(), "UTF-8") + "&type=all&searchCoord=127.0234346;37.4979517&page=1&displayCount=20&isPlaceRecommendationReplace=true&lang=ko");
-
-//            if (sortType != "review") {
-//                rawStoreList = storeRepository.findByXBetweenAndYBetweenOrderByLikeCntDesc(minX, maxX, minX, minY);
-//            } else {
-//                rawStoreList = storeRepository.findByXBetweenAndYBetweenOrderByLikeCntDesc(minX, maxX, minX, minY);
-//            }
+            if (sortType != "review") {
+                rawStoreList = storeRepository.findByXBetweenAndYBetweenOrderByLikeCntDesc(minX, maxX, minX, minY);
+            } else {
+                rawStoreList = storeRepository.findByXBetweenAndYBetweenOrderByLikeCntDesc(minX, maxX, minX, minY);
+            }
         }
 
+        //rawStoreList를 Dto에 담기
+        List<SearchResponseDto> responseDtoList = new ArrayList<>();
 
-        return responseDto;
+        for(Store rawStore : rawStoreList){
+            SearchResponseDto responseDto = new SearchResponseDto();
+            responseDto.setStoreId(rawStore.getStoreId());
+            responseDto.setName(rawStore.getName());
+            responseDto.setX(rawStore.getX());
+            responseDto.setY(rawStore.getY());
+            responseDto.setRoadAddress(rawStore.getRoadAddress());
+            responseDto.setFulAddress(rawStore.getFullAddress());
+            responseDto.setMainImg(rawStore.getMainImg());
+            responseDto.setLikeCnt(rawStore.getLikeCnt());
+            responseDto.setReviewCnt(rawStore.getReviewCnt());
+
+            responseDtoList.add(responseDto);
+        }
+        return responseDtoList;
     }
 }
