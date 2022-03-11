@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Builder
 @Data
-public class MypageResponseDto {
-    public String userPicture;
-    public String nickname;
+public class MyReactDesignResponceDto {
+    public Long postId;
+    public String img;
 }

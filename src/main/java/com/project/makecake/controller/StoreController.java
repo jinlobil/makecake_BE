@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -36,6 +36,14 @@ public class StoreController {
     public List<HomeReviewDto> getHomeReview(@RequestParam int page, @RequestParam int size){
         return reviewService.getHomeReviewList(page, size);
     }
+
+    //매장 검색 결과 보여주기
+    @PostMapping("/api/search")
+    public List<SearchResponseDto> getSearchStore(@RequestBody SearchRequestDto requestDto) throws IOException {
+        return storeService.getSearchStore(requestDto);
+    }
+
+
 
     //매장 상세페이지
     @GetMapping("/api/stores/{storeId}")

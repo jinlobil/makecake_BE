@@ -2,20 +2,16 @@ package com.project.makecake.service;
 
 import com.project.makecake.dto.HomeReviewDto;
 import com.project.makecake.dto.ImageInfoDto;
-import com.project.makecake.dto.StoreDetailResponseDto;
 import com.project.makecake.model.*;
 import com.project.makecake.repository.ReviewImgRepository;
 import com.project.makecake.repository.ReviewRepository;
 import com.project.makecake.repository.StoreRepository;
-import com.project.makecake.requestDto.ReviewRequestDto;
 import com.project.makecake.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
@@ -61,17 +57,14 @@ public class ReviewService {
 
     //리뷰 작성하기
     @Transactional
-    public void writeReview(long storeId,
-                            ReviewRequestDto requestDto,
-                            List<MultipartFile> imgFiles,
-                            UserDetailsImpl userDetails) throws IOException {
+    public void writeReview(long storeId, String content, List<MultipartFile> imgFiles, UserDetailsImpl userDetails) throws IOException {
         User user = userDetails.getUser();
 
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(()->new IllegalArgumentException("존재하지 않는 매장입니다."));
 
         //본문은 무조건 있어야 함
-        Review review = new Review(requestDto.getContent(), store, user);
+        Review review = new Review(content, store, user);
         reviewRepository.save(review);
 
         //이미지도 업로드할 경우 저장해줌
@@ -101,11 +94,42 @@ public class ReviewService {
 
     //리뷰 수정하기 (프론트와 상의 후 구현 필요함)
     @Transactional
-    public void updateReview(long reviewId, ReviewRequestDto requestDto, List<MultipartFile> imgFiles, UserDetailsImpl userDetails){
-        //requestDto, imgFiles 중 null이 아닌 것
-        //내용만 수정한 경우 : List<MultipartFile> == null
-        //사진만 수정한 경우 : content == null, List<MultipartFile> != null
-        //사진 중 일부만 수정한 경우 => 싹 다 지우고 다 덮어쓰기?
+    public void updateReview(long reviewId, String content, List<MultipartFile> imgFiles, List<String> imgUrls, UserDetailsImpl userDetails) throws IOException {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(()->new IllegalArgumentException("존재하지 않는 리뷰입니다."));
 
+        if(!review.getUser().equals(userDetails.getUser())){
+            throw new IllegalArgumentException("다른 회원이 작성한 리뷰는 수정할 수 없습니다.");
+        }
+
+        //imgFiles 들어온 경우
+        if(imgFiles != null){
+            for(MultipartFile imgFile : imgFiles){
+                ImageInfoDto imageInfoDto = s3UploadService.uploadFile(imgFile, FolderName.REVIEW.name());
+                ReviewImg reviewImg = new ReviewImg(imageInfoDto, review);
+                reviewImgRepository.save(reviewImg);
+            }
+        }
+
+        //content : 다시 업데이트
+        review.setContent(content);
+        reviewRepository.save(review);
+
+        //imgUrls (기존에 있던 이미지 URL 중 사용자가 삭제한 것만 삭제)
+        if(reviewImgRepository.findAllByReview_ReviewId(reviewId) != null){
+            List<ReviewImg> originReviewImgList = reviewImgRepository.findAllByReview_ReviewId(reviewId);
+            if(originReviewImgList.size() != imgUrls.size()){
+                List<String> originUrlList = new ArrayList<>();
+                //s3에서 지우려면?
+                for(int i=0; i< originReviewImgList.size(); i++){
+                    originUrlList.add(originReviewImgList.get(i).getImgUrl());
+                }
+                originUrlList.removeAll(imgUrls);
+
+                for(int j=0; j< originUrlList.size(); j++){
+                    reviewImgRepository.deleteByImgUrl(originUrlList.get(j));
+                }
+            }
+        }
     }
 }

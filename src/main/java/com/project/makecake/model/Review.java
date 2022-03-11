@@ -3,6 +3,7 @@ package com.project.makecake.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 
@@ -10,6 +11,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor
+@DynamicUpdate
 public class Review extends Timestamped{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
