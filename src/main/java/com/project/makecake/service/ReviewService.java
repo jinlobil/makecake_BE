@@ -2,20 +2,16 @@ package com.project.makecake.service;
 
 import com.project.makecake.dto.HomeReviewDto;
 import com.project.makecake.dto.ImageInfoDto;
-import com.project.makecake.dto.StoreDetailResponseDto;
 import com.project.makecake.model.*;
 import com.project.makecake.repository.ReviewImgRepository;
 import com.project.makecake.repository.ReviewRepository;
 import com.project.makecake.repository.StoreRepository;
-import com.project.makecake.requestDto.ReviewRequestDto;
 import com.project.makecake.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
@@ -61,10 +57,7 @@ public class ReviewService {
 
     //리뷰 작성하기
     @Transactional
-    public void writeReview(long storeId,
-                            String content,
-                            List<MultipartFile> imgFiles,
-                            UserDetailsImpl userDetails) throws IOException {
+    public void writeReview(long storeId, String content, List<MultipartFile> imgFiles, UserDetailsImpl userDetails) throws IOException {
         User user = userDetails.getUser();
 
         Store store = storeRepository.findById(storeId)
@@ -101,10 +94,7 @@ public class ReviewService {
 
     //리뷰 수정하기 (프론트와 상의 후 구현 필요함)
     @Transactional
-    public void updateReview(long reviewId, String content,
-                             List<MultipartFile> imgFiles,
-                             List<String> imgUrls,
-                             UserDetailsImpl userDetails) throws IOException {
+    public void updateReview(long reviewId, String content, List<MultipartFile> imgFiles, List<String> imgUrls, UserDetailsImpl userDetails) throws IOException {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(()->new IllegalArgumentException("존재하지 않는 리뷰입니다."));
 

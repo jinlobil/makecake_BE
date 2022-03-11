@@ -1,6 +1,5 @@
 package com.project.makecake.controller;
 
-import com.project.makecake.requestDto.ReviewRequestDto;
 import com.project.makecake.security.UserDetailsImpl;
 import com.project.makecake.service.ReviewService;
 import lombok.RequiredArgsConstructor;

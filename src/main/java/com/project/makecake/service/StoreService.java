@@ -262,13 +262,14 @@ public class StoreService {
         String sortType = requestDto.getSortType();
         String searchText = requestDto.getSearchText();
         List<Store> rawStoreList = new ArrayList<>();
-        if (searchType == "store") {
+
+        if (searchType.equals("store")) {
             if (sortType != "review") {
                 rawStoreList = storeRepository.findAllByNameStartingWithOrderByLikeCntDesc(searchText);
             } else {
                 rawStoreList = storeRepository.findAllByNameStartingWithOrderByReviewCntDesc(searchText);
             }
-        } else if (searchType == "address") {
+        } else if (searchType.equals("address")) {
             if (sortType != "review") {
                 rawStoreList = storeRepository.findByFullAddressContainingOrderByLikeCntDesc(searchText);
             } else {
@@ -292,14 +293,17 @@ public class StoreService {
             minY = rawList.get(0);
             maxY = rawList.get(1);
             minX = rawList.get(2);
-            minY = rawList.get(3);
+            maxX = rawList.get(3);
+            System.out.println(rawList.toString());
 
             if (sortType != "review") {
-                rawStoreList = storeRepository.findByXBetweenAndYBetweenOrderByLikeCntDesc(minX, maxX, minX, minY);
+                rawStoreList = storeRepository.findByXBetweenAndYBetweenOrderByLikeCntDesc(minX, maxX, minY, maxY);
             } else {
-                rawStoreList = storeRepository.findByXBetweenAndYBetweenOrderByLikeCntDesc(minX, maxX, minX, minY);
+                rawStoreList = storeRepository.findByXBetweenAndYBetweenOrderByLikeCntDesc(minX, maxX, minY, maxY);
             }
         }
+
+        System.out.println(rawStoreList.size());
 
         //rawStoreList를 Dto에 담기
         List<SearchResponseDto> responseDtoList = new ArrayList<>();
