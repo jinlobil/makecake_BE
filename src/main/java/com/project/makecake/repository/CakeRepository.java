@@ -19,4 +19,5 @@ public interface CakeRepository extends JpaRepository<Cake, Long> {
     List<Cake> findTop5ByOrderByLikeCnt();
     List<Cake> findTop9ByStoreOrderByCreatedAtDesc(Store store);
 
+    void deleteAllByStore_StoreId(Long storeId);
 }
