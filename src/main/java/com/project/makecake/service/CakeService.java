@@ -50,19 +50,18 @@ public class CakeService {
         return homeCakeDtoList;
     }
 
-
-    // 케이크 사진 리스트 불러오기 메소드
+    // 케이크 사진 리스트 메소드
     @Transactional
-    public List<CakeResponseDto> getAllCakes(UserDetailsImpl userDetails) {
+    public List<CakeResponseDto> getAllCakes(UserDetailsImpl userDetails,int page) {
         // 비로그인 유저는 null 처리
         User user = null;
         if (userDetails!=null) {
             user = userDetails.getUser();
         }
 
-        // 일단 15개만 가져오기
-        Sort sort = Sort.by(Sort.Direction.DESC,"likeCnt");
-        Pageable pageable = PageRequest.of(0,15,sort);
+        // 일단 15개씩 페이징
+        Sort sort = Sort.by(new Sort.Order(Sort.Direction.DESC,"likeCnt"), new Sort.Order(Sort.Direction.DESC,"cakeId"));
+        Pageable pageable = PageRequest.of(page,15,sort);
         Page<Cake> foundCakeList = cakeRepository.findAll(pageable);
 
 
@@ -129,6 +128,7 @@ public class CakeService {
         return new LikeResponseDto(likeResult);
 
     }
+
 
 
 }
