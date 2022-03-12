@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,7 +27,7 @@ public class CommentService {
     private final PostRepository postRepository;
 
     // 도안 게시글의 댓글 불러오기
-    public List<CommentResponseDto> getAllComments(Long postId) {
+    public List<CommentResponseDto> getAllComments(Long postId, int page) {
 
         // 게시글 찾기
         Post foundPost = postRepository.findById(postId)
@@ -34,11 +35,13 @@ public class CommentService {
 
         // 일단 전부
         // 해당 게시글에 달린 댓글 리스트 가져오기
-        List<Comment> commentList = commentRepository.findAllByPost(foundPost);
+        Sort sort = Sort.by(Sort.Direction.DESC,"commentId");
+        Pageable pageable = PageRequest.of(page,5,sort);
+        Page<Comment> foundCommentList = commentRepository.findAll(pageable);
 
         // 반환 dto에 담기
         List<CommentResponseDto> responseDtoList = new ArrayList<>();
-        for (Comment comment:commentList) {
+        for (Comment comment:foundCommentList) {
             CommentResponseDto responseDto = new CommentResponseDto(comment);
             responseDtoList.add(responseDto);
         }

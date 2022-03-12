@@ -30,13 +30,14 @@ public class PostController {
         return postService.saveDesign(userDetails,img);
     }
 
-    // 정렬타입 적용 안함, 일단 15개
     // 게시된 도안 사진 리스트 API
     @GetMapping("/api/designs")
     public List<PostSimpleResponseDto> getAllPosts(
-            @AuthenticationPrincipal UserDetailsImpl userDetails
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @RequestParam int page,
+            @RequestParam(required = false) String sortType
     ) {
-        return postService.getAllPosts(userDetails);
+        return postService.getAllPosts(userDetails,page,sortType);
     }
 
     // 게시된 도안 상세 API
