@@ -29,10 +29,11 @@ public class ReviewService {
 
     //홈탭 : 최신 리뷰 보여주기 (페이지네이션)
     @Transactional
-    public List<HomeReviewDto> getHomeReviewList(int page, int size) {
+    public List<HomeReviewDto> getHomeReviewList() {
         //페이징
-        Pageable pageable = PageRequest.of(page-1, size);
-        Page<Review> rawReviewList = reviewRepository.findAllByOrderByCreatedAtDesc(pageable);
+//        Pageable pageable = PageRequest.of(page-1, size);
+//        Page<Review> rawReviewList = reviewRepository.findAllByOrderByCreatedAtDesc(pageable);
+        List<Review> rawReviewList = reviewRepository.findTop5ByOrderByCreatedAtDesc();
 
         List<HomeReviewDto> responseDtoList = new ArrayList<>();
         for(Review rawReview : rawReviewList){
