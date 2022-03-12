@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,7 +36,7 @@ public class PostService {
     private final CommentRepository commentRepository;
 
     // 게시된 도안 사진 리스트
-    public List<PostSimpleResponseDto> getAllPosts(UserDetailsImpl userDetails) {
+    public List<PostSimpleResponseDto> getAllPosts(UserDetailsImpl userDetails,int page, String sortType) {
 
         // 비로그인 유저는 null 처리
         User user = null;
@@ -43,9 +44,18 @@ public class PostService {
             user = userDetails.getUser();
         }
 
-        // 일단 15개 가져오기
-        Pageable pageable = PageRequest.of(0,15);
-        Page<Post> foundPostList = postRepository.findAll(pageable);
+        // 15개씩 가져오기
+        Page<Post> foundPostList;
+        if (sortType==null || sortType.equals("createdDate")) {
+            Sort sort = Sort.by(Sort.Direction.DESC,"postId");
+            Pageable pageable = PageRequest.of(page,15,sort);
+            foundPostList = postRepository.findAll(pageable);
+        } else {
+            Sort sort = Sort.by(new Sort.Order(Sort.Direction.DESC,sortType), new Sort.Order(Sort.Direction.DESC,"postId"));
+            Pageable pageable = PageRequest.of(page,15,sort);
+            foundPostList = postRepository.findAll(pageable);
+        }
+
 
 
         // 반환 Dto에 담기 + 좋아요 반영
