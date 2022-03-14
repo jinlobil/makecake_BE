@@ -19,4 +19,13 @@ public interface CakeRepository extends JpaRepository<Cake, Long> {
     List<Cake> findTop5ByOrderByLikeCnt();
     List<Cake> findTop9ByStoreOrderByCreatedAtDesc(Store store);
 
+    void deleteAllByStore_StoreId(Long storeId);
+
+    // 케이크 리스트 처음 15개
+//    @Query(value = "select c from Cake as c order by c.likeCnt desc, c.cakeId desc")
+//    List<Cake> findCakeListFirst(Pageable pageable);
+
+    // 케이크 리스트 다음 9개씩
+//    @Query(value = "select c from Cake as c where (c.likeCnt=:likeCnt and c.cakeId<:cakeId) or (c.likeCnt<:likeCnt) order by c.likeCnt desc,c.cakeId desc")
+//    List<Cake> findCakeListMore(@Param("cakeId") Long cakeId, @Param("likeCnt") int likeCnt, Pageable pageable);
 }

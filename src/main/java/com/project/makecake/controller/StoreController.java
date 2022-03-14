@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -33,9 +33,17 @@ public class StoreController {
 
     //홉탭(2) 최신 리뷰 (페이지네이션)
     @GetMapping("/api/home/review")
-    public List<HomeReviewDto> getHomeReview(@RequestParam int page, @RequestParam int size){
-        return reviewService.getHomeReviewList(page, size);
+    public List<HomeReviewDto> getHomeReview(){
+        return reviewService.getHomeReviewList();
     }
+
+    //매장 검색 결과 보여주기
+    @PostMapping("/api/search")
+    public List<SearchResponseDto> getSearchStore(@RequestBody SearchRequestDto requestDto) throws IOException {
+        return storeService.getSearchStore(requestDto);
+    }
+
+
 
     //매장 상세페이지
     @GetMapping("/api/stores/{storeId}")
@@ -54,6 +62,11 @@ public class StoreController {
     @GetMapping("/api/stores/{storeId}/reviews")
     public List<ReviewResponseDto> getStoreDetailReviews(@PathVariable Long storeId){
         return  storeService.getStoreDetailReviews(storeId);
+    }
+
+    @DeleteMapping("/backOffice/stores/{storeId}")
+    public void deleteStore(@PathVariable Long storeId){
+        storeService.deleteStore(storeId);
     }
 
 

@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,10 +57,8 @@ public class CrawlingController {
 
     @PostMapping("/crawling")
     public void goCrawling(@RequestBody CrawlingUrlDto urlResponseDto) throws IOException {
-//        URL url = new URL( "https://map.naver.com/v5/api/search?caller=pcweb&query=%EC%84%9C%EC%9A%B8%20%EB%A0%88%ED%84%B0%EB%A7%81%20%EC%BC%80%EC%9D%B4%ED%81%AC&type=all&searchCoord=126.8039092000003;37.556616299999824&page=1&displayCount=10&isPlaceRecommendationReplace=true&lang=ko");
-
-
         URL url = new URL(urlResponseDto.getGivenUrl());
+
 
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
@@ -78,20 +77,16 @@ public class CrawlingController {
         while ((line = br.readLine()) != null) {
             result += line;
         }
-//        System.out.println("response body : " + result);
 
         //Gson 라이브러리로 JSON파싱
         JsonParser parser = new JsonParser();
         JsonElement element = parser.parse(result);
 
-        JsonArray rawList = element.getAsJsonObject().get("result").getAsJsonObject().get("place").getAsJsonObject().get("list").getAsJsonArray();
+//        JsonArray rawList = element.getAsJsonObject().get("result").getAsJsonObject().get("place").getAsJsonObject().get("list").getAsJsonArray();
 
-        int count = 0;
-        for(int i = 0; i < rawList.size(); i++){
-            int id = rawList.get(i).getAsJsonObject().get("id").getAsInt();
-            count += 1;
-            System.out.println(count + "번 째 " + "아이디 뽑아봐 " + id);
-            crawlingService.TryCrawlingLetteringCake(id);
+        JsonArray rawList = element.getAsJsonObject().get("result").getAsJsonObject().get("place").getAsJsonObject().get("boundary").getAsJsonArray();
+        for(int i =0; i < rawList.size();i++){
+            System.out.println(i + "번째 " + rawList.get(i).getAsString());
         }
     }
 

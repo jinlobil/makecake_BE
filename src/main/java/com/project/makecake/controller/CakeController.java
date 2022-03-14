@@ -1,5 +1,6 @@
 package com.project.makecake.controller;
 
+import com.project.makecake.requestDto.CakeIdRequestDto;
 import com.project.makecake.requestDto.LikeRequestDto;
 import com.project.makecake.responseDto.LikeResponseDto;
 import com.project.makecake.responseDto.CakeResponseDto;
@@ -21,8 +22,19 @@ public class CakeController {
     // 케이크 사진 리스트 API
     @GetMapping("/api/cakes")
     public List<CakeResponseDto> getAllCakes(
-            @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return cakeService.getAllCakes(userDetails);
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @RequestParam int page
+            ) {
+        return cakeService.getAllCakes(userDetails,page);
+    }
+
+    // 케이크 사진 모달 API
+    @PostMapping("/api/cakes/detail")
+    public CakeResponseDto getCake(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @RequestBody CakeIdRequestDto requestDto
+            ) {
+        return cakeService.getCake(userDetails,requestDto.getCakeId());
     }
 
     // 케이크 좋아요 누르기 API

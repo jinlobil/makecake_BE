@@ -50,19 +50,18 @@ public class CakeService {
         return homeCakeDtoList;
     }
 
-
-    // 케이크 사진 리스트 불러오기 메소드
+    // 케이크 사진 리스트 메소드
     @Transactional
-    public List<CakeResponseDto> getAllCakes(UserDetailsImpl userDetails) {
+    public List<CakeResponseDto> getAllCakes(UserDetailsImpl userDetails,int page) {
         // 비로그인 유저는 null 처리
         User user = null;
         if (userDetails!=null) {
             user = userDetails.getUser();
         }
 
-        // 일단 15개만 가져오기
-        Sort sort = Sort.by(Sort.Direction.DESC,"likeCnt");
-        Pageable pageable = PageRequest.of(0,15,sort);
+        // 일단 15개씩 페이징
+        Sort sort = Sort.by(new Sort.Order(Sort.Direction.DESC,"likeCnt"), new Sort.Order(Sort.Direction.DESC,"cakeId"));
+        Pageable pageable = PageRequest.of(page,15,sort);
         Page<Cake> foundCakeList = cakeRepository.findAll(pageable);
 
 
@@ -80,6 +79,31 @@ public class CakeService {
             responseDtoList.add(responseDto);
         }
         return responseDtoList;
+    }
+
+    // 케이크 사진 상세
+    public CakeResponseDto getCake(UserDetailsImpl userDetails, Long cakeId) {
+        // 비로그인 유저는 null 처리
+        User user = null;
+        if (userDetails!=null) {
+            user = userDetails.getUser();
+        }
+
+        // 케이크 찾아오기
+        Cake foundCake = cakeRepository.findById(cakeId)
+                .orElseThrow(()->new IllegalArgumentException("케이크를 찾을 수 없습니다."));
+
+        // 좋아요 반영
+        boolean myLike = false; // myLike 디폴트 : false
+        if(user!=null) { // 로그인 유저는 좋아요 여부 반영
+            Optional<CakeLike> foundCakeLike = cakeLikeRepository.findByUserAndCake(user, foundCake);
+            if (foundCakeLike.isPresent()) {
+                myLike = true;
+            }
+        }
+
+        // Dto에 담아 반환
+        return new CakeResponseDto(foundCake,myLike);
     }
 
     // 케이크 좋아요
@@ -104,6 +128,7 @@ public class CakeService {
         return new LikeResponseDto(likeResult);
 
     }
+
 
 
 }

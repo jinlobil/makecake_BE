@@ -19,8 +19,8 @@ public class CommentController {
     // 일단 전부
     // 도안 댓글 리스트 불러오기 API
     @GetMapping("/api/designs/{postId}/comments")
-    public List<CommentResponseDto> getAllComments(@PathVariable Long postId) {
-        return commentService.getAllComments(postId);
+    public List<CommentResponseDto> getAllComments(@PathVariable Long postId, @RequestParam int page) {
+        return commentService.getAllComments(postId, page);
     }
 
     // 도안 댓글 작성 API
