@@ -9,7 +9,6 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor
 public class CakeLike extends Timestamped{
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long cakeLikeId;

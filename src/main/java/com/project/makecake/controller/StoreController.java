@@ -33,8 +33,8 @@ public class StoreController {
 
     //홉탭(2) 최신 리뷰 (페이지네이션)
     @GetMapping("/api/home/review")
-    public List<HomeReviewDto> getHomeReview(@RequestParam int page, @RequestParam int size){
-        return reviewService.getHomeReviewList(page, size);
+    public List<HomeReviewDto> getHomeReview(){
+        return reviewService.getHomeReviewList();
     }
 
     //매장 검색 결과 보여주기
@@ -62,6 +62,11 @@ public class StoreController {
     @GetMapping("/api/stores/{storeId}/reviews")
     public List<ReviewResponseDto> getStoreDetailReviews(@PathVariable Long storeId){
         return  storeService.getStoreDetailReviews(storeId);
+    }
+
+    @DeleteMapping("/backOffice/stores/{storeId}")
+    public void deleteStore(@PathVariable Long storeId){
+        storeService.deleteStore(storeId);
     }
 
 

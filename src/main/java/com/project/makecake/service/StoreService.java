@@ -34,6 +34,7 @@ public class StoreService {
     private final ReviewImgRepository reviewImgRepository;
     private final CakeRepository cakeRepository;
     private final CakeLikeRepository cakeLikeRepository;
+    private final OpenTimeRepository openTimeRepository;
 
     public JsonElement CrawlingSearch(String searchText) throws IOException {
         URL url = new URL( "https://map.naver.com/v5/api/search?caller=pcweb&query=" + URLEncoder.encode(searchText, "UTF-8") + "&type=all&searchCoord=127.0234346;37.4979517&page=1&displayCount=20&isPlaceRecommendationReplace=true&lang=ko");
@@ -323,5 +324,16 @@ public class StoreService {
             responseDtoList.add(responseDto);
         }
         return responseDtoList;
+    }
+
+    @Transactional
+    public void deleteStore(Long storeId) {
+        //menu, storeUrl, cake
+        menuRepository.deleteAllByStore_StoreId(storeId);
+        storeUrlRepository.deleteAllByStore_StoreId(storeId);
+        cakeRepository.deleteAllByStore_StoreId(storeId);
+        openTimeRepository.deleteAllByStore_StoreId(storeId);
+        storeRepository.deleteById(storeId);
+
     }
 }

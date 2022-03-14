@@ -14,4 +14,6 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
     List<Store> findByXBetweenAndYBetweenOrderByLikeCntDesc(float minX, float maxX, float minY, float maxY);
     List<Store> findByXBetweenAndYBetweenOrderByReviewCntDesc(float minX, float maxX, float minY, float maxY);
 
+    List<Store> findByNameStartingWith(String searchText);
+
 }

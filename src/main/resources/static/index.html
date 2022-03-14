@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!--    <meta property="og:image" content="images/og_selectshop.png">-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="basic.js"></script>
+    <!--BootStrap CSS-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <!--Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css" />
+    <!--    폰트-->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300&display=swap" rel="stylesheet">
+
+    <title>MakeCake BackOffice</title>
+</head>
+<style>
+    .top{
+        height: 230px;
+        background-color: rgba(31, 35, 41, 40%);
+        margin-bottom: 20px;
+        text-align: center;
+        vertical-align: middle;
+        padding: 70px;
+        font-size: 60px;
+        color: whitesmoke;
+    }
+    .body{
+        width: 80%;
+        margin: 60px auto 150px auto;
+        padding-bottom:20px
+    }
+    .peek-data{
+        width: 87%;
+        margin : auto;
+        padding : 15px;
+        background-color: rgba(240, 240, 240, 40%);
+
+    }
+
+    #show_peek_cake_menu{
+        background-color: rgba(255, 250, 199, 50%);
+        border-radius: 4px;
+    }
+
+    #show_peek_cake_option{
+        background-color: rgba(219, 224, 255, 50%);
+        border-radius: 4px;
+
+    }
+
+
+    #search-result{
+        background-color: rgba(245, 235, 243, 80%);
+        padding : 10px;
+        border-radius: 4px;
+
+        margin-bottom: 40px;
+    }
+    .btn-data-check{
+        float : right;
+    }
+
+
+</style>
+<script>
+    function addTempArea(){
+        let tempPeekData = `<div class="peek-data">
+                                        <h5>미리 보기</h5><br>
+                                        <div id="show_peek_store_id"></div>
+                                        <div id="show_peek_cake_menu">
+                                            <table class="table table-sm" id="cake_info_table">
+                                                <thead id="table-head"></thead>
+                                                <tbody id="table-rows"></tbody>
+                                            </table>
+                                        </div><br>
+                                        <div id="show_peek_cake_option">
+                                            <table class="table table-sm">
+                                                <thead id="table-option-head"></thead>
+                                                <tbody id="table-option-rows"></tbody>
+                                            </table>
+                                        </div>
+                                        <div id="save-button"></div>
+                                    </div>`
+
+        $('#peek-data-area').append(tempPeekData);
+    }
+    function addStoreNameAndId(storeId, storeName){
+        let tempStoreNameAndId = `매장 id : ${storeId}
+                                <br>
+                                매장명 : ${storeName}
+                                <br>
+                                <br>`
+
+        $('#show_peek_store_id').append(tempStoreNameAndId);
+    }
+    function addCakeMenuTableHead(){
+        let tempTableHead = `<tr>
+                            <th scope="col">CakeMenu</th>
+                            <th scope="col">type(종류)</th>
+                            <th scope="col">size(사이즈)</th>
+                            <th scope="col">priceState(enum)</th>
+                            <th scope="col">price(가격)</th>
+                            <th scope="col">moreInfo(제약사항)</th>
+                        </tr>`
+
+        $('#table-head').append(tempTableHead);
+    }
+    function addCakeMenuTableRow(i, type, size, priceState, price, moreInfo){
+        let tempHtml2 = `<tr>
+                            <th scope="row">${i+1}</th>
+                            <td>${type}</td>
+                            <td>${size}</td>
+                            <td>${priceState}</td>
+                            <td>${price}</td>
+                            <td>${moreInfo}</td>
+                        </tr>`
+
+        $('#table-rows').append(tempHtml2);
+    }
+    function addCakeOptionTableHead(){
+        let tempTableHead = `<tr>
+                            <th scope="col">CakeOption</th>
+                            <th scope="col">mainCat(대분류)</th>
+                            <th scope="col">subCat(소분류)</th>
+                            <th scope="col">addedPrice(추가 가격)</th>
+                            <th scope="col">moreInfo(제약사항)</th>
+                        </tr>`
+
+        $('#table-option-head').append(tempTableHead);
+
+    }
+    function addCakeOptionTableRow(i, mainCat, subCat, addedPrice, moreInfo){
+        let tempHtml2 = `<tr>
+                            <th scope="row">${i+1}</th>
+                            <td>${mainCat}</td>
+                            <td>${subCat}</td>
+                            <td>${addedPrice}</td>
+                            <td>${moreInfo}</td>
+                        </tr>`
+
+        $('#table-option-rows').append(tempHtml2);
+    }
+
+    function addSearchResult(storeName, storeId){
+        let tempHtml = `검색 결과<br><br>
+                매장명 : ${storeName} <br>
+                매장ID : ${storeId}`
+        $('#search-result').append(tempHtml);
+    }
+
+    function peekCakeData() {
+        let storeId = $('#store-id').val();
+        let aboutCake = $('#about_cake').val();
+        let aboutOption = $('#about_option').val();
+
+        let data = {'storeId': storeId, 'aboutCake': aboutCake, 'aboutOption': aboutOption};
+
+        $.ajax({
+            type: "POST",
+            url: "/api/backOffice/store/peekMenuAndOption",
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            success: function (response) {
+                let storeId = response['storeId'];
+                let storeName = response['storeName'];
+                let peekMenuList = response['peekMenuList'];
+                let peekOptionList = response['peekOptionList']
+
+                addTempArea();
+                addStoreNameAndId(storeId, storeName);
+                addCakeMenuTableHead();
+
+                for (let i = 0; i < peekMenuList.length ; i++){
+                    let eachRow = peekMenuList[i];
+                    let type = eachRow['type'];
+                    let size = eachRow['size'];
+                    let priceState = eachRow['priceState']
+                    let price = eachRow['price'];
+                    let moreInfo = eachRow['moreInfo'];
+
+                    addCakeMenuTableRow(i, type, size, priceState, price, moreInfo)
+                }
+
+                addCakeOptionTableHead();
+
+                for(let i = 0; i < peekOptionList.length ; i++){
+                    let eachRow = peekOptionList[i];
+                    let mainCat = eachRow['mainCat'];
+                    let subCat = eachRow['subCat'];
+                    let addedPrice = eachRow['addedPrice'];
+                    let moreInfo = eachRow['moreInfo'];
+
+                    addCakeOptionTableRow(i, mainCat, subCat, addedPrice, moreInfo)
+                }
+
+                let saveButton = `<button class="btn btn-secondary btn-data-check" onclick="saveData()"> 데이터 저장 </button>`
+
+                $('#save-button').append(saveButton);
+            }
+        });
+    }
+    function saveData(){
+        let storeId = $('#store-id').val();
+        let aboutCake = $('#about_cake').val();
+        let aboutOption = $('#about_option').val();
+
+        let data = {'storeId': storeId, 'aboutCake': aboutCake, 'aboutOption': aboutOption};
+
+        $.ajax({
+            type: "POST",
+            url: "/api/backOffice/store/saveMenuAndOption",
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            success: function (response) {
+                alert(response);
+                window.location.reload();
+            }
+        })
+    }
+    function searchStoreId() {
+        let searchText = $('#search-text').val();
+        let data = {'searchText': searchText};
+
+        $.ajax({
+            type: "POST",
+            url: "/api/backOffice/store/searchId",
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            success: function (response) {
+                let storeId = response['storeId'];
+                let storeName = response['storeName'];
+
+                addSearchResult(storeName,storeId);
+            }
+        })
+    }
+
+
+
+</script>
+<body>
+    <div class="jumbotron jumbotron-fluid top">
+        <div class="container">
+            <h1 class="display-4">메이크 케이크 Back Office</h1>
+            <p class="lead">일단 만든 백오피스</p>
+        </div>
+    </div>
+        <div class="body">
+            <div class="search_storeId">
+                매장 id 검색
+                <br>
+                <br>
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="매장 이름 검색" id="search-text" aria-describedby="basic-addon2">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="button" onclick="searchStoreId()">검색</button>
+                    </div>
+                </div>
+                <br>
+            </div>
+
+
+<!--            매장 검색 결과 : id-->
+            <div id="search-result"></div>
+
+<!--            매장 id 입력-->
+            <div>
+                <label for="store-id">매장 id :</label>
+                <input type="text" id="store-id" name="store-id">
+                <br>
+                <br>
+            </div>
+<!--케이크 메뉴 입력-->
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"> 케이크 메뉴 </span>
+                </div>
+                <textarea id="about_cake" class="form-control" aria-label="With textarea" cols="50" rows="10"></textarea>
+            </div><br>
+<!--            옵션 입력-->
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"> 케이크 옵션 </span>
+                </div>
+                <textarea  id="about_option" class="form-control" aria-label="With textarea" cols="50" rows="10"></textarea>
+            </div>
+            <br>
+            <button class="btn btn-secondary btn-data-check" onclick="peekCakeData()"> 데이터 잘 넣었는지 확인! </button>
+            <br>
+            <br>
+
+<!--            미리보기 여기 나타날 예정-->
+            <div id="peek-data-area">
+<!--                <div class="peek-data">-->
+<!--                    <h5>미리 보기</h5><br>-->
+<!--                    <div id="show_peek_store_id">-->
+<!--                        &lt;!&ndash;                    매장 id : ${storeId}&ndash;&gt;-->
+<!--                        &lt;!&ndash;                    <br>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                    매장명 : ${storeName}&ndash;&gt;-->
+<!--                        &lt;!&ndash;                    <br>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                    <br>&ndash;&gt;-->
+<!--                    </div>-->
+<!--                    <div id="show_peek_cake_menu">-->
+<!--                        <table class="table table-sm" id="cake_info_table">-->
+<!--                            <thead id="table-head"></thead>-->
+<!--                            <tbody id="table-rows"></tbody>-->
+<!--                        </table>-->
+<!--                    </div>-->
+<!--                    <br>-->
+<!--                    <div id="show_peek_cake_option">-->
+<!--                        <table class="table table-sm">-->
+<!--                            <thead id="table-option-head"></thead>-->
+<!--                            <tbody id="table-option-rows"></tbody>-->
+<!--                        </table>-->
+<!--                    </div>-->
+<!--                    <div id="save-button"></div>-->
+<!--                </div>-->
+            </div>
+
+        </div>
+
+
+
+</body>
+</html>
