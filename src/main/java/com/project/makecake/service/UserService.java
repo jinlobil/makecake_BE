@@ -36,7 +36,7 @@ public class UserService {
 
         String password = passwordEncoder.encode(requestDto.getPassword());
 
-        String userPicture = "https://makecake.s3.ap-northeast-2.amazonaws.com/PROFILE/18d2090b-1b98-4c34-b92b-a9f50d03bd53makecake_default.png";
+        String profileImgUrl = "https://makecake.s3.ap-northeast-2.amazonaws.com/PROFILE/18d2090b-1b98-4c34-b92b-a9f50d03bd53makecake_default.png";
 
         UserRoleEnum role = UserRoleEnum.USER;
 
@@ -44,7 +44,8 @@ public class UserService {
                 .username(username)
                 .nickname(nickname)
                 .password(password)
-                .userPicture(userPicture)
+                .profileImgUrl(profileImgUrl)
+                .profileImgName(null)
                 .role(role)
                 .build();
         User saveUser = userRepository.save(user);
@@ -96,7 +97,8 @@ public class UserService {
                     .username(username)
                     .password(password)
                     .nickname(null)
-                    .userPicture(null)
+                    .profileImgUrl(null)
+                    .profileImgName(null)
                     .role(null)
                     .provider(null)
                     .providerId(null)
@@ -110,13 +112,19 @@ public class UserService {
         User findUser = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
                 () -> new IllegalArgumentException("유저가 존재하지 않습니다.")
         );
+        // 기본 이미지일때는 profileImgName이 null이므로 null이 아닐때 s3에서 해당 이미지를 삭제한다.
+        if (findUser.getProfileImgName() != null){
+            s3UploadService.deleteFile(findUser.getProfileImgName());
+        }
+
         ImageInfoDto imageInfoDto = s3UploadService.uploadFile(multipartFile, FolderName.PROFILE.name());
 
-        findUser.setUserPicture(imageInfoDto.getUrl());
+        findUser.setProfileImgName(imageInfoDto.getName());
+        findUser.setProfileImgUrl(imageInfoDto.getUrl());
         User saveUser = userRepository.save(findUser);
         MypageResponseDto responseDto = MypageResponseDto.builder()
                 .nickname(saveUser.getNickname())
-                .userPicture(saveUser.getUserPicture())
+                .userPicture(saveUser.getProfileImgUrl())
                 .build();
         return responseDto;
     }
@@ -133,8 +141,9 @@ public class UserService {
         User saveUser = userRepository.save(findUser);
         MypageResponseDto responseDto = MypageResponseDto.builder()
                 .nickname(saveUser.getNickname())
-                .userPicture(saveUser.getUserPicture())
+                .userPicture(saveUser.getProfileImgUrl())
                 .build();
         return responseDto;
     }
+
 }

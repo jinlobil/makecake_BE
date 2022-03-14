@@ -1,6 +1,5 @@
 package com.project.makecake.backOffice.dto;
 
-import com.project.makecake.model.CakeMenuPriceState;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

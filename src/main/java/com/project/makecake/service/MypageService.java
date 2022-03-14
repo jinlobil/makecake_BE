@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -23,15 +22,26 @@ public class MypageService {
     private final ReviewRepository reviewRepository;
     private final PostRepository postRepository;
     private final ReviewImgRepository reviewImgRepository;
+    private final PostLikeRepository postLikeRepository;
 
     // 마이페이지 조회
     public MypageResponseDto mypage(UserDetailsImpl userDetails) {
         User findUser = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
                 () -> new IllegalArgumentException("유저가 존재하지 않습니다.")
         );
+        String provider = "makecake";
+        if (findUser.getProvider() != null){
+            provider = findUser.getProvider();
+        }
+        String email = findUser.getUsername();
+        if (findUser.getProviderEmail() != null){
+            email = findUser.getProviderEmail();
+        }
         MypageResponseDto mypage = MypageResponseDto.builder()
                 .nickname(findUser.getNickname())
-                .userPicture(findUser.getUserPicture())
+                .userPicture(findUser.getProfileImgUrl())
+                .provider(provider)
+                .email(email)
                 .build();
         return mypage;
     }
@@ -69,12 +79,12 @@ public class MypageService {
         User findUser = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
                 () -> new IllegalArgumentException("유저가 존재하지 않습니다.")
         );
-        List<Post> findPost = postRepository.findByUser(findUser);
+        List<PostLike> findPost = postLikeRepository.findByUser(findUser);
         List<MyReactDesignResponceDto> reactList = new ArrayList<>();
-        for (Post post : findPost){
+        for (PostLike postLike : findPost){
             MyReactDesignResponceDto responceDto = MyReactDesignResponceDto.builder()
-                    .postId(post.getPostId())
-                    .img(post.getDesign().getImgUrl())
+                    .postId(postLike.getPost().getPostId())
+                    .img(postLike.getPost().getDesign().getImgUrl())
                     .build();
             reactList.add(responceDto);
         }

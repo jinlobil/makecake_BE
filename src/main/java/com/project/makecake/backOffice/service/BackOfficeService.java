@@ -2,7 +2,7 @@ package com.project.makecake.backOffice.service;
 
 import com.project.makecake.backOffice.dto.*;
 import com.project.makecake.model.CakeMenu;
-import com.project.makecake.model.CakeMenuPriceState;
+import com.project.makecake.model.CakePriceState;
 import com.project.makecake.model.Store;
 import com.project.makecake.model.StoreOption;
 import com.project.makecake.repository.CakeMenuRepository;
@@ -50,9 +50,9 @@ public class BackOfficeService {
         String aboutOption = requestDto.getAboutOption();
         List<String> rawOptionList = Arrays.asList(aboutOption.split("/"));
 
-        for(int j=0; j < rawOptionList.size()/4; j++){
-            List<String> rawRow = rawOptionList.subList(j*4, (j+1)*4);
-            CakeOptionRowDto optionRow = new CakeOptionRowDto(rawRow.get(0).trim(), rawRow.get(1).trim(), rawRow.get(2).trim(), rawRow.get(3).trim());
+        for(int j=0; j < rawOptionList.size()/5; j++){
+            List<String> rawRow = rawOptionList.subList(j*5, (j+1)*5);
+            CakeOptionRowDto optionRow = new CakeOptionRowDto(rawRow.get(0).trim(), rawRow.get(1).trim(), rawRow.get(2).trim(), rawRow.get(3).trim(), rawRow.get(4).trim());
             peekOptionList.add(optionRow);
         }
 
@@ -68,7 +68,7 @@ public class BackOfficeService {
         for(int i=0; i< menuList.size(); i++){
             CakeMenuRowDto menuRowDto = menuList.get(i);
             String stateValue = menuRowDto.getPriceState();
-            CakeMenu cakeMenu = new CakeMenu(menuRowDto, store, CakeMenuPriceState.valueOf(stateValue));
+            CakeMenu cakeMenu = new CakeMenu(menuRowDto, store, CakePriceState.valueOf(stateValue));
             cakeMenuRepository.save(cakeMenu);
         }
 
@@ -76,7 +76,8 @@ public class BackOfficeService {
         List<CakeOptionRowDto> optionList = requestDto.getPeekOptionList();
         for(int i=0; i< optionList.size(); i++){
             CakeOptionRowDto optionRowDto = optionList.get(i);
-            StoreOption storeOption = new StoreOption(optionRowDto, store);
+            String stateValue = optionRowDto.getPriceState();
+            StoreOption storeOption = new StoreOption(optionRowDto, store, CakePriceState.valueOf(stateValue));
             storeOptionRepository.save(storeOption);
         }
 
