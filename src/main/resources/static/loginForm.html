@@ -4,10 +4,21 @@
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
+
+<script>
+    function kakaoLogin(){
+        $.ajax({
+            type: "GET",
+            url: "/oauth2/authorization/kakao",
+            success: function (response){}
+        })
+    }
+</script>
 <body>
     <h1>로그인 페이지</h1>
     <a href="/oauth2/authorization/google">구글 로그인</a>
-    <a href="/oauth2/authorization/facebook">페이스북 로그인</a>
     <a href="/oauth2/authorization/kakao">카카오톡 로그인</a>
+    <a href="/oauth2/authorization/naver">네이버 로그인</a>
+    <button onclick="kakaoLogin()">kakao</button>
 </body>
 </html>

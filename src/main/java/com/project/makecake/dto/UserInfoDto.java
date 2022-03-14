@@ -10,7 +10,8 @@ public class UserInfoDto {
     public Long userId;
     public String username;
     public String nickname;
-    public String userPicture;
+    public String profileImgUrl;
+    public String profileImgName;
     public String provider;
     public UserRoleEnum role;
     public String createdDate;
