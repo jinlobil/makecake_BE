@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+</head>
+<script>
+    function getAllStoreCakes() {
+
+        $('#cake_delete_area').empty();
+
+        let storeId =$('#input-storeId-showCake').val();
+
+        $.ajax({
+            // 1. GET API를 사용해 게시글 리스트 받아온다.
+            type: 'GET',
+            url: `/api/temp/cakes/${storeId}`,
+            success: function (response) {
+                // 2. 게시글리스트의 각 게시글을 HTML로 붙인다.
+                for (let i=0;i<response.length;i++) {
+                    let cakeId = response[i]['cakeId'];
+                    let url = response[i]['url'];
+                    // 1) HTML 태그를 만든다.
+                    // 테이블의 각 행을 onclick하면 getOnePost(해당게시글아이디)함수가 실행되도록 설정
+                    let temp_html = `<p>${cakeId}</p>
+                                     <img src="${url}" width="500" height="500">
+                                     <button onclick="deleteCake(${cakeId})">삭제하기</button>`;
+                    // 2) #post-body에 HTML을 붙인다.
+                    $('#cake_delete_area').append(temp_html);
+                }
+            }
+        })
+    }
+
+    function deleteCake(cakeId) {
+        $.ajax({
+            type: "DELETE",
+            // url 주소를 백틱``에 담아 파리미터로 받은 id 값이 들어가도록 설정
+            url: `/api/temp/cakes/${cakeId}`,
+            success: function (response) {
+                let deletecakeId= response
+                alert(response+'번 삭제 완료!');
+                // window.location.reload();
+            }
+        })
+    }
+
+    function saveNewCake() {
+
+        let storeId = $('#input-storeId-saveCake').val();
+        let contents = $('#input-cake-url').val();
+        let arr = contents.split("|")
+
+        let data = {'imgUrls':arr};
+
+        $.ajax({
+            type: "POST",
+            url: `/api/temp/cakes/${storeId}`,
+            contentType: "application/json", // JSON 형식으로 전달함을 알리기
+            data: JSON.stringify(data), // 기본적으로 문자열로만 주고받을 수 있다.
+            success: function (response) {
+                alert('케이크가 저장되었습니다.');
+                window.location.reload(); // 새로고침
+            }
+        });
+    }
+</script>
+<body>
+<div>
+    <h1>케이크 삭제 영역</h1>
+    <p>storeId 입력칸</p>
+    <input id="input-storeId-showCake">
+    <button onclick="getAllStoreCakes()">가게 케이크 다 보기</button>
+    <div id="cake_delete_area">
+    </div>
+</div>
+</body>
+</html>
