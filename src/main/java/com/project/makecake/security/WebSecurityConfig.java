@@ -57,9 +57,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 // OAuth2
                 .oauth2Login()
-                .successHandler(oauth2SuccessHandler)
                 .userInfoEndpoint()
-                .userService(principalOauth2UserService);
+                .userService(principalOauth2UserService)
+                .and()
+                .successHandler(oauth2SuccessHandler);
     }
 
     // CORS
