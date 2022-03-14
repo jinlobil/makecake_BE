@@ -20,6 +20,10 @@ public class StoreOption extends Timestamped{
     @Column
     private String subCat;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private CakePriceState priceState;
+
     @Column
     private String addedPrice;
 
@@ -30,11 +34,12 @@ public class StoreOption extends Timestamped{
     @JoinColumn(name = "STORE_ID")
     private Store store;
 
-    public StoreOption(CakeOptionRowDto optionRowDto, Store store){
+    public StoreOption(CakeOptionRowDto optionRowDto, Store store, CakePriceState priceState){
         this.mainCat = optionRowDto.getMainCat();
         this.subCat = optionRowDto.getSubCat();
         this.addedPrice = optionRowDto.getAddedPrice();
         this.moreInfo = optionRowDto.getMoreInfo();
+        this.priceState = priceState;
         this.store = store;
     }
 
