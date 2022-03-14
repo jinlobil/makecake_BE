@@ -73,4 +73,5 @@ public class UserController {
         ImageInfoDto imageInfoDto = s3UploadService.uploadFile(multipartFile, FolderName.PROFILE.name());
         return imageInfoDto;
     }
+
 }
