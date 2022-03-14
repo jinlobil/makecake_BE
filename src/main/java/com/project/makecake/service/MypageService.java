@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -30,9 +29,19 @@ public class MypageService {
         User findUser = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
                 () -> new IllegalArgumentException("유저가 존재하지 않습니다.")
         );
+        String provider = "makecake";
+        if (findUser.getProvider() != null){
+            provider = findUser.getProvider();
+        }
+        String email = findUser.getUsername();
+        if (findUser.getProviderEmail() != null){
+            email = findUser.getProviderEmail();
+        }
         MypageResponseDto mypage = MypageResponseDto.builder()
                 .nickname(findUser.getNickname())
-                .userPicture(findUser.getUserPicture())
+                .userPicture(findUser.getProfileImgUrl())
+                .provider(provider)
+                .email(email)
                 .build();
         return mypage;
     }

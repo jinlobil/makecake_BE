@@ -50,7 +50,7 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
         String username = provider + "_" + providerId;
         String nickname = oAuth2UserInfo.getNickname();
         String password = passwordEncoder.encode(UUID.randomUUID().toString());
-        String userPicture = "https://makecake.s3.ap-northeast-2.amazonaws.com/PROFILE/18d2090b-1b98-4c34-b92b-a9f50d03bd53makecake_default.png";
+        String profileImgUrl = "https://makecake.s3.ap-northeast-2.amazonaws.com/PROFILE/18d2090b-1b98-4c34-b92b-a9f50d03bd53makecake_default.png";
         UserRoleEnum role = UserRoleEnum.USER;
 
         User findUser = userRepository.findByUsername(username).orElse(null);
@@ -60,7 +60,8 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
                     .username(username)
                     .nickname(nickname)
                     .password(password)
-                    .userPicture(userPicture)
+                    .profileImgUrl(profileImgUrl)
+                    .profileImgName(null)
                     .role(role)
                     .provider(provider)
                     .providerId(providerId)
