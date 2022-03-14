@@ -71,4 +71,6 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
 
         return new UserDetailsImpl(findUser, oAuth2User.getAttributes());
     }
+
+
 }
