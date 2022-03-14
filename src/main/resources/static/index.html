@@ -105,17 +105,19 @@
                             <th scope="col">CakeMenu</th>
                             <th scope="col">type(종류)</th>
                             <th scope="col">size(사이즈)</th>
+                            <th scope="col">priceState(enum)</th>
                             <th scope="col">price(가격)</th>
                             <th scope="col">moreInfo(제약사항)</th>
                         </tr>`
 
         $('#table-head').append(tempTableHead);
     }
-    function addCakeMenuTableRow(i, type, size, price, moreInfo){
+    function addCakeMenuTableRow(i, type, size, priceState, price, moreInfo){
         let tempHtml2 = `<tr>
                             <th scope="row">${i+1}</th>
                             <td>${type}</td>
                             <td>${size}</td>
+                            <td>${priceState}</td>
                             <td>${price}</td>
                             <td>${moreInfo}</td>
                         </tr>`
@@ -179,10 +181,11 @@
                     let eachRow = peekMenuList[i];
                     let type = eachRow['type'];
                     let size = eachRow['size'];
+                    let priceState = eachRow['priceState']
                     let price = eachRow['price'];
                     let moreInfo = eachRow['moreInfo'];
 
-                    addCakeMenuTableRow(i, type, size, price, moreInfo)
+                    addCakeMenuTableRow(i, type, size, priceState, price, moreInfo)
                 }
 
                 addCakeOptionTableHead();

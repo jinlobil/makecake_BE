@@ -2,6 +2,7 @@ package com.project.makecake.backOffice.service;
 
 import com.project.makecake.backOffice.dto.*;
 import com.project.makecake.model.CakeMenu;
+import com.project.makecake.model.CakeMenuPriceState;
 import com.project.makecake.model.Store;
 import com.project.makecake.model.StoreOption;
 import com.project.makecake.repository.CakeMenuRepository;
@@ -23,7 +24,7 @@ public class BackOfficeService {
     private final StoreOptionRepository storeOptionRepository;
 
     @Transactional
-    public CakeMenuPeekResponseDto peekMenuAndOption(CakeMenuPeekRequestDto requestDto) {
+    public CakeMenuOptionPeekResponseDto peekMenuAndOption(CakeMenuOptionPeekRequestDto requestDto) {
         //매장 Id
         Long storeId = requestDto.getStoreId();
         System.out.println("storeId:" + storeId);
@@ -38,9 +39,9 @@ public class BackOfficeService {
         String aboutCake = requestDto.getAboutCake();
         List<String> rawMenuList = Arrays.asList(aboutCake.split("/")); //trim 안 된 20개
 
-        for(int j=0; j < rawMenuList.size()/4; j++){
-            List<String> rawRow = rawMenuList.subList(j*4, (j+1)*4);
-            CakeMenuRowDto menuRow = new CakeMenuRowDto(rawRow.get(0).trim(), rawRow.get(1).trim(), rawRow.get(2).trim(), rawRow.get(3).trim());
+        for(int j=0; j < rawMenuList.size()/5; j++){
+            List<String> rawRow = rawMenuList.subList(j*5, (j+1)*5);
+            CakeMenuRowDto menuRow = new CakeMenuRowDto(rawRow.get(0).trim(), rawRow.get(1).trim(), rawRow.get(2).trim(), rawRow.get(3).trim(), rawRow.get(4));
             peekMenuList.add(menuRow);
         }
 
@@ -55,17 +56,19 @@ public class BackOfficeService {
             peekOptionList.add(optionRow);
         }
 
-        return new CakeMenuPeekResponseDto(storeId, storeName, peekMenuList, peekOptionList);
+        return new CakeMenuOptionPeekResponseDto(storeId, storeName, peekMenuList, peekOptionList);
     }
 
-    public String saveMenuAndOption(CakeMenuPeekResponseDto requestDto) {
+    //케이크 메뉴, 옵션 데이터 저장
+    public String saveMenuAndOption(CakeMenuOptionPeekResponseDto requestDto) {
         Store store = storeRepository.getById(requestDto.getStoreId());
 
         //케이크 메뉴 저장
         List<CakeMenuRowDto> menuList = requestDto.getPeekMenuList();
         for(int i=0; i< menuList.size(); i++){
             CakeMenuRowDto menuRowDto = menuList.get(i);
-            CakeMenu cakeMenu = new CakeMenu(menuRowDto, store);
+            String stateValue = menuRowDto.getPriceState();
+            CakeMenu cakeMenu = new CakeMenu(menuRowDto, store, CakeMenuPriceState.valueOf(stateValue));
             cakeMenuRepository.save(cakeMenu);
         }
 
@@ -80,6 +83,7 @@ public class BackOfficeService {
         return "데이터가 저장되었습니다.";
     }
 
+    //매장 이름으로 매장 id 검색하기
     public BoSearchStoreIdResponseDto boSearchStoreId(BoSearchStoreIdRequestDto requestDto) {
         String searchText = requestDto.getSearchText();
         Long storeId = Long.valueOf(0);
