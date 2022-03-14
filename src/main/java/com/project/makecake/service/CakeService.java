@@ -4,11 +4,14 @@ import com.project.makecake.dto.HomeCakeDto;
 import com.project.makecake.dto.HomeStoreDto;
 import com.project.makecake.model.Cake;
 import com.project.makecake.model.CakeLike;
+import com.project.makecake.model.Store;
 import com.project.makecake.model.User;
 import com.project.makecake.repository.CakeLikeRepository;
 import com.project.makecake.repository.CakeRepository;
+import com.project.makecake.repository.StoreRepository;
 import com.project.makecake.repository.UserRepository;
 import com.project.makecake.requestDto.LikeRequestDto;
+import com.project.makecake.requestDto.TempCakeRequestDto;
 import com.project.makecake.responseDto.LikeResponseDto;
 import com.project.makecake.responseDto.CakeResponseDto;
 import com.project.makecake.responseDto.LikeResponseDto;
@@ -31,6 +34,8 @@ public class CakeService {
     private final UserRepository userRepository;
     private final CakeRepository cakeRepository;
     private final CakeLikeRepository cakeLikeRepository;
+    //임시
+    private final StoreRepository storeRepository;
 
 
     //홈탭 케이크 불러오기
@@ -61,7 +66,7 @@ public class CakeService {
 
         // 일단 15개씩 페이징
         Sort sort = Sort.by(new Sort.Order(Sort.Direction.DESC,"likeCnt"), new Sort.Order(Sort.Direction.DESC,"cakeId"));
-        Pageable pageable = PageRequest.of(page,15,sort);
+        Pageable pageable = PageRequest.of(page,18,sort);
         Page<Cake> foundCakeList = cakeRepository.findAll(pageable);
 
 
@@ -129,6 +134,39 @@ public class CakeService {
 
     }
 
+    // 임시 API (가게별 케이크 사진 불러오기)
+    @Transactional
+    public List<Cake> tempGetCake(Long storeId) {
 
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(()->new IllegalArgumentException("스토어 없음"));
+        List<Cake> cakeList = cakeRepository.findAllByStore(store);
+        return cakeList;
+    }
 
+    // 임시 API (케이크 사진 지우기)
+    @Transactional
+    public Long tempDeleteCake(Long cakeId) {
+        Cake cake = cakeRepository.findById(cakeId)
+                .orElseThrow(()->new IllegalArgumentException("케이크 없음"));
+
+        Long num = cake.getCakeId();
+
+        cakeRepository.delete(cake);
+
+        return num;
+    }
+
+    // 임시 API (케이크 사진 넣기)
+    @Transactional
+    public void tempSaveCake(Long storeId, TempCakeRequestDto requestDto) {
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(()->new IllegalArgumentException("스토어 없음"));
+
+        List<String> imgUrlList = requestDto.getImgUrls();
+        for(String url : imgUrlList) {
+            Cake cake = new Cake(url,store);
+            cakeRepository.save(cake);
+        }
+    }
 }
