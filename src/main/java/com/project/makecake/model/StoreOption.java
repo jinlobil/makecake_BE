@@ -21,10 +21,10 @@ public class StoreOption extends Timestamped{
     private String subCat;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(columnDefinition = "CakePriceState default FIXED")
     private CakePriceState priceState;
 
-    @Column
+    @Column(columnDefinition = "integer default 0")
     private String addedPrice;
 
     @Column
