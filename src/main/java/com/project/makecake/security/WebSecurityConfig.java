@@ -1,8 +1,6 @@
 package com.project.makecake.security;
 
 import com.project.makecake.repository.UserRepository;
-import com.project.makecake.security.oauth.Oauth2SuccessHandler;
-import com.project.makecake.security.oauth.PrincipalOauth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,9 +22,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableGlobalMethodSecurity(securedEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final PrincipalOauth2UserService principalOauth2UserService;
     private final UserRepository userRepository;
-    private final Oauth2SuccessHandler oauth2SuccessHandler;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -53,14 +49,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // PreFlight 요청 모두 허가
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                 .anyRequest().permitAll()
-                .and().cors()
-                .and()
-                // OAuth2
-                .oauth2Login()
-                .userInfoEndpoint()
-                .userService(principalOauth2UserService)
-                .and()
-                .successHandler(oauth2SuccessHandler);
+                .and().cors();
+
     }
 
     // CORS

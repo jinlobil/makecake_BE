@@ -6,25 +6,17 @@ import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
 
 @Data
-public class UserDetailsImpl implements UserDetails, OAuth2User {
+public class UserDetailsImpl implements UserDetails{
 
     private User user;
-    private Map<String, Object> attributes;
 
     public UserDetailsImpl(User user) {
         this.user = user;
-    }
-
-    public UserDetailsImpl(User user, Map<String, Object> attributes){
-        this.user = user;
-        this.attributes = attributes;
     }
 
     public User getUser(){
@@ -75,17 +67,5 @@ public class UserDetailsImpl implements UserDetails, OAuth2User {
         authorities.add(simpleGrantedAuthority);
 
         return authorities;
-    }
-
-    // OAuth2User implements시 overrride됨
-
-    @Override
-    public Map<String, Object> getAttributes() {
-        return attributes;
-    }
-
-    @Override
-    public String getName() {
-        return null;
     }
 }

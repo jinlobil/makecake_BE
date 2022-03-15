@@ -1,5 +1,6 @@
 package com.project.makecake.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.project.makecake.dto.ImageInfoDto;
 import com.project.makecake.dto.LoginCheckResponseDto;
 import com.project.makecake.dto.MypageResponseDto;
@@ -13,6 +14,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -74,4 +76,21 @@ public class UserController {
         return imageInfoDto;
     }
 
+    // 카카오 로그인
+    @GetMapping("/user/kakao/callback")
+    public void kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
+        userService.kakaoLogin(code, response);
+    }
+
+    // 네이버 로그인
+    @GetMapping("/user/naver/callback")
+    public void naverLogin(@RequestParam String code, @RequestParam String state, HttpServletResponse response) throws JsonProcessingException {
+        userService.naverLogin(code, state, response);
+    }
+
+    // 구글 로그인
+    @GetMapping("/user/google/callback")
+    public void googleLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
+        userService.google(code, response);
+    }
 }
