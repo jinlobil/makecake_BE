@@ -1,6 +1,7 @@
 package com.project.makecake.model;
 
 import com.project.makecake.dto.ImageInfoDto;
+import com.project.makecake.enums.DesignState;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

@@ -1,7 +1,7 @@
 package com.project.makecake.security;
 
 import com.project.makecake.model.User;
-import com.project.makecake.model.UserRoleEnum;
+import com.project.makecake.enums.UserRoleEnum;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

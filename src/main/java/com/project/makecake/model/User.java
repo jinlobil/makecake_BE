@@ -1,5 +1,6 @@
 package com.project.makecake.model;
 
+import com.project.makecake.enums.UserRoleEnum;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
