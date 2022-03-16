@@ -21,10 +21,10 @@ public class CakeMenu extends Timestamped{
     private String size;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(columnDefinition = "CakePriceState default FIXED")
     private CakePriceState priceState;
 
-    @Column
+    @Column(columnDefinition = "integer default 0")
     private String price;
 
     @Column
