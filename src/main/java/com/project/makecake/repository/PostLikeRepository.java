@@ -3,6 +3,8 @@ package com.project.makecake.repository;
 import com.project.makecake.model.Post;
 import com.project.makecake.model.PostLike;
 import com.project.makecake.model.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -16,5 +18,5 @@ public interface PostLikeRepository extends JpaRepository<PostLike,Long> {
 
     Optional<PostLike> findByUserAndPost(User user, Post foundPost);
 
-    List<PostLike> findByUser(User user);
+    Page<PostLike> findByUser(User user, Pageable pageable);
 }

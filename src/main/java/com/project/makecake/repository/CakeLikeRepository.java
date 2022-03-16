@@ -3,6 +3,8 @@ package com.project.makecake.repository;
 import com.project.makecake.model.Cake;
 import com.project.makecake.model.CakeLike;
 import com.project.makecake.model.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -14,5 +16,5 @@ public interface CakeLikeRepository extends JpaRepository<CakeLike, Long> {
 
     void deleteByUserAndCake(User user, Cake foundCake);
 
-    List<CakeLike> findByUser(User user);
+    Page<CakeLike> findByUser(User user, Pageable pageable);
 }
