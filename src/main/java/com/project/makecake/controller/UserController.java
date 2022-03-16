@@ -5,7 +5,7 @@ import com.project.makecake.dto.ImageInfoDto;
 import com.project.makecake.dto.LoginCheckResponseDto;
 import com.project.makecake.dto.MypageResponseDto;
 import com.project.makecake.dto.SignupRequestDto;
-import com.project.makecake.model.FolderName;
+import com.project.makecake.enums.FolderName;
 import com.project.makecake.security.UserDetailsImpl;
 import com.project.makecake.service.S3UploadService;
 import com.project.makecake.service.UserService;

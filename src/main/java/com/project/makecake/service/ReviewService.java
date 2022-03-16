@@ -2,15 +2,13 @@ package com.project.makecake.service;
 
 import com.project.makecake.dto.HomeReviewDto;
 import com.project.makecake.dto.ImageInfoDto;
+import com.project.makecake.enums.FolderName;
 import com.project.makecake.model.*;
 import com.project.makecake.repository.ReviewImgRepository;
 import com.project.makecake.repository.ReviewRepository;
 import com.project.makecake.repository.StoreRepository;
 import com.project.makecake.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
