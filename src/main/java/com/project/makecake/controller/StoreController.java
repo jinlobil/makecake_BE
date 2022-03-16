@@ -44,7 +44,6 @@ public class StoreController {
     }
 
 
-
     //매장 상세페이지
     @GetMapping("/api/stores/{storeId}")
     public StoreDetailResponseDto getStoreDetail(@PathVariable Long storeId, @AuthenticationPrincipal UserDetailsImpl userDetails){
@@ -52,16 +51,16 @@ public class StoreController {
     }
 
     //매장 상세페이지 - 매장 케이크 (무한 스크롤 구현 필요) 9개씩
-    @GetMapping("/api/stores/{storeId}/cakes")
-    public List<StoreDetailCakeResponseDto> getStoreDetailCakes(@PathVariable Long storeId, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return  storeService.getStoreDetailCakes(storeId, userDetails);
+    @GetMapping("/api/stores/cakes")
+    public List<StoreDetailCakeResponseDto> getStoreDetailCakes(@RequestParam long storeId, @RequestParam int page, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return  storeService.getStoreDetailCakes(storeId, userDetails, page);
     }
 
 
     //매장 상세페이지 - 매장 리뷰 (무한 스크롤 구현 필요) 3개씩
-    @GetMapping("/api/stores/{storeId}/reviews")
-    public List<ReviewResponseDto> getStoreDetailReviews(@PathVariable Long storeId){
-        return  storeService.getStoreDetailReviews(storeId);
+    @GetMapping("/api/stores/reviews")
+    public List<ReviewResponseDto> getStoreDetailReviews(@RequestParam long storeId, @RequestParam int page){
+        return  storeService.getStoreDetailReviews(storeId, page);
     }
 
     @DeleteMapping("/backOffice/stores/{storeId}")

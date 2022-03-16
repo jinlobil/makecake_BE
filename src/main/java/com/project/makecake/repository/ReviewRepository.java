@@ -15,4 +15,5 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     Page<Review> findByUser(User user, Pageable pageable);
 
     List<Review> findTop5ByOrderByCreatedAtDesc();
+    Page<Review> findAllByStore_StoreId(Long storeId, Pageable pageable);
 }

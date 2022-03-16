@@ -26,6 +26,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -114,28 +115,30 @@ public class StoreService {
     }
 
     //매장 상세
+    /*
     @Transactional
     public StoreDetailResponseDto getStoreDetail(Long storeId, UserDetailsImpl userDetails) {
-        StoreDetailResponseDto responseDto = new StoreDetailResponseDto();
-        Store store = storeRepository.findById(storeId).get();
-        responseDto.setStoreId(store.getStoreId());
-        responseDto.setMainImg(store.getMainImg());
-        responseDto.setName(store.getName());
-        responseDto.setRoadAddress(store.getRoadAddress());
-        responseDto.setFullAddress(store.getFullAddress());
-        responseDto.setDescription(store.getDescription());
-        responseDto.setOpenTimeString(store.getOpenTimeString());
-        responseDto.setLikeCnt(store.getLikeCnt());
 
+        //Store store, String openTimeToday, List<StoreDetailUrlDto> urls,
+        //Boolean myLike,List<StoreDetailMenuDto> menus, List<StoreDetailCakeResponseDto> cakeImages
+        //store
+        Store store = storeRepository.findById(storeId).get();
+
+        //openTimeToday
+        LocalDate now = LocalDate.now();
+        String dayOfWeek = now.getDayOfWeek().toString();
+
+
+
+
+        //myLike
         Boolean myLike = false;
 
-        System.out.println("마이라이크");
         if(userDetails != null){
             if(storeLikeRepository.findByStoreAndUser(store, userDetails.getUser()) != null){
                 myLike = true;
             }
         }
-        responseDto.setMyLike(myLike);
 
         //urls
         List<StoreDetailUrlDto> urls = new ArrayList<>();
@@ -146,7 +149,6 @@ public class StoreService {
             urlDto.setType(rawUrl.getType());
             urls.add(urlDto);
         }
-        responseDto.setUrls(urls);
 
         //menus
         List<StoreDetailMenuDto> menus = new ArrayList<>();
@@ -158,32 +160,8 @@ public class StoreService {
             menuDto.setChanges(rawMenu.getChanges());
             menus.add(menuDto);
         }
-        responseDto.setMenus(menus);
 
-        //reviews 최근 3개만
-        List<ReviewResponseDto> reviews = new ArrayList<>();
-        List<Review> rawReviewList = reviewRepository.findTop3ByStoreOrderByCreatedAtDesc(store);
-        for(Review rawReview : rawReviewList){
-            ReviewResponseDto reviewDto = new ReviewResponseDto();
-            long reviewId = rawReview.getReviewId();
-            reviewDto.setReviewId(reviewId);
-            reviewDto.setWriterNickname(rawReview.getUser().getNickname());
-            reviewDto.setCreatedDate(rawReview.getCreatedAt());
-            reviewDto.setContent(rawReview.getContent());
-
-            List<String> reviewImages = new ArrayList<>();
-            List<ReviewImg> rawReviewImgList = reviewImgRepository.findAllByReview_ReviewId(reviewId);
-            for(ReviewImg rawReviewImg : rawReviewImgList){
-                reviewImages.add(rawReviewImg.getImgUrl());
-            }
-
-            reviewDto.setReviewImages(reviewImages);
-
-            reviews.add(reviewDto);
-        }
-        responseDto.setReviews(reviews);
-
-        //cakeImages 최근 9개만
+        //cakeImages 최근 9개
         List<StoreDetailCakeResponseDto> cakeImages = new ArrayList<>();
         List<Cake> rawCakeList = cakeRepository.findTop9ByStoreOrderByCreatedAtDesc(store);
         for(Cake rawCake : rawCakeList){
@@ -198,58 +176,23 @@ public class StoreService {
             StoreDetailCakeResponseDto cakeDto = new StoreDetailCakeResponseDto(rawCake,myCakeLike);
             cakeImages.add(cakeDto);
         }
-        responseDto.setCakeImages(cakeImages);
+
         return responseDto;
     }
 
-
-    // 케이크 사진 리스트 메소드
-    @Transactional
-    public List<CakeResponseDto> getAllCakes(UserDetailsImpl userDetails, int page) {
-        // 비로그인 유저는 null 처리
-        User user = null;
-        if (userDetails!=null) {
-            user = userDetails.getUser();
-        }
-
-        // 일단 15개씩 페이징
-        Sort sort = Sort.by(new Sort.Order(Sort.Direction.DESC,"likeCnt"), new Sort.Order(Sort.Direction.DESC,"cakeId"));
-        Pageable pageable = PageRequest.of(page,15,sort);
-        Page<Cake> foundCakeList = cakeRepository.findAll(pageable);
-
-
-        // 반환 Dto에 담기 + 좋아요 반영
-        List<CakeResponseDto> responseDtoList = new ArrayList<>();
-        for (Cake cake : foundCakeList) {
-            boolean myLike = false; // myLike 디폴트 : false
-            if(user!=null) { // 로그인 유저는 좋아요 여부 반영
-                Optional<CakeLike> foundCakeLike = cakeLikeRepository.findByUserAndCake(user,cake);
-                if (foundCakeLike.isPresent()) {
-                    myLike = true;
-                }
-            }
-            CakeResponseDto responseDto = new CakeResponseDto(cake,myLike);
-            responseDtoList.add(responseDto);
-        }
-        return responseDtoList;
-    }
     //매장 상세정보- 케이크
     @Transactional
-    public List<StoreDetailCakeResponseDto> getStoreDetailCakes(Long storeId, UserDetailsImpl userDetails) {
-        //일단 9개씩 페이징
-//        Sort sort = Sort.by(new Sort.Order(Sort.Direction.DESC, "createdAt"), )
+    public List<StoreDetailCakeResponseDto> getStoreDetailCakes(Long storeId, UserDetailsImpl userDetails, int page) {
+        //일단 15개씩 페이징
+        Sort sort = Sort.by(new Sort.Order(Sort.Direction.DESC, "createdAt"), new Sort.Order(Sort.Direction.DESC,"cakeId"));
+        Pageable pageable = PageRequest.of(page, 15, sort);
+        Page<Cake> foundCakeList = cakeRepository.findAllByStore_StoreId(storeId, pageable);
 
         List<StoreDetailCakeResponseDto> responseDto = new ArrayList<>();
-        Store store = storeRepository.getById(storeId);
-
-        //이 부분 무한 스크롤로 구현 시 수정 필요함
-        List<Cake> rawCakeList = cakeRepository.findTop9ByStoreOrderByCreatedAtDesc(store);
 
         //이 아래부분 겹치는 코드 - 코드 리팩토링 필요
-        for(Cake rawCake : rawCakeList){
-
+        for(Cake rawCake : foundCakeList){
             Boolean myCakeLike = false;
-
             if(userDetails != null){
                 User user = userDetails.getUser();
                 if(cakeLikeRepository.findByUserAndCake(user, rawCake).isPresent()){
@@ -257,16 +200,25 @@ public class StoreService {
                 }
             }
 
+            //dto 값 담고, 리스트에 추가하기
             StoreDetailCakeResponseDto cakeDto = new StoreDetailCakeResponseDto(rawCake, myCakeLike);
             responseDto.add(cakeDto);
         }
         return responseDto;
     }
 
+     */
+
     //매장 상세정보 - 리뷰
     @Transactional
-    public List<ReviewResponseDto> getStoreDetailReviews(Long storeId){
-        List<ReviewResponseDto> reviews = new ArrayList<>();
+    public List<ReviewResponseDto> getStoreDetailReviews(Long storeId,int page){
+        //5개 씩 페이징
+        Sort sort = Sort.by(new Sort.Order(Sort.Direction.DESC, "createdAt"), new Sort.Order(Sort.Direction.DESC,"reviewId"));
+        Pageable pageable = PageRequest.of(page, 5, sort);
+        Page<Review> foundReviewList = reviewRepository.findAllByStore_StoreId(storeId, pageable);
+
+
+        List<ReviewResponseDto> responseDto = new ArrayList<>();
         Store store = storeRepository.getById(storeId);
 
         //이 부분 무한 스크롤로 구현 시 수정 필요함
@@ -274,24 +226,18 @@ public class StoreService {
 
         //이 아래부분 겹치는 코드 - 코드 리팩토링 필요
         for(Review rawReview : rawReviewList){
-            ReviewResponseDto reviewDto = new ReviewResponseDto();
-            long reviewId = rawReview.getReviewId();
-            reviewDto.setReviewId(reviewId);
-            reviewDto.setWriterNickname(rawReview.getUser().getNickname());
-            reviewDto.setCreatedDate(rawReview.getCreatedAt());
-            reviewDto.setContent(rawReview.getContent());
 
+            // 리뷰 이미지 리스트 반환
             List<String> reviewImages = new ArrayList<>();
-            List<ReviewImg> rawReviewImgList = reviewImgRepository.findAllByReview_ReviewId(reviewId);
+            List<ReviewImg> rawReviewImgList = reviewImgRepository.findAllByReview_ReviewId(rawReview.getReviewId());
             for(ReviewImg rawReviewImg : rawReviewImgList){
                 reviewImages.add(rawReviewImg.getImgUrl());
             }
+            ReviewResponseDto reviewDto = new ReviewResponseDto(rawReview, reviewImages);
 
-            reviewDto.setReviewImages(reviewImages);
-
-            reviews.add(reviewDto);
+            responseDto.add(reviewDto);
         }
-        return reviews;
+        return responseDto;
     }
 
     //매장 검색하기

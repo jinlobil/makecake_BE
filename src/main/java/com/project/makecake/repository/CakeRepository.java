@@ -2,6 +2,7 @@ package com.project.makecake.repository;
 
 import com.project.makecake.model.Cake;
 import com.project.makecake.model.Store;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -18,8 +19,10 @@ public interface CakeRepository extends JpaRepository<Cake, Long> {
 
     List<Cake> findTop5ByOrderByLikeCnt();
     List<Cake> findTop9ByStoreOrderByCreatedAtDesc(Store store);
+    Page<Cake> findAllByStore_StoreId(long storeId, Pageable pageable);
 
     void deleteAllByStore_StoreId(Long storeId);
+
 
 
 
