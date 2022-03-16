@@ -1,5 +1,6 @@
 package com.project.makecake.controller;
 
+import com.project.makecake.model.Cake;
 import com.project.makecake.requestDto.CakeIdRequestDto;
 import com.project.makecake.requestDto.LikeRequestDto;
 import com.project.makecake.responseDto.LikeResponseDto;
@@ -9,7 +10,9 @@ import com.project.makecake.service.CakeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RequiredArgsConstructor
