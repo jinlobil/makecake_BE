@@ -65,8 +65,8 @@ public class UserController {
 
     // 회원탈퇴
     @PutMapping("/user/resign")
-    public void resignUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        userService.resignUser(userDetails);
+    public MypageResponseDto resignUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return userService.resignUser(userDetails);
     }
 
     // (임시) 이미지 업로드

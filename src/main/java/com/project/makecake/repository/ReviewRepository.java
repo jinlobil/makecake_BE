@@ -12,7 +12,7 @@ import java.util.List;
 public interface ReviewRepository extends JpaRepository<Review, Long> {
     Page<Review> findAllByOrderByCreatedAtDesc(Pageable pageable);
     List<Review> findTop3ByStoreOrderByCreatedAtDesc(Store store);
-    List<Review> findByUser(User user);
+    Page<Review> findByUser(User user, Pageable pageable);
 
     List<Review> findTop5ByOrderByCreatedAtDesc();
 }

@@ -30,6 +30,7 @@ public class PostController {
         return postService.saveDesign(userDetails,img);
     }
 
+    // 18개씩
     // 게시된 도안 사진 리스트 API
     @GetMapping("/api/designs")
     public List<PostSimpleResponseDto> getAllPosts(

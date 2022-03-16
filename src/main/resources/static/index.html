@@ -129,6 +129,7 @@
                             <th scope="col">CakeOption</th>
                             <th scope="col">mainCat(대분류)</th>
                             <th scope="col">subCat(소분류)</th>
+                            <th scope="col">priceState(enum)</th>
                             <th scope="col">addedPrice(추가 가격)</th>
                             <th scope="col">moreInfo(제약사항)</th>
                         </tr>`
@@ -136,11 +137,12 @@
         $('#table-option-head').append(tempTableHead);
 
     }
-    function addCakeOptionTableRow(i, mainCat, subCat, addedPrice, moreInfo){
+    function addCakeOptionTableRow(i, mainCat, subCat, priceState, addedPrice, moreInfo){
         let tempHtml2 = `<tr>
                             <th scope="row">${i+1}</th>
                             <td>${mainCat}</td>
                             <td>${subCat}</td>
+                            <td>${priceState}</td>
                             <td>${addedPrice}</td>
                             <td>${moreInfo}</td>
                         </tr>`
@@ -194,10 +196,11 @@
                     let eachRow = peekOptionList[i];
                     let mainCat = eachRow['mainCat'];
                     let subCat = eachRow['subCat'];
+                    let priceState = eachRow['priceState'];
                     let addedPrice = eachRow['addedPrice'];
                     let moreInfo = eachRow['moreInfo'];
 
-                    addCakeOptionTableRow(i, mainCat, subCat, addedPrice, moreInfo)
+                    addCakeOptionTableRow(i, mainCat, subCat, priceState, addedPrice, moreInfo)
                 }
 
                 let saveButton = `<button class="btn btn-secondary btn-data-check" onclick="saveData()"> 데이터 저장 </button>`

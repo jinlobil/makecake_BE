@@ -22,7 +22,7 @@ public class CakeMenu extends Timestamped{
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private CakeMenuPriceState priceState;
+    private CakePriceState priceState;
 
     @Column
     private String price;
@@ -35,7 +35,7 @@ public class CakeMenu extends Timestamped{
     private Store store;
 
     //생성자
-    public CakeMenu(CakeMenuRowDto menuRowDto, Store store, CakeMenuPriceState priceState){
+    public CakeMenu(CakeMenuRowDto menuRowDto, Store store, CakePriceState priceState){
         this.type = menuRowDto.getType();
         this.size = menuRowDto.getSize();
         this.price = menuRowDto.getPrice();

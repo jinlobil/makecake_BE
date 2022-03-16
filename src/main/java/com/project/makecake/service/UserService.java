@@ -2,11 +2,9 @@ package com.project.makecake.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.project.makecake.dto.ImageInfoDto;
 import com.project.makecake.dto.LoginCheckResponseDto;
 import com.project.makecake.dto.MypageResponseDto;
@@ -18,6 +16,7 @@ import com.project.makecake.repository.UserRepository;
 import com.project.makecake.security.JwtProperties;
 import com.project.makecake.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -40,6 +39,21 @@ import java.util.*;
 @Service
 public class UserService {
 
+    @Value("${google.client-id}")
+    String googleClientId;
+
+    @Value("${google.client-secret}")
+    String googleClientSecret;
+
+    @Value("${naver.client-id}")
+    String naverClientId;
+
+    @Value("${naver.client-secret}")
+    String naverClientSecret;
+
+    @Value("${kakao.client-id}")
+    String kakaoClientId;
+
     private final BCryptPasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final S3UploadService s3UploadService;
@@ -49,7 +63,21 @@ public class UserService {
 
         String username = requestDto.getUsername();
 
+        Optional<User> usernameCheck = userRepository.findByUsername(username);
+        if (usernameCheck.isPresent()) {
+            throw new IllegalArgumentException("중복된 email이 존재합니다.");
+        }
+
         String nickname = requestDto.getNickname();
+
+        Optional<User> nicknameCheck = userRepository.findByNickname(nickname);
+        if (nicknameCheck.isPresent()) {
+            throw new IllegalArgumentException("중복된 닉네임이 존재합니다.");
+        }
+
+        if (!requestDto.getPassword().equals(requestDto.getPasswordCheck())) {
+            throw new IllegalArgumentException("패스워드가 일치하지 않습니다.");
+        }
 
         String password = passwordEncoder.encode(requestDto.getPassword());
 
@@ -66,9 +94,9 @@ public class UserService {
                 .role(role)
                 .build();
         User saveUser = userRepository.save(user);
-        Optional<User> findUser = userRepository.findById(saveUser.getUserId());
+        Optional<User> checkUser = userRepository.findById(saveUser.getUserId());
         HashMap<String, Boolean> userCheck = new HashMap<>();
-        userCheck.put("signup", findUser.isPresent());
+        userCheck.put("signup", checkUser.isPresent());
         return userCheck;
     }
 
@@ -104,24 +132,34 @@ public class UserService {
     }
 
     // 회원 탈퇴
-    public void resignUser(UserDetailsImpl userDetails) {
+    public MypageResponseDto resignUser(UserDetailsImpl userDetails) {
         User findUser = userRepository.findByUsername(userDetails.getUsername()).orElse(null);
 
         if (findUser != null) {
             String username = "resignUser_"+findUser.getUserId();
             String password = passwordEncoder.encode(UUID.randomUUID().toString());
-            findUser = User.builder()
-                    .username(username)
-                    .password(password)
-                    .nickname(null)
-                    .profileImgUrl(null)
-                    .profileImgName(null)
-                    .role(null)
-                    .provider(null)
-                    .providerId(null)
-                    .build();
+            String nickname = "알수없음";
+            findUser.setUsername(username);
+            findUser.setNickname(nickname);
+            findUser.setPassword(password);
+            findUser.setProfileImgUrl("https://makecake.s3.ap-northeast-2.amazonaws.com/PROFILE/18d2090b-1b98-4c34-b92b-a9f50d03bd53makecake_default.png");
+            findUser.setProfileImgName(null);
+            findUser.setRole(null);
+            findUser.setProvider(null);
+            findUser.setProviderEmail(null);
+            findUser.setProviderId(null);
             userRepository.save(findUser);
         }
+        String email = findUser.getUsername();
+        if (findUser.getProviderEmail() != null){
+            email = findUser.getProviderEmail();
+        }
+        MypageResponseDto mypage = MypageResponseDto.builder()
+                .nickname(findUser.getNickname())
+                .userPicture(findUser.getProfileImgUrl())
+                .email(email)
+                .build();
+        return mypage;
     }
 
     // 프로필이미지 수정
@@ -167,14 +205,12 @@ public class UserService {
     public void kakaoLogin(String code, HttpServletResponse response3) throws JsonProcessingException {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
-
+        System.out.println(code);
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
-//        body.add("client_id", "a672f8575554d70b6fd1beaf744185b7");
-        body.add("client_id", "26fdb25780daf7092cedcfb727408cb1");
-        body.add("client_secret", "Hy8j1uoibn6b8Lt0SfHbs4yKSK7iGhtU");
-        body.add("redirect_uri", "http://localhost:8080/user/kakao/callback");
-        //https://kauth.kakao.com/oauth/authorize?client_id=26fdb25780daf7092cedcfb727408cb1&redirect_uri=http://localhost:8080/user/kakao/callback&response_type=code
+        // 새로운 코드
+        body.add("client_id", kakaoClientId);
+        body.add("redirect_uri", "http://localhost:3000/user/kakao/callback");
         body.add("code", code);
 
         HttpEntity<MultiValueMap<String, String>> kakaoToken = new HttpEntity<>(body, headers);
@@ -182,6 +218,7 @@ public class UserService {
         ResponseEntity<String> response = restTemplate.exchange("https://kauth.kakao.com/oauth/token", HttpMethod.POST, kakaoToken, String.class);
 
         String responseBody = response.getBody();
+        System.out.println(responseBody);
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode responseToken = objectMapper.readTree(responseBody);
         String accessToken = responseToken.get("access_token").asText();
@@ -194,6 +231,7 @@ public class UserService {
         ResponseEntity<String> response2 = restTemplate2.exchange("https://kapi.kakao.com/v2/user/me", HttpMethod.POST, kakaoUserInfo, String.class);
 
         String responseBody2 = response2.getBody();
+        System.out.println(responseBody2);
         ObjectMapper objectMapper2 = new ObjectMapper();
         JsonNode responseInfo = objectMapper2.readTree(responseBody2);
 
@@ -251,8 +289,8 @@ public class UserService {
 
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
-        body.add("client_id", "Sz8iSQ5HmjJyT9BosjJf");
-        body.add("client_secret", "bA8Np_6at4");
+        body.add("client_id", naverClientId);
+        body.add("client_secret", naverClientSecret);
         body.add("code", code);
         body.add("state", state);
 
@@ -328,8 +366,8 @@ public class UserService {
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-        body.add("client_id" , "785414541280-9tuq85ts44dalvkpd5dah0cobplcmc3n.apps.googleusercontent.com");
-        body.add("client_secret", "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");
+        body.add("client_id" , googleClientId);
+        body.add("client_secret", googleClientSecret);
         body.add("code", code);
         body.add("redirect_uri", "http://localhost:8080/user/google/callback");
         body.add("grant_type", "authorization_code");
