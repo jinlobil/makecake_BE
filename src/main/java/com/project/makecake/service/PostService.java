@@ -48,11 +48,11 @@ public class PostService {
         Page<Post> foundPostList;
         if (sortType==null || sortType.equals("createdDate")) {
             Sort sort = Sort.by(Sort.Direction.DESC,"postId");
-            Pageable pageable = PageRequest.of(page,15,sort);
+            Pageable pageable = PageRequest.of(page,18,sort);
             foundPostList = postRepository.findAll(pageable);
         } else {
             Sort sort = Sort.by(new Sort.Order(Sort.Direction.DESC,sortType), new Sort.Order(Sort.Direction.DESC,"postId"));
-            Pageable pageable = PageRequest.of(page,15,sort);
+            Pageable pageable = PageRequest.of(page,18,sort);
             foundPostList = postRepository.findAll(pageable);
         }
 

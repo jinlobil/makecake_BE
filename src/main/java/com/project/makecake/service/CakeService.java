@@ -1,17 +1,15 @@
 package com.project.makecake.service;
 
 import com.project.makecake.dto.HomeCakeDto;
-import com.project.makecake.dto.HomeStoreDto;
-import com.project.makecake.model.Cake;
-import com.project.makecake.model.CakeLike;
-import com.project.makecake.model.User;
+import com.project.makecake.dto.ImageInfoDto;
+import com.project.makecake.model.*;
 import com.project.makecake.repository.CakeLikeRepository;
 import com.project.makecake.repository.CakeRepository;
+import com.project.makecake.repository.StoreRepository;
 import com.project.makecake.repository.UserRepository;
 import com.project.makecake.requestDto.LikeRequestDto;
 import com.project.makecake.responseDto.LikeResponseDto;
 import com.project.makecake.responseDto.CakeResponseDto;
-import com.project.makecake.responseDto.LikeResponseDto;
 import com.project.makecake.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -19,8 +17,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +31,9 @@ public class CakeService {
     private final UserRepository userRepository;
     private final CakeRepository cakeRepository;
     private final CakeLikeRepository cakeLikeRepository;
+    //임시
+    private final StoreRepository storeRepository;
+    private final S3UploadService s3UploadService;
 
 
     //홈탭 케이크 불러오기
@@ -61,7 +64,7 @@ public class CakeService {
 
         // 일단 15개씩 페이징
         Sort sort = Sort.by(new Sort.Order(Sort.Direction.DESC,"likeCnt"), new Sort.Order(Sort.Direction.DESC,"cakeId"));
-        Pageable pageable = PageRequest.of(page,15,sort);
+        Pageable pageable = PageRequest.of(page,18,sort);
         Page<Cake> foundCakeList = cakeRepository.findAll(pageable);
 
 
@@ -129,6 +132,41 @@ public class CakeService {
 
     }
 
+    // 임시 API (가게별 케이크 사진 불러오기)
+    @Transactional
+    public List<Cake> tempGetCake(Long storeId) {
 
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(()->new IllegalArgumentException("스토어 없음"));
+        List<Cake> cakeList = cakeRepository.findAllByStore(store);
+        return cakeList;
+    }
 
+    // 임시 API (케이크 사진 지우기)
+    @Transactional
+    public Long tempDeleteCake(Long cakeId) {
+        Cake cake = cakeRepository.findById(cakeId)
+                .orElseThrow(()->new IllegalArgumentException("케이크 없음"));
+
+        Long num = cake.getCakeId();
+
+        cakeRepository.delete(cake);
+
+        return num;
+    }
+
+    // 임시 API (케이크 사진 넣기)
+    @Transactional
+    public void tempSaveCake(Long storeId, List<MultipartFile> imgFiles) throws IOException {
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(()->new IllegalArgumentException("스토어 없음"));
+
+        if(imgFiles != null){
+            for(MultipartFile imgFile : imgFiles){
+                ImageInfoDto imageInfoDto = s3UploadService.uploadFile(imgFile, FolderName.Cake.name());
+                Cake cake = new Cake(imageInfoDto.getUrl(),store);
+                cakeRepository.save(cake);
+            }
+        }
+    }
 }

@@ -10,4 +10,7 @@ public class HomeController {
     public String registerByTable(){
         return "registerByTable";
     }
+
+    @GetMapping("/admincake")
+    public String admincake() {return "admincake";}
 }
