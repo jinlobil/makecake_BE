@@ -3,6 +3,7 @@ package com.project.makecake.service;
 import com.project.makecake.dto.*;
 import com.project.makecake.model.*;
 import com.project.makecake.repository.*;
+import com.project.makecake.responseDto.DesignResponseDto;
 import com.project.makecake.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -77,6 +78,21 @@ public class MypageService {
             }
         }
         return designList;
+    }
+
+    // 내가 그린 도안 상세 조회(게시X)
+    public DesignResponseDto getDesign(Long designId, UserDetailsImpl userDetails) {
+        if (userDetails == null) {
+            throw new IllegalArgumentException("로그인을 해주세요.");
+        }
+
+        // 도안 찾기
+        Design foundDesign = designRepository.findById(designId)
+                .orElseThrow(()->new IllegalArgumentException("도안이 존재하지 않습니다."));
+
+        DesignResponseDto responseDto = new DesignResponseDto(foundDesign);
+
+        return responseDto;
     }
 
     // 내가 좋아요 한 게시글

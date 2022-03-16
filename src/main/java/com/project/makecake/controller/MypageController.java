@@ -1,6 +1,7 @@
 package com.project.makecake.controller;
 
 import com.project.makecake.dto.*;
+import com.project.makecake.responseDto.DesignResponseDto;
 import com.project.makecake.security.UserDetailsImpl;
 import com.project.makecake.service.MypageService;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,12 @@ public class MypageController {
                                                @RequestParam String option,
                                                @RequestParam int page) {
         return mypageService.myDesigns(userDetails, option, page);
+    }
+
+    // 내가 그린 도안 상세 조회(게시X)
+    @GetMapping("/designs/mine/{designId}")
+    public DesignResponseDto getDesign(@PathVariable Long designId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return mypageService.getDesign(designId, userDetails);
     }
 
     // 내가 좋아요한 게시글
