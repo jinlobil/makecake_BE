@@ -21,6 +21,8 @@ public interface CakeRepository extends JpaRepository<Cake, Long> {
 
     void deleteAllByStore_StoreId(Long storeId);
 
+
+
     // 케이크 리스트 처음 15개
 //    @Query(value = "select c from Cake as c order by c.likeCnt desc, c.cakeId desc")
 //    List<Cake> findCakeListFirst(Pageable pageable);

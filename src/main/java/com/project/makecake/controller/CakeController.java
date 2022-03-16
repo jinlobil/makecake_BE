@@ -1,5 +1,8 @@
 package com.project.makecake.controller;
 
+import com.project.makecake.dto.TempCakeModalDto;
+import com.project.makecake.model.Cake;
+import com.project.makecake.repository.CakeRepository;
 import com.project.makecake.requestDto.CakeIdRequestDto;
 import com.project.makecake.requestDto.LikeRequestDto;
 import com.project.makecake.responseDto.LikeResponseDto;
@@ -17,6 +20,7 @@ import java.util.List;
 public class CakeController {
 
     private final CakeService cakeService;
+    private final CakeRepository cakeRepository;
 
     // 일단 15개
     // 케이크 사진 리스트 API
@@ -30,11 +34,13 @@ public class CakeController {
 
     // 케이크 사진 모달 API
     @PostMapping("/api/cakes/detail")
-    public CakeResponseDto getCake(
+    public TempCakeModalDto getCake(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestBody CakeIdRequestDto requestDto
             ) {
-        return cakeService.getCake(userDetails,requestDto.getCakeId());
+        Long storeId = cakeRepository.findById(requestDto.getCakeId()).get().getStore().getStoreId();
+        TempCakeModalDto tempCakeModalDto = new TempCakeModalDto(cakeService.getCake(userDetails,requestDto.getCakeId()), storeId);
+        return tempCakeModalDto;
     }
 
     // 케이크 좋아요 누르기 API

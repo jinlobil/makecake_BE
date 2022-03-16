@@ -3,11 +3,18 @@ package com.project.makecake.service;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import com.project.makecake.MakeCakeApplication;
 import com.project.makecake.dto.*;
 import com.project.makecake.model.*;
 import com.project.makecake.repository.*;
+import com.project.makecake.responseDto.CakeResponseDto;
 import com.project.makecake.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.SpringApplication;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -22,6 +29,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -179,10 +187,6 @@ public class StoreService {
         List<StoreDetailCakeResponseDto> cakeImages = new ArrayList<>();
         List<Cake> rawCakeList = cakeRepository.findTop9ByStoreOrderByCreatedAtDesc(store);
         for(Cake rawCake : rawCakeList){
-            StoreDetailCakeResponseDto cakeDto = new StoreDetailCakeResponseDto();
-            cakeDto.setCakeId(rawCake.getCakeId());
-            cakeDto.setImg(rawCake.getUrl());
-            cakeDto.setLikeCnt(rawCake.getLikeCnt());
 
             Boolean myCakeLike = false;
             if(userDetails != null){
@@ -191,16 +195,50 @@ public class StoreService {
                     myCakeLike = true;
                 }
             }
-            cakeDto.setMyLike(myCakeLike);
+            StoreDetailCakeResponseDto cakeDto = new StoreDetailCakeResponseDto(rawCake,myCakeLike);
             cakeImages.add(cakeDto);
         }
         responseDto.setCakeImages(cakeImages);
         return responseDto;
     }
 
+
+    // 케이크 사진 리스트 메소드
+    @Transactional
+    public List<CakeResponseDto> getAllCakes(UserDetailsImpl userDetails, int page) {
+        // 비로그인 유저는 null 처리
+        User user = null;
+        if (userDetails!=null) {
+            user = userDetails.getUser();
+        }
+
+        // 일단 15개씩 페이징
+        Sort sort = Sort.by(new Sort.Order(Sort.Direction.DESC,"likeCnt"), new Sort.Order(Sort.Direction.DESC,"cakeId"));
+        Pageable pageable = PageRequest.of(page,15,sort);
+        Page<Cake> foundCakeList = cakeRepository.findAll(pageable);
+
+
+        // 반환 Dto에 담기 + 좋아요 반영
+        List<CakeResponseDto> responseDtoList = new ArrayList<>();
+        for (Cake cake : foundCakeList) {
+            boolean myLike = false; // myLike 디폴트 : false
+            if(user!=null) { // 로그인 유저는 좋아요 여부 반영
+                Optional<CakeLike> foundCakeLike = cakeLikeRepository.findByUserAndCake(user,cake);
+                if (foundCakeLike.isPresent()) {
+                    myLike = true;
+                }
+            }
+            CakeResponseDto responseDto = new CakeResponseDto(cake,myLike);
+            responseDtoList.add(responseDto);
+        }
+        return responseDtoList;
+    }
     //매장 상세정보- 케이크
     @Transactional
     public List<StoreDetailCakeResponseDto> getStoreDetailCakes(Long storeId, UserDetailsImpl userDetails) {
+        //일단 9개씩 페이징
+//        Sort sort = Sort.by(new Sort.Order(Sort.Direction.DESC, "createdAt"), )
+
         List<StoreDetailCakeResponseDto> responseDto = new ArrayList<>();
         Store store = storeRepository.getById(storeId);
 
@@ -209,19 +247,17 @@ public class StoreService {
 
         //이 아래부분 겹치는 코드 - 코드 리팩토링 필요
         for(Cake rawCake : rawCakeList){
-            StoreDetailCakeResponseDto cakeDto = new StoreDetailCakeResponseDto();
-            cakeDto.setCakeId(rawCake.getCakeId());
-            cakeDto.setImg(rawCake.getUrl());
-            cakeDto.setLikeCnt(rawCake.getLikeCnt());
 
             Boolean myCakeLike = false;
+
             if(userDetails != null){
                 User user = userDetails.getUser();
                 if(cakeLikeRepository.findByUserAndCake(user, rawCake).isPresent()){
                     myCakeLike = true;
                 }
             }
-            cakeDto.setMyLike(myCakeLike);
+
+            StoreDetailCakeResponseDto cakeDto = new StoreDetailCakeResponseDto(rawCake, myCakeLike);
             responseDto.add(cakeDto);
         }
         return responseDto;
@@ -258,6 +294,8 @@ public class StoreService {
         return reviews;
     }
 
+    //매장 검색하기
+    @Transactional
     public List<SearchResponseDto> getSearchStore(SearchRequestDto requestDto) throws IOException {
         String searchType = requestDto.getSearchType();
         String sortType = requestDto.getSortType();
@@ -295,6 +333,7 @@ public class StoreService {
             maxY = rawList.get(1);
             minX = rawList.get(2);
             maxX = rawList.get(3);
+
             System.out.println(rawList.toString());
 
             if (sortType != "review") {
@@ -310,22 +349,21 @@ public class StoreService {
         List<SearchResponseDto> responseDtoList = new ArrayList<>();
 
         for(Store rawStore : rawStoreList){
-            SearchResponseDto responseDto = new SearchResponseDto();
-            responseDto.setStoreId(rawStore.getStoreId());
-            responseDto.setName(rawStore.getName());
-            responseDto.setX(rawStore.getX());
-            responseDto.setY(rawStore.getY());
-            responseDto.setRoadAddress(rawStore.getRoadAddress());
-            responseDto.setFulAddress(rawStore.getFullAddress());
-            responseDto.setMainImg(rawStore.getMainImg());
-            responseDto.setLikeCnt(rawStore.getLikeCnt());
-            responseDto.setReviewCnt(rawStore.getReviewCnt());
+            String addressSimple = "";
 
+            //"서울 OO구 OO동"
+            if(!rawStore.getFullAddress().equals(null)){
+                String[] arr = rawStore.getFullAddress().split(" ");
+                addressSimple = arr[0].substring(0,2) + " "  + arr[1] + " " + arr[2];
+            }
+            SearchResponseDto responseDto = new SearchResponseDto(rawStore, addressSimple);
             responseDtoList.add(responseDto);
         }
         return responseDtoList;
     }
 
+
+    //매장 삭제(미완)
     @Transactional
     public void deleteStore(Long storeId) {
         //menu, storeUrl, cake
