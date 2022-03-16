@@ -2,6 +2,7 @@ package com.project.makecake.controller;
 
 import com.project.makecake.dto.*;
 import com.project.makecake.model.User;
+import com.project.makecake.requestDto.LikeDto;
 import com.project.makecake.security.UserDetailsImpl;
 import com.project.makecake.service.CakeService;
 import com.project.makecake.service.ReviewService;
@@ -74,8 +75,8 @@ public class StoreController {
 
     //매장 좋아요
     @PostMapping("/stores/like/{storeId}")
-    public Boolean likeStore(@RequestBody Boolean myLike, @PathVariable Long storeId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+    public LikeDto likeStore(@RequestBody LikeDto likeDto, @PathVariable Long storeId, @AuthenticationPrincipal UserDetailsImpl userDetails){
         User user = userDetails.getUser();
-        return storeService.likeStore(myLike, storeId, user);
+        return storeService.likeStore(likeDto.isMyLike(), storeId, user);
     }
 }

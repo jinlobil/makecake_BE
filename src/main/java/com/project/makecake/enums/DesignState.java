@@ -1,4 +1,4 @@
-package com.project.makecake.model;
+package com.project.makecake.enums;
 
 public enum DesignState {
     POST,

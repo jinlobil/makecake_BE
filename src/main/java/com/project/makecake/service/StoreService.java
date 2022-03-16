@@ -7,6 +7,7 @@ import com.project.makecake.MakeCakeApplication;
 import com.project.makecake.dto.*;
 import com.project.makecake.model.*;
 import com.project.makecake.repository.*;
+import com.project.makecake.requestDto.LikeDto;
 import com.project.makecake.responseDto.CakeResponseDto;
 import com.project.makecake.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
@@ -193,7 +194,7 @@ public class StoreService {
 
     //매장 좋아요
     @Transactional
-    public Boolean likeStore(Boolean myLike, Long storeId, User user) {
+    public LikeDto likeStore(Boolean myLike, Long storeId, User user) {
         //true 추가(좋아요 누르기), false 삭제(좋아요 취소)
         Store store = storeRepository.getById(storeId);
 
@@ -205,12 +206,12 @@ public class StoreService {
             storeLikeRepository.save(storeLike);
             store.setLikeCnt(store.getLikeCnt() +1);
             storeRepository.save(store);
-            return true;
+            return new LikeDto(true);
         } else {
             storeLikeRepository.deleteByStoreAndUser(store, user);
             store.setLikeCnt(store.getLikeCnt() -1);
             storeRepository.save(store);
-            return false;
+            return new LikeDto(false);
         }
     }
 

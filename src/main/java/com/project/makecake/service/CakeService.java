@@ -2,13 +2,13 @@ package com.project.makecake.service;
 
 import com.project.makecake.dto.HomeCakeDto;
 import com.project.makecake.dto.ImageInfoDto;
+import com.project.makecake.enums.FolderName;
 import com.project.makecake.model.*;
 import com.project.makecake.repository.CakeLikeRepository;
 import com.project.makecake.repository.CakeRepository;
 import com.project.makecake.repository.StoreRepository;
 import com.project.makecake.repository.UserRepository;
-import com.project.makecake.requestDto.LikeRequestDto;
-import com.project.makecake.responseDto.LikeResponseDto;
+import com.project.makecake.requestDto.LikeDto;
 import com.project.makecake.responseDto.CakeResponseDto;
 import com.project.makecake.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
@@ -111,7 +111,7 @@ public class CakeService {
 
     // 케이크 좋아요
     @Transactional
-    public LikeResponseDto cakeLike(Long cakeId, LikeRequestDto requestDto, UserDetailsImpl userDetails) {
+    public LikeDto cakeLike(Long cakeId, LikeDto requestDto, UserDetailsImpl userDetails) {
         User user = userDetails.getUser();
 
         // 케이크 찾기
@@ -128,7 +128,7 @@ public class CakeService {
         }
         // likeCnt 변경
         boolean likeResult = foundCake.likeCake(requestDto.isMyLike());
-        return new LikeResponseDto(likeResult);
+        return new LikeDto(likeResult);
 
     }
 

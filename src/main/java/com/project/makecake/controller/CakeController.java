@@ -2,8 +2,7 @@ package com.project.makecake.controller;
 
 import com.project.makecake.model.Cake;
 import com.project.makecake.requestDto.CakeIdRequestDto;
-import com.project.makecake.requestDto.LikeRequestDto;
-import com.project.makecake.responseDto.LikeResponseDto;
+import com.project.makecake.requestDto.LikeDto;
 import com.project.makecake.responseDto.CakeResponseDto;
 import com.project.makecake.security.UserDetailsImpl;
 import com.project.makecake.service.CakeService;
@@ -42,11 +41,11 @@ public class CakeController {
 
     // 케이크 좋아요 누르기 API
     @PostMapping("/cakes/like/{cakeId}")
-    public LikeResponseDto cakeLike(@PathVariable Long cakeId,
-                                    @RequestBody LikeRequestDto likeRequestDto,
+    public LikeDto cakeLike(@PathVariable Long cakeId,
+                                    @RequestBody LikeDto likeDto,
                                     @AuthenticationPrincipal UserDetailsImpl userDetails
                                         ) {
-        return cakeService.cakeLike(cakeId,likeRequestDto,userDetails);
+        return cakeService.cakeLike(cakeId, likeDto,userDetails);
     }
 
 
