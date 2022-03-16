@@ -1,14 +1,21 @@
 package com.project.makecake.dto;
 
+import com.project.makecake.model.CakeMenu;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
 public class StoreDetailMenuDto {
-    private String name;
+    private String type;
+    private String size;
     private String price;
-    private Boolean changes;
+
+    public StoreDetailMenuDto(CakeMenu cakeMenu){
+        this.type = cakeMenu.getType();
+        this.size = cakeMenu.getSize();
+        this.price = cakeMenu.getPrice();
+    }
 }

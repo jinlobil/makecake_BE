@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -44,6 +45,7 @@ public class StoreService {
     private final CakeRepository cakeRepository;
     private final CakeLikeRepository cakeLikeRepository;
     private final OpenTimeRepository openTimeRepository;
+    private final CakeMenuRepository cakeMenuRepository;
 
     public JsonElement CrawlingSearch(String searchText) throws IOException {
         URL url = new URL( "https://map.naver.com/v5/api/search?caller=pcweb&query=" + URLEncoder.encode(searchText, "UTF-8") + "&type=all&searchCoord=127.0234346;37.4979517&page=1&displayCount=20&isPlaceRecommendationReplace=true&lang=ko");
@@ -71,6 +73,104 @@ public class StoreService {
         JsonElement element = parser.parse(result);
         return element;
     }
+
+    public OpenTimeResponseDto getOpenTimeToday(long storeId){
+        //요일 반환
+        LocalDate now = LocalDate.now();
+        String dayOfWeek = "";
+        String dayOfWeek2 = "";
+        switch (now.getDayOfWeek().getValue()) {
+            case 1:
+                dayOfWeek = "월요일";
+                dayOfWeek2 = "평일";
+                break;
+            case 2:
+                dayOfWeek = "화요일";
+                dayOfWeek2 = "평일";
+                break;
+            case 3:
+                dayOfWeek = "수요일";
+                dayOfWeek2 = "평일";
+                break;
+            case 4:
+                dayOfWeek = "목요일";
+                dayOfWeek2 = "평일";
+                break;
+            case 5:
+                dayOfWeek = "금요일";
+                dayOfWeek2 = "평일";
+                break;
+            case 6:
+                dayOfWeek = "토요일";
+                dayOfWeek2 = "주말";
+                break;
+            case 7:
+                dayOfWeek = "일요일";
+                dayOfWeek2 = "주말";
+                break;
+            default:
+                dayOfWeek = "확인되지 않음";
+                dayOfWeek2 = "확인되지 않음";
+                break;
+        }
+        System.out.println(dayOfWeek);
+
+        //storeId 로 openTime 가져오기
+        List<OpenTime> openTimeList = openTimeRepository.findAllByStore_StoreId(storeId);
+        if(openTimeList.size() == 0) {
+            return new OpenTimeResponseDto("영업 시간은 매장 홈페이지를 확인해주세요");
+        }else{
+            //"화요일"이 리스트에 있는지 확인
+            for(int i=0; i<openTimeList.size(); i++){
+                if(openTimeList.get(i).getType().equals(dayOfWeek)){
+                    return new OpenTimeResponseDto(openTimeList.get(i));
+                }
+            }
+            //"매일"이 리스트에 있는지 확인
+            for(int i=0; i<openTimeList.size(); i++){
+                if(openTimeList.get(i).getType().equals("매일")){
+                    return new OpenTimeResponseDto(openTimeList.get(i));
+                }
+            }
+            //"평일" 또는 주말 이 리스트에 있는지 확인
+            for(int i=0; i<openTimeList.size(); i++){
+                if(openTimeList.get(i).getType().equals(dayOfWeek2)){
+                    return new OpenTimeResponseDto(openTimeList.get(i));
+                }
+            }
+            return new OpenTimeResponseDto("오늘은 휴일입니다");
+        }
+    }
+
+    /*
+    public List<StoreDetailUrlDto> getDetailUrl(long storeId){
+        List<StoreDetailUrlDto> urls = new ArrayList<>();
+        List<StoreUrl> rawUrlList = storeUrlRepository.findAllByStore_StoreId(storeId);
+
+        List<StoreUrl> chosenList = rawUrlList.stream().filter()
+        List<Sample> list = new ArrayList<Sample>();
+        List<Sample> result = list.stream() .filter(a -> a.value3 == "three")
+                .collect(Collectors.toList());
+
+
+        if(rawUrlList.size() > 2) {
+            for(int i=0; i< rawUrlList.size(); i++){
+                if(rawUrlList.get(i).getType().equals("normal") || rawUrlList.get(i).getType().equals("instagram")){
+
+                }
+            }
+        }
+        for(StoreUrl rawUrl : rawUrlList){
+            StoreDetailUrlDto urlDto = new StoreDetailUrlDto();
+            urlDto.setUrl(rawUrl.getUrl());
+            urlDto.setType(rawUrl.getType());
+            urls.add(urlDto);
+        }
+
+
+    }
+    */
+
 
     //홈탭 : 핫 매장 리스트
     @Transactional
@@ -115,30 +215,15 @@ public class StoreService {
     }
 
     //매장 상세
-    /*
     @Transactional
     public StoreDetailResponseDto getStoreDetail(Long storeId, UserDetailsImpl userDetails) {
 
-        //Store store, String openTimeToday, List<StoreDetailUrlDto> urls,
-        //Boolean myLike,List<StoreDetailMenuDto> menus, List<StoreDetailCakeResponseDto> cakeImages
         //store
-        Store store = storeRepository.findById(storeId).get();
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(()-> new IllegalArgumentException("매장 정보가 없습니다."));
 
         //openTimeToday
-        LocalDate now = LocalDate.now();
-        String dayOfWeek = now.getDayOfWeek().toString();
-
-
-
-
-        //myLike
-        Boolean myLike = false;
-
-        if(userDetails != null){
-            if(storeLikeRepository.findByStoreAndUser(store, userDetails.getUser()) != null){
-                myLike = true;
-            }
-        }
+        OpenTimeResponseDto openTimeToday = getOpenTimeToday(storeId);
 
         //urls
         List<StoreDetailUrlDto> urls = new ArrayList<>();
@@ -150,14 +235,20 @@ public class StoreService {
             urls.add(urlDto);
         }
 
+        //myLike
+        Boolean myLike = false;
+
+        if(userDetails != null){
+            if(storeLikeRepository.findByStoreAndUser(store, userDetails.getUser()) != null){
+                myLike = true;
+            }
+        }
+
         //menus
         List<StoreDetailMenuDto> menus = new ArrayList<>();
-        List<Menu> rawMenuList = menuRepository.findAllByStore_StoreId(storeId);
-        for(Menu rawMenu : rawMenuList){
-            StoreDetailMenuDto menuDto = new StoreDetailMenuDto();
-            menuDto.setName(rawMenu.getName());
-            menuDto.setPrice(rawMenu.getPrice());
-            menuDto.setChanges(rawMenu.getChanges());
+        List<CakeMenu> rawMenuList = cakeMenuRepository.findAllByStore_StoreId(storeId);
+        for(CakeMenu rawMenu : rawMenuList){
+            StoreDetailMenuDto menuDto = new StoreDetailMenuDto(rawMenu);
             menus.add(menuDto);
         }
 
@@ -176,9 +267,13 @@ public class StoreService {
             StoreDetailCakeResponseDto cakeDto = new StoreDetailCakeResponseDto(rawCake,myCakeLike);
             cakeImages.add(cakeDto);
         }
+        //Store store, String openTimeToday, List<StoreDetailUrlDto> urls,
+        //Boolean myLike,List<StoreDetailMenuDto> menus, List<StoreDetailCakeResponseDto> cakeImages
 
-        return responseDto;
+        return new StoreDetailResponseDto(store, openTimeToday, urls, myLike, menus, cakeImages);
     }
+
+
 
     //매장 상세정보- 케이크
     @Transactional
@@ -206,8 +301,6 @@ public class StoreService {
         }
         return responseDto;
     }
-
-     */
 
     //매장 상세정보 - 리뷰
     @Transactional

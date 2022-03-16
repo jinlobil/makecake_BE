@@ -1,5 +1,6 @@
 package com.project.makecake.dto;
 
+import com.project.makecake.model.OpenTime;
 import com.project.makecake.model.Store;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.Getter;
@@ -15,7 +16,7 @@ public class StoreDetailResponseDto {
     private String name;
     private String roadAddress;
     private String fullAddress;
-    private String openTimeToday; //오늘 기준
+    private OpenTimeResponseDto openTimeToday; //오늘 기준
     private String phone;
     private List<StoreDetailUrlDto> urls; //2개만
     private Boolean myLike;
@@ -23,7 +24,7 @@ public class StoreDetailResponseDto {
     private List<StoreDetailMenuDto> menus; //수정 필요
     private List<StoreDetailCakeResponseDto> cakeImages;
 
-    public StoreDetailResponseDto(Store store, String openTimeToday, List<StoreDetailUrlDto> urls,
+    public StoreDetailResponseDto(Store store, OpenTimeResponseDto openTimeToday, List<StoreDetailUrlDto> urls,
                                   Boolean myLike,List<StoreDetailMenuDto> menus, List<StoreDetailCakeResponseDto> cakeImages){
         this.storeId = store.getStoreId();
         this.mainImg = store.getMainImg();
