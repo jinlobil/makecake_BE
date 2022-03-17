@@ -41,7 +41,7 @@ public class MypageController {
 
     // 내가 좋아요한 게시글
     @GetMapping("/designs/myReact")
-    public List<MyReactDesignResponceDto> myReactDesigns(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestParam int page) {
+    public List<MyReactPostResponceDto> myReactDesigns(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestParam int page) {
         return mypageService.myReactDesigns(userDetails, page);
     }
 

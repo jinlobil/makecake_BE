@@ -6,7 +6,7 @@ import lombok.Data;
 @Builder
 @Data
 public class MypageResponseDto {
-    public String userPicture;
+    public String profileImg;
     public String nickname;
     public String email;
 }
