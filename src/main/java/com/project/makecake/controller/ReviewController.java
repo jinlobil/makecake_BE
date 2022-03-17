@@ -1,5 +1,7 @@
 package com.project.makecake.controller;
 
+import com.project.makecake.dto.ReviewResponseDto;
+import com.project.makecake.model.Review;
 import com.project.makecake.security.UserDetailsImpl;
 import com.project.makecake.service.ReviewService;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,12 @@ public class ReviewController {
                             @RequestParam(required = false) List<MultipartFile> imgFiles,
                             @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         reviewService.writeReview(storeId, content, imgFiles, userDetails);
+    }
+
+    //매장 후기 상세 조회
+    @GetMapping("/reviews/{reviewId}")
+    public ReviewResponseDto getReviewDetail(@PathVariable long reviewId){
+        return reviewService.getReviewDetial(reviewId);
     }
 
     //매장 후기 수정

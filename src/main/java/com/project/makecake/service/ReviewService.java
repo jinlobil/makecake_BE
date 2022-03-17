@@ -2,6 +2,7 @@ package com.project.makecake.service;
 
 import com.project.makecake.dto.HomeReviewDto;
 import com.project.makecake.dto.ImageInfoDto;
+import com.project.makecake.dto.ReviewResponseDto;
 import com.project.makecake.enums.FolderName;
 import com.project.makecake.model.*;
 import com.project.makecake.repository.ReviewImgRepository;
@@ -28,9 +29,6 @@ public class ReviewService {
     //홈탭 : 최신 리뷰 보여주기 (페이지네이션)
     @Transactional
     public List<HomeReviewDto> getHomeReviewList() {
-        //페이징
-//        Pageable pageable = PageRequest.of(page-1, size);
-//        Page<Review> rawReviewList = reviewRepository.findAllByOrderByCreatedAtDesc(pageable);
         List<Review> rawReviewList = reviewRepository.findTop5ByOrderByCreatedAtDesc();
 
         List<HomeReviewDto> responseDtoList = new ArrayList<>();
@@ -44,7 +42,7 @@ public class ReviewService {
             responseDto.setContent(rawReview.getContent());
             responseDto.setStoreId(store.getStoreId());
             responseDto.setStoreName(store.getName());
-            String img = "https://makecake.s3.ap-northeast-2.amazonaws.com/PROFILE/18d2090b-1b98-4c34-b92b-a9f50d03bd53makecake_default.png";
+            String img = "https://makecake.s3.ap-northeast-2.amazonaws.com/PROFILE/%EC%97%B0%ED%95%9C%EC%BC%80%EC%9D%B4%ED%81%AC.png";
             if(!reviewImgRepository.findAllByReview_ReviewId(reviewId).isEmpty()){
                 img = reviewImgRepository.findAllByReview_ReviewId(reviewId).get(0).getImgUrl();
             }
@@ -130,5 +128,18 @@ public class ReviewService {
                 }
             }
         }
+    }
+
+    public ReviewResponseDto getReviewDetial(long reviewId) {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 리뷰입니다."));
+
+        List<String> reviewImages = new ArrayList<>();
+        List<ReviewImg> rawReviewImgList = reviewImgRepository.findAllByReview_ReviewId(reviewId);
+        for(ReviewImg rawReviewImg : rawReviewImgList){
+            reviewImages.add(rawReviewImg.getImgUrl());
+        }
+
+        return new ReviewResponseDto(review, reviewImages);
     }
 }
