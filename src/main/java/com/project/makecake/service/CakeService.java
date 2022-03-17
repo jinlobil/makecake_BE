@@ -148,6 +148,8 @@ public class CakeService {
         Cake cake = cakeRepository.findById(cakeId)
                 .orElseThrow(()->new IllegalArgumentException("케이크 없음"));
 
+        cakeLikeRepository.deleteAllByCake(cake);
+
         Long num = cake.getCakeId();
 
         cakeRepository.delete(cake);

@@ -60,7 +60,7 @@ public class StoreController {
     }
 
 
-    //매장 상세페이지 - 매장 리뷰 (무한 스크롤 구현 필요) 3개씩
+    //매장 상세페이지 - 매장 리뷰 (무한 스크롤 구현 필요)
     @GetMapping("/api/stores/reviews")
     public List<ReviewResponseDto> getStoreDetailReviews(@RequestParam long storeId, @RequestParam int page){
         return  storeService.getStoreDetailReviews(storeId, page);

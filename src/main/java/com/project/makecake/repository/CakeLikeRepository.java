@@ -17,4 +17,6 @@ public interface CakeLikeRepository extends JpaRepository<CakeLike, Long> {
     void deleteByUserAndCake(User user, Cake foundCake);
 
     Page<CakeLike> findByUser(User user, Pageable pageable);
+
+    void deleteAllByCake(Cake cake);
 }

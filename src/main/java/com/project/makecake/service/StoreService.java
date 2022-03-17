@@ -319,16 +319,9 @@ public class StoreService {
         Pageable pageable = PageRequest.of(page, 5, sort);
         Page<Review> foundReviewList = reviewRepository.findAllByStore_StoreId(storeId, pageable);
 
-
         List<ReviewResponseDto> responseDto = new ArrayList<>();
-        Store store = storeRepository.getById(storeId);
 
-        //이 부분 무한 스크롤로 구현 시 수정 필요함
-        List<Review> rawReviewList = reviewRepository.findTop3ByStoreOrderByCreatedAtDesc(store);
-
-        //이 아래부분 겹치는 코드 - 코드 리팩토링 필요
-        for(Review rawReview : rawReviewList){
-
+        for(Review rawReview : foundReviewList){
             // 리뷰 이미지 리스트 반환
             List<String> reviewImages = new ArrayList<>();
             List<ReviewImg> rawReviewImgList = reviewImgRepository.findAllByReview_ReviewId(rawReview.getReviewId());

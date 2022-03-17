@@ -44,7 +44,7 @@ public class ReviewService {
             responseDto.setContent(rawReview.getContent());
             responseDto.setStoreId(store.getStoreId());
             responseDto.setStoreName(store.getName());
-            String img = "";
+            String img = "https://makecake.s3.ap-northeast-2.amazonaws.com/PROFILE/18d2090b-1b98-4c34-b92b-a9f50d03bd53makecake_default.png";
             if(!reviewImgRepository.findAllByReview_ReviewId(reviewId).isEmpty()){
                 img = reviewImgRepository.findAllByReview_ReviewId(reviewId).get(0).getImgUrl();
             }
