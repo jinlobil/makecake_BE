@@ -241,4 +241,24 @@ public class PostService {
 
         return new PostDetailResponseDto(foundPost,myLike,commentCnt);
     }
+
+    // 도안 삭제
+    public void deleteDesign(UserDetailsImpl userDetails, Long designId) {
+
+        // 도안 찾기
+        Design foundDesign = designRepository.findById(designId)
+                .orElseThrow(()->new IllegalArgumentException("존재하지 않는 도안입니다."));
+
+        // 게시되지 않은 도안인지 확인
+        if (foundDesign.getState().equals(DesignState.POST)) {
+            throw new IllegalArgumentException("게시중인 도안은 삭제할 수 없습니다.");
+        }
+
+        // 동일 유저인지 확인
+        if (!foundDesign.getUser().getUserId().equals(userDetails.getUser().getUserId())) {
+            throw new IllegalArgumentException("다른 사람의 도안은 삭제할 수 없습니다.");
+        }
+
+        designRepository.deleteById(designId);
+    }
 }

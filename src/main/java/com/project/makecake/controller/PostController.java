@@ -30,6 +30,15 @@ public class PostController {
         return postService.saveDesign(userDetails,img);
     }
 
+    // 도안 삭제
+    @DeleteMapping("/designs/{designId}")
+    public void deleteDesign(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PathVariable Long designId
+    ) {
+        postService.deleteDesign(userDetails,designId);
+    }
+
     // 18개씩
     // 게시된 도안 사진 리스트 API
     @GetMapping("/api/designs")
