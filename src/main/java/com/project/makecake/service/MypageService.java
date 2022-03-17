@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -44,7 +43,7 @@ public class MypageService {
         }
         MypageResponseDto mypage = MypageResponseDto.builder()
                 .nickname(findUser.getNickname())
-                .userPicture(findUser.getProfileImgUrl())
+                .profileImg(findUser.getProfileImgUrl())
                 .email(email)
                 .build();
         return mypage;
@@ -99,7 +98,7 @@ public class MypageService {
     }
 
     // 내가 좋아요 한 게시글
-    public List<MyReactDesignResponceDto> myReactDesigns(UserDetailsImpl userDetails, int page) {
+    public List<MyReactPostResponceDto> myReactDesigns(UserDetailsImpl userDetails, int page) {
         if (userDetails == null) {
             throw new IllegalArgumentException("로그인을 해주세요.");
         }
@@ -108,11 +107,15 @@ public class MypageService {
         );
         Pageable pageable = PageRequest.of(page, 5);
         Page<PostLike> findPost = postLikeRepository.findByUser(findUser, pageable);
-        List<MyReactDesignResponceDto> reactList = new ArrayList<>();
+        List<MyReactPostResponceDto> reactList = new ArrayList<>();
         for (PostLike postLike : findPost){
-            MyReactDesignResponceDto responceDto = MyReactDesignResponceDto.builder()
+            MyReactPostResponceDto responceDto = MyReactPostResponceDto.builder()
                     .postId(postLike.getPost().getPostId())
                     .img(postLike.getPost().getDesign().getImgUrl())
+                    .nickname(postLike.getPost().getUser().getNickname())
+                    .profileImg(postLike.getPost().getUser().getProfileImgUrl())
+                    .content(postLike.getPost().getContent())
+                    .createdDate(postLike.getPost().getCreatedAt())
                     .build();
             reactList.add(responceDto);
         }
@@ -137,7 +140,6 @@ public class MypageService {
                     .createdDate(comment.getCreatedAt())
                     .postId(comment.getPost().getPostId())
                     .postTitle(comment.getPost().getTitle())
-                    .writerNickname(comment.getUser().getNickname())
                     .build();
             commentList.add(responseDto);
         }
@@ -182,10 +184,18 @@ public class MypageService {
         Page<Review> findReview = reviewRepository.findByUser(findUser, pageable);
         List<MyReviewResponseDto> reviewList = new ArrayList<>();
         for (Review review : findReview){
-            ReviewImg reviewImg = reviewImgRepository.findTop1ByReview(review);
-            String reviewImgUrl = "https://makecake.s3.ap-northeast-2.amazonaws.com/PROFILE/18d2090b-1b98-4c34-b92b-a9f50d03bd53makecake_default.png";
-            if (reviewImg != null) {
-                reviewImgUrl = reviewImg.getImgUrl();
+//            ReviewImg reviewImg = reviewImgRepository.findTop1ByReview(review);
+//            String reviewImgUrl = "https://makecake.s3.ap-northeast-2.amazonaws.com/PROFILE/18d2090b-1b98-4c34-b92b-a9f50d03bd53makecake_default.png";
+//            if (reviewImg != null) {
+//                reviewImgUrl = reviewImg.getImgUrl();
+//            }
+            List<ReviewImg> findReviewImg = reviewImgRepository.findByReview(review);
+            List<String> reviewImgList = new ArrayList<>();
+            if (findReviewImg != null){
+                for (int i = 0; i < findReviewImg.size(); i++){
+                    String reviewImg = findReviewImg.get(i).getImgName();
+                    reviewImgList.add(reviewImg);
+                }
             }
             MyReviewResponseDto responseDto = MyReviewResponseDto.builder()
                     .reviewId(review.getReviewId())
@@ -193,8 +203,7 @@ public class MypageService {
                     .name(review.getStore().getName())
                     .content(review.getContent())
                     .createdDate(review.getCreatedAt())
-                    .mainImg(reviewImgUrl)
-                    .writerNickname(review.getUser().getNickname())
+                    .reviewImages(reviewImgList)
                     .build();
             reviewList.add(responseDto);
         }

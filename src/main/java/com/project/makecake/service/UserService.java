@@ -54,6 +54,9 @@ public class UserService {
     @Value("${kakao.client-id}")
     String kakaoClientId;
 
+//    @Value("${kakao.client-secret}")
+//    String kakaoClientSecret;
+
     private final BCryptPasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final S3UploadService s3UploadService;
@@ -156,7 +159,7 @@ public class UserService {
         }
         MypageResponseDto mypage = MypageResponseDto.builder()
                 .nickname(findUser.getNickname())
-                .userPicture(findUser.getProfileImgUrl())
+                .profileImg(findUser.getProfileImgUrl())
                 .email(email)
                 .build();
         return mypage;
@@ -179,7 +182,7 @@ public class UserService {
         User saveUser = userRepository.save(findUser);
         MypageResponseDto responseDto = MypageResponseDto.builder()
                 .nickname(saveUser.getNickname())
-                .userPicture(saveUser.getProfileImgUrl())
+                .profileImg(saveUser.getProfileImgUrl())
                 .build();
         return responseDto;
     }
@@ -196,7 +199,7 @@ public class UserService {
         User saveUser = userRepository.save(findUser);
         MypageResponseDto responseDto = MypageResponseDto.builder()
                 .nickname(saveUser.getNickname())
-                .userPicture(saveUser.getProfileImgUrl())
+                .profileImg(saveUser.getProfileImgUrl())
                 .build();
         return responseDto;
     }
@@ -210,6 +213,7 @@ public class UserService {
         body.add("grant_type", "authorization_code");
         // 새로운 코드
         body.add("client_id", kakaoClientId);
+//        body.add("client_secret", kakaoClientSecret);
         body.add("redirect_uri", "http://localhost:3000/user/kakao/callback");
         body.add("code", code);
 

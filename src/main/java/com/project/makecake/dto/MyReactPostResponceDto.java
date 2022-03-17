@@ -5,10 +5,11 @@ import lombok.Data;
 
 @Builder
 @Data
-public class MyCommentResponseDto {
-    public Long commentId;
+public class MyReactPostResponceDto {
+    public Long postId;
+    public String img;
+    public String nickname;
+    public String profileImg;
     public String content;
     public String createdDate;
-    public Long postId;
-    public String postTitle;
 }
