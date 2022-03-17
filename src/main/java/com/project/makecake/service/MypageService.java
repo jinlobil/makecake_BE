@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -73,6 +74,7 @@ public class MypageService {
             for (Post post : findPost){
                 MyDesignResponseDto responseDto = MyDesignResponseDto.builder()
                         .postId(post.getPostId())
+                        .designId(post.getDesign().getDesignId())
                         .img(post.getDesign().getImgUrl())
                         .build();
                 designList.add(responseDto);
@@ -156,7 +158,7 @@ public class MypageService {
         for (StoreLike storeLike : findStore){
             String address = storeLike.getStore().getFullAddress();
             String[] custom = address.split(" ");
-            String addressSimple = custom[0] + custom[1] + custom[2];
+            String addressSimple = custom[0] + " " + custom[1] + " " + custom[2];
             MyReactStoreResponseDto responseDto = MyReactStoreResponseDto.builder()
                     .storeId(storeLike.getStore().getStoreId())
                     .name(storeLike.getStore().getName())
@@ -180,14 +182,18 @@ public class MypageService {
         Page<Review> findReview = reviewRepository.findByUser(findUser, pageable);
         List<MyReviewResponseDto> reviewList = new ArrayList<>();
         for (Review review : findReview){
-            List<ReviewImg> reviewImgs = reviewImgRepository.findAllByReview_ReviewId(review.getReviewId());
+            ReviewImg reviewImg = reviewImgRepository.findTop1ByReview(review);
+            String reviewImgUrl = "https://makecake.s3.ap-northeast-2.amazonaws.com/PROFILE/18d2090b-1b98-4c34-b92b-a9f50d03bd53makecake_default.png";
+            if (reviewImg != null) {
+                reviewImgUrl = reviewImg.getImgUrl();
+            }
             MyReviewResponseDto responseDto = MyReviewResponseDto.builder()
                     .reviewId(review.getReviewId())
                     .storeId(review.getStore().getStoreId())
                     .name(review.getStore().getName())
                     .content(review.getContent())
                     .createdDate(review.getCreatedAt())
-                    .mainImg(reviewImgs.get(0).getImgUrl())
+                    .mainImg(reviewImgUrl)
                     .writerNickname(review.getUser().getNickname())
                     .build();
             reviewList.add(responseDto);

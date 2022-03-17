@@ -9,6 +9,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Getter
 public class PostDetailResponseDto {
+    private Long postId;
     private String title;
     private Long designId;
     private String img;
@@ -25,6 +26,7 @@ public class PostDetailResponseDto {
 
     // 생성자
     public PostDetailResponseDto(Post post, boolean myLike) {
+        this.postId = post.getPostId();
         this.title = post.getTitle();
         this.designId = post.getDesign().getDesignId();
         this.img = post.getDesign().getImgUrl();
