@@ -28,10 +28,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -143,36 +140,52 @@ public class StoreService {
         }
     }
 
-//    public static void main(String[] args) {
-//        List<String> myList = ["1","2"];
-//    }
-//
-//    public List<StoreDetailUrlDto> getDetailUrl(long storeId){
-//        List<StoreDetailUrlDto> urls = new ArrayList<>();
-//        List<StoreUrl> rawUrlList = storeUrlRepository.findAllByStore_StoreId(storeId);
-//
-//        List<StoreUrl> chosenList = rawUrlList.stream().filter()
-////        List<Sample> list = new ArrayList<Sample>();
-////        List<Sample> result = list.stream() .filter(a -> a.value3 == "three")
-////                .collect(Collectors.toList());
-//
-//
-//        if(rawUrlList.size() > 2) {
-//            for(int i=0; i< rawUrlList.size(); i++){
-//                if(rawUrlList.get(i).getType().equals("normal") || rawUrlList.get(i).getType().equals("instagram")){
-//
-//                }
-//            }
-//        }
-//        for(StoreUrl rawUrl : rawUrlList){
-//            StoreDetailUrlDto urlDto = new StoreDetailUrlDto();
-//            urlDto.setUrl(rawUrl.getUrl());
-//            urlDto.setType(rawUrl.getType());
-//            urls.add(urlDto);
-//        }
-//
-//
-//    }
+    public static void main(String[] args) {
+        String[] data = {"138", "129", "142"};  // 이미 투구수 데이터 배열이 있다.
+        List<String> myList = new ArrayList<>(Arrays.asList(data));
+        List<String> result = myList.stream()
+                .filter(a -> a.equals("138") || a.equals("142"))
+                .collect(Collectors.toList());
+        System.out.println(result.toString());
+
+
+    }
+
+    //리팩토링 매우 필요..
+    public List<StoreDetailUrlDto> getDetailUrl(long storeId){
+        List<StoreDetailUrlDto> urls = new ArrayList<>();
+        List<StoreUrl> rawUrlList = storeUrlRepository.findAllByStore_StoreId(storeId);
+
+        if(rawUrlList.size() > 2) {
+            List<StoreUrl> chosenList = rawUrlList.stream()
+                    .filter(eachUrl -> eachUrl.getType().equals("normal") || eachUrl.getType().equals("instagram"))
+                    .collect(Collectors.toList());
+
+            while(chosenList.size() < 2){
+                for(int i=0; i < rawUrlList.size(); i++){
+                    StoreUrl eachUrl = rawUrlList.get(i);
+                    if(!eachUrl.getType().equals("normal") && !eachUrl.getType().equals("instagram")){
+                        chosenList.add(eachUrl);
+                    }
+                }
+            }
+            for(StoreUrl rawUrl : chosenList){
+                StoreDetailUrlDto urlDto = new StoreDetailUrlDto();
+                urlDto.setUrl(rawUrl.getUrl());
+                urlDto.setType(rawUrl.getType());
+                urls.add(urlDto);
+            }
+        }
+        else{
+            for(StoreUrl rawUrl : rawUrlList){
+                StoreDetailUrlDto urlDto = new StoreDetailUrlDto();
+                urlDto.setUrl(rawUrl.getUrl());
+                urlDto.setType(rawUrl.getType());
+                urls.add(urlDto);
+            }
+        }
+        return urls;
+    }
 
 
     //홈탭 : 핫 매장 리스트
@@ -229,14 +242,7 @@ public class StoreService {
         OpenTimeResponseDto openTimeToday = getOpenTimeToday(storeId);
 
         //urls
-        List<StoreDetailUrlDto> urls = new ArrayList<>();
-        List<StoreUrl> rawUrlList = storeUrlRepository.findAllByStore_StoreId(storeId);
-        for(StoreUrl rawUrl : rawUrlList){
-            StoreDetailUrlDto urlDto = new StoreDetailUrlDto();
-            urlDto.setUrl(rawUrl.getUrl());
-            urlDto.setType(rawUrl.getType());
-            urls.add(urlDto);
-        }
+        List<StoreDetailUrlDto> urls = getDetailUrl(storeId);
 
         //myLike
         Boolean myLike = false;
