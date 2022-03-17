@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -51,12 +52,12 @@ public class PostController {
 
     // 도안 게시글 작성 API
     @PostMapping("/posts/{designId}")
-    public void savePost(
+    public HashMap<String,Long> savePost(
             @PathVariable Long designId,
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestBody PostRequestDto requestDto
     ) {
-        postService.savePost(designId,userDetails,requestDto);
+        return postService.savePost(designId,userDetails,requestDto);
     }
 
     // 도안 게시글 수정 API

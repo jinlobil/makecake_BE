@@ -13,9 +13,12 @@ public class PostDetailResponseDto {
     private String title;
     private Long designId;
     private String img;
+    private String profileImg;
     private String nickname;
     private int likeCnt;
     private boolean myLike;
+    private int viewCnt;
+    private Long commentCnt;
     private String createdDate;
     private String content;
     private String size;
@@ -25,14 +28,17 @@ public class PostDetailResponseDto {
     private String storeName;
 
     // 생성자
-    public PostDetailResponseDto(Post post, boolean myLike) {
+    public PostDetailResponseDto(Post post, boolean myLike, Long commentCnt) {
         this.postId = post.getPostId();
         this.title = post.getTitle();
         this.designId = post.getDesign().getDesignId();
         this.img = post.getDesign().getImgUrl();
+        this.profileImg = post.getUser().getProfileImgUrl();
         this.nickname = post.getUser().getNickname();
         this.likeCnt = post.getLikeCnt();
         this.myLike = myLike;
+        this.viewCnt = post.getViewCnt();
+        this.commentCnt = commentCnt;
         this.createdDate = post.getCreatedAt();
         this.content = post.getContent();
         this.size = post.getSize();
