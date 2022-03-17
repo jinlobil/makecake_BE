@@ -140,7 +140,6 @@ public class MypageService {
                     .createdDate(comment.getCreatedAt())
                     .postId(comment.getPost().getPostId())
                     .postTitle(comment.getPost().getTitle())
-                    .writerNickname(comment.getUser().getNickname())
                     .build();
             commentList.add(responseDto);
         }

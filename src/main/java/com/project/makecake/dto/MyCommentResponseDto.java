@@ -11,5 +11,4 @@ public class MyCommentResponseDto {
     public String createdDate;
     public Long postId;
     public String postTitle;
-    public String writerNickname;
 }
