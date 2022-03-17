@@ -73,6 +73,7 @@ public class MypageService {
             for (Post post : findPost){
                 MyDesignResponseDto responseDto = MyDesignResponseDto.builder()
                         .postId(post.getPostId())
+                        .designId(post.getDesign().getDesignId())
                         .img(post.getDesign().getImgUrl())
                         .build();
                 designList.add(responseDto);
