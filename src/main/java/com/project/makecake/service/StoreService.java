@@ -143,34 +143,36 @@ public class StoreService {
         }
     }
 
-    /*
-    public List<StoreDetailUrlDto> getDetailUrl(long storeId){
-        List<StoreDetailUrlDto> urls = new ArrayList<>();
-        List<StoreUrl> rawUrlList = storeUrlRepository.findAllByStore_StoreId(storeId);
-
-        List<StoreUrl> chosenList = rawUrlList.stream().filter()
-        List<Sample> list = new ArrayList<Sample>();
-        List<Sample> result = list.stream() .filter(a -> a.value3 == "three")
-                .collect(Collectors.toList());
-
-
-        if(rawUrlList.size() > 2) {
-            for(int i=0; i< rawUrlList.size(); i++){
-                if(rawUrlList.get(i).getType().equals("normal") || rawUrlList.get(i).getType().equals("instagram")){
-
-                }
-            }
-        }
-        for(StoreUrl rawUrl : rawUrlList){
-            StoreDetailUrlDto urlDto = new StoreDetailUrlDto();
-            urlDto.setUrl(rawUrl.getUrl());
-            urlDto.setType(rawUrl.getType());
-            urls.add(urlDto);
-        }
-
-
-    }
-    */
+//    public static void main(String[] args) {
+//        List<String> myList = ["1","2"];
+//    }
+//
+//    public List<StoreDetailUrlDto> getDetailUrl(long storeId){
+//        List<StoreDetailUrlDto> urls = new ArrayList<>();
+//        List<StoreUrl> rawUrlList = storeUrlRepository.findAllByStore_StoreId(storeId);
+//
+//        List<StoreUrl> chosenList = rawUrlList.stream().filter()
+////        List<Sample> list = new ArrayList<Sample>();
+////        List<Sample> result = list.stream() .filter(a -> a.value3 == "three")
+////                .collect(Collectors.toList());
+//
+//
+//        if(rawUrlList.size() > 2) {
+//            for(int i=0; i< rawUrlList.size(); i++){
+//                if(rawUrlList.get(i).getType().equals("normal") || rawUrlList.get(i).getType().equals("instagram")){
+//
+//                }
+//            }
+//        }
+//        for(StoreUrl rawUrl : rawUrlList){
+//            StoreDetailUrlDto urlDto = new StoreDetailUrlDto();
+//            urlDto.setUrl(rawUrl.getUrl());
+//            urlDto.setType(rawUrl.getType());
+//            urls.add(urlDto);
+//        }
+//
+//
+//    }
 
 
     //홈탭 : 핫 매장 리스트

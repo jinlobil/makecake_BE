@@ -46,13 +46,12 @@ public class StoreController {
     }
 
 
-    /*
+
     //매장 상세페이지
     @GetMapping("/api/stores/{storeId}")
     public StoreDetailResponseDto getStoreDetail(@PathVariable Long storeId, @AuthenticationPrincipal UserDetailsImpl userDetails){
         return storeService.getStoreDetail(storeId, userDetails);
     }
-     */
 
     //매장 상세페이지 - 매장 케이크 (무한 스크롤 구현 필요) 9개씩
     @GetMapping("/api/stores/cakes")
