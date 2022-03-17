@@ -236,10 +236,10 @@ public class UserService {
         JsonNode responseInfo = objectMapper2.readTree(responseBody2);
 
         String providerId = responseInfo.get("id").asText();
-        String providerEmail = null;
-        if (!responseInfo.get("kakao_account").get("email").isNull()){
-            providerEmail = responseInfo.get("kakao_account").get("email").asText();
-        }
+//        String providerEmail = null;
+//        if (!responseInfo.get("kakao_account").get("email").isNull()){
+//            providerEmail = responseInfo.get("kakao_account").get("email").asText();
+//        }
         String provider = "kakao";
         String username = provider + "_" + providerId;
         String nickname = provider + "_" + providerId;
@@ -258,7 +258,7 @@ public class UserService {
                     .role(role)
                     .provider(provider)
                     .providerId(providerId)
-                    .providerEmail(providerEmail)
+                    .providerEmail(null)
                     .build();
             userRepository.save(findUser);
         }
