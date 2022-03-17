@@ -1,12 +1,13 @@
 package com.project.makecake.service;
 
 import com.project.makecake.dto.ImageInfoDto;
+import com.project.makecake.enums.DesignState;
+import com.project.makecake.enums.FolderName;
 import com.project.makecake.model.*;
 import com.project.makecake.repository.*;
-import com.project.makecake.requestDto.LikeRequestDto;
+import com.project.makecake.requestDto.LikeDto;
 import com.project.makecake.requestDto.PostRequestDto;
 import com.project.makecake.responseDto.DesignResponseDto;
-import com.project.makecake.responseDto.LikeResponseDto;
 import com.project.makecake.responseDto.PostDetailResponseDto;
 import com.project.makecake.responseDto.PostSimpleResponseDto;
 import com.project.makecake.security.UserDetailsImpl;
@@ -179,7 +180,7 @@ public class PostService {
 
     // 도안 게시글 좋아요
     @Transactional
-    public LikeResponseDto postLike(Long postId, LikeRequestDto requestDto, UserDetailsImpl userDetails) {
+    public LikeDto postLike(Long postId, LikeDto requestDto, UserDetailsImpl userDetails) {
         User user = userDetails.getUser();
 
         // 게시글 찾기
@@ -196,7 +197,7 @@ public class PostService {
         }
         // likeCnt 변경
         boolean likeResult = foundPost.likePost(requestDto.isMyLike());
-        return new LikeResponseDto(likeResult);
+        return new LikeDto(likeResult);
     }
 
     // 도안 게시글 상세 조회

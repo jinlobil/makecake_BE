@@ -1,6 +1,7 @@
 package com.project.makecake.service;
 
 import com.project.makecake.dto.*;
+import com.project.makecake.enums.DesignState;
 import com.project.makecake.model.*;
 import com.project.makecake.repository.*;
 import com.project.makecake.responseDto.DesignResponseDto;

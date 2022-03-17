@@ -1,6 +1,6 @@
 package com.project.makecake.dto;
 
-import com.project.makecake.model.UserRoleEnum;
+import com.project.makecake.enums.UserRoleEnum;
 import lombok.Builder;
 import lombok.Data;
 

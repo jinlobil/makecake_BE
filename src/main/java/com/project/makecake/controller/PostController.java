@@ -1,9 +1,8 @@
 package com.project.makecake.controller;
 
-import com.project.makecake.requestDto.LikeRequestDto;
+import com.project.makecake.requestDto.LikeDto;
 import com.project.makecake.requestDto.PostRequestDto;
 import com.project.makecake.responseDto.DesignResponseDto;
-import com.project.makecake.responseDto.LikeResponseDto;
 import com.project.makecake.responseDto.PostDetailResponseDto;
 import com.project.makecake.responseDto.PostSimpleResponseDto;
 import com.project.makecake.security.UserDetailsImpl;
@@ -81,11 +80,11 @@ public class PostController {
 
     // 도안 게시글 좋아요 API
     @PostMapping("/posts/like/{postId}")
-    public LikeResponseDto postLike(
+    public LikeDto postLike(
             @PathVariable Long postId,
-            @RequestBody LikeRequestDto likeRequestDto,
+            @RequestBody LikeDto likeDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        return postService.postLike(postId,likeRequestDto,userDetails);
+        return postService.postLike(postId, likeDto,userDetails);
     }
 }
