@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -93,7 +94,7 @@ public class PostService {
 
     // 도안 게시글 작성
     @Transactional
-    public void savePost(Long designId, UserDetailsImpl userDetails, PostRequestDto requestDto) {
+    public HashMap<String,Long> savePost(Long designId, UserDetailsImpl userDetails, PostRequestDto requestDto) {
         User user = userDetails.getUser();
 
         // 도안 찾기
@@ -111,13 +112,20 @@ public class PostService {
             Store foundStore = storeRepository.findById(requestDto.getStoreId())
                     .orElseThrow(()->new IllegalArgumentException("존재하지 않는 매장입니다."));
             Post post = new Post(requestDto,user,foundDesign,foundStore);
-            postRepository.save(post);
+            Post savePost = postRepository.save(post);
             foundDesign.post(); // 도안 게시글 상태 POST로 변경
+            HashMap<String,Long> response = new HashMap<>();
+            response.put("postId",savePost.getPostId());
+            return response;
+
         // 제작 매장을 기입하지 않은 경우
         } else {
             Post post = new Post(requestDto,user,foundDesign);
-            postRepository.save(post);
+            Post savePost = postRepository.save(post);
             foundDesign.post(); // 도안 게시글 상태 POST로 변경
+            HashMap<String,Long> response = new HashMap<>();
+            response.put("postId",savePost.getPostId());
+            return response;
         }
     }
 
@@ -228,6 +236,9 @@ public class PostService {
             }
         }
 
-        return new PostDetailResponseDto(foundPost,myLike);
+        // 댓글 수 세기
+        Long commentCnt = commentRepository.countByPost(foundPost);
+
+        return new PostDetailResponseDto(foundPost,myLike,commentCnt);
     }
 }
