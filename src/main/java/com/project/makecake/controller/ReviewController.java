@@ -34,11 +34,13 @@ public class ReviewController {
     }
 
     //매장 후기 수정
-    @PutMapping("/reviews/{reviewId}")
+
+    @PutMapping(path = "/reviews/{reviewId}", consumes = {"multipart/form-data"})
     public void updateReview(@PathVariable long reviewId,
                              @RequestParam(value="content") String content,
                              @RequestPart(required = false) List<MultipartFile> imgFiles,
-                             @RequestPart(value="imgUrls") List<String> imgUrls,
+                             @RequestParam(value="imgUrls") List<String> imgUrls, //내가 원래 가지고 있던 이미지 중에서 안 지우고 이번에도 남길 이미지들
+//                             @RequestPart(value="imgUrls") String imgUrls,
                              @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException{
         reviewService.updateReview(reviewId, content, imgFiles, imgUrls, userDetails);
     }

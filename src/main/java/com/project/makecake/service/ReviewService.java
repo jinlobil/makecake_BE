@@ -89,6 +89,10 @@ public class ReviewService {
         storeRepository.save(store);
     }
 
+    public static void main(String[] args){
+
+    }
+
 
     //리뷰 수정하기 (프론트와 상의 후 구현 필요함)
     @Transactional
@@ -100,8 +104,39 @@ public class ReviewService {
             throw new IllegalArgumentException("다른 회원이 작성한 리뷰는 수정할 수 없습니다.");
         }
 
-        //imgFiles 들어온 경우
+        //imgUrls (기존에 있던 이미지 URL 중 사용자가 없이 보낸 것만 삭제)
+        if(reviewImgRepository.findAllByReview_ReviewId(reviewId) != null){
+            List<ReviewImg> originReviewImgList = reviewImgRepository.findAllByReview_ReviewId(reviewId);
+
+            //기존에 있던 리뷰 이미지 리스트 : 오리진 리뷰
+            if(originReviewImgList.size() != imgUrls.size()){
+                List<String> originUrlList = new ArrayList<>();
+
+                for(int i=0; i< originReviewImgList.size(); i++){
+                    originUrlList.add(originReviewImgList.get(i).getImgUrl());
+                }
+
+                originUrlList.removeAll(imgUrls); //원래 이미지 리스트 - 남길 애들 = 삭제할 애들만 남음
+
+                System.out.println("삭제할 url 리스트 : " + originUrlList.toString());
+
+                for(int j=0; j< originUrlList.size(); j++){
+                    //s3에서 지우기
+                    ReviewImg reviewImg = reviewImgRepository.findByImgUrl(originUrlList.get(j));
+                    s3UploadService.deleteFile(reviewImg.getImgName());
+
+                    //db 삭제
+                    reviewImgRepository.deleteByImgUrl(originUrlList.get(j));
+                }
+            }
+        }
+
+        //기존 이미지 수정 안 하면
+        if(imgUrls != null)
+
+        //imgFiles 들어온 경우 (새로 등록하는 이미지)
         if(imgFiles != null){
+            System.out.println("이미지 파일 들어옴");
             for(MultipartFile imgFile : imgFiles){
                 ImageInfoDto imageInfoDto = s3UploadService.uploadFile(imgFile, FolderName.REVIEW.name());
                 ReviewImg reviewImg = new ReviewImg(imageInfoDto, review);
@@ -113,22 +148,9 @@ public class ReviewService {
         review.setContent(content);
         reviewRepository.save(review);
 
-        //imgUrls (기존에 있던 이미지 URL 중 사용자가 삭제한 것만 삭제)
-        if(reviewImgRepository.findAllByReview_ReviewId(reviewId) != null){
-            List<ReviewImg> originReviewImgList = reviewImgRepository.findAllByReview_ReviewId(reviewId);
-            if(originReviewImgList.size() != imgUrls.size()){
-                List<String> originUrlList = new ArrayList<>();
-                //s3에서 지우려면?
-                for(int i=0; i< originReviewImgList.size(); i++){
-                    originUrlList.add(originReviewImgList.get(i).getImgUrl());
-                }
-                originUrlList.removeAll(imgUrls);
 
-                for(int j=0; j< originUrlList.size(); j++){
-                    reviewImgRepository.deleteByImgUrl(originUrlList.get(j));
-                }
-            }
-        }
+
+
     }
 
     public ReviewResponseTempDto getReviewDetail(long reviewId) {
@@ -142,9 +164,10 @@ public class ReviewService {
 //        }
         String reviewImage = "";
 
-        if(rawReviewImgList.size() > 0){
+        if(rawReviewImgList.size() != 0){
             reviewImage = rawReviewImgList.get(0).getImgUrl();
         }
+        System.out.println(reviewImage);
 
         return new ReviewResponseTempDto(review, reviewImage);
     }
