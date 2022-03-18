@@ -184,26 +184,28 @@ public class MypageService {
         Page<Review> findReview = reviewRepository.findByUser(findUser, pageable);
         List<MyReviewResponseDto> reviewList = new ArrayList<>();
         for (Review review : findReview){
-//            ReviewImg reviewImg = reviewImgRepository.findTop1ByReview(review);
+            ReviewImg reviewImg = reviewImgRepository.findTop1ByReview(review);
 //            String reviewImgUrl = "https://makecake.s3.ap-northeast-2.amazonaws.com/PROFILE/18d2090b-1b98-4c34-b92b-a9f50d03bd53makecake_default.png";
-//            if (reviewImg != null) {
-//                reviewImgUrl = reviewImg.getImgUrl();
-//            }
-            List<ReviewImg> findReviewImg = reviewImgRepository.findByReview(review);
-            List<String> reviewImgList = new ArrayList<>();
-            if (findReviewImg != null){
-                for (int i = 0; i < findReviewImg.size(); i++){
-                    String reviewImg = findReviewImg.get(i).getImgName();
-                    reviewImgList.add(reviewImg);
-                }
+            String reviewImgUrl = "";
+            if (reviewImg != null) {
+                reviewImgUrl = reviewImg.getImgUrl();
             }
+//            List<ReviewImg> findReviewImg = reviewImgRepository.findByReview(review);
+//            List<String> reviewImgList = new ArrayList<>();
+//            if (findReviewImg != null){
+//                for (int i = 0; i < findReviewImg.size(); i++){
+//                    String reviewImg = findReviewImg.get(i).getImgName();
+//                    reviewImgList.add(reviewImg);
+//                }
+//            }
             MyReviewResponseDto responseDto = MyReviewResponseDto.builder()
                     .reviewId(review.getReviewId())
                     .storeId(review.getStore().getStoreId())
                     .name(review.getStore().getName())
                     .content(review.getContent())
                     .createdDate(review.getCreatedAt())
-                    .reviewImages(reviewImgList)
+//                    .reviewImages(reviewImgList)
+                    .reviewImages(reviewImgUrl)
                     .build();
             reviewList.add(responseDto);
         }
