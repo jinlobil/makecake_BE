@@ -3,6 +3,7 @@ package com.project.makecake.service;
 import com.project.makecake.dto.HomeReviewDto;
 import com.project.makecake.dto.ImageInfoDto;
 import com.project.makecake.dto.ReviewResponseDto;
+import com.project.makecake.dto.ReviewResponseTempDto;
 import com.project.makecake.enums.FolderName;
 import com.project.makecake.model.*;
 import com.project.makecake.repository.ReviewImgRepository;
@@ -130,16 +131,21 @@ public class ReviewService {
         }
     }
 
-    public ReviewResponseDto getReviewDetial(long reviewId) {
+    public ReviewResponseTempDto getReviewDetail(long reviewId) {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 리뷰입니다."));
 
-        List<String> reviewImages = new ArrayList<>();
+//        List<String> reviewImages = new ArrayList<>();
         List<ReviewImg> rawReviewImgList = reviewImgRepository.findAllByReview_ReviewId(reviewId);
-        for(ReviewImg rawReviewImg : rawReviewImgList){
-            reviewImages.add(rawReviewImg.getImgUrl());
+//        for(ReviewImg rawReviewImg : rawReviewImgList){
+//            reviewImages.add(rawReviewImg.getImgUrl());
+//        }
+        String reviewImage = "";
+
+        if(rawReviewImgList.size() > 0){
+            reviewImage = rawReviewImgList.get(0).getImgUrl();
         }
 
-        return new ReviewResponseDto(review, reviewImages);
+        return new ReviewResponseTempDto(review, reviewImage);
     }
 }

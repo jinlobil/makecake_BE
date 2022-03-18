@@ -1,6 +1,7 @@
 package com.project.makecake.controller;
 
 import com.project.makecake.dto.ReviewResponseDto;
+import com.project.makecake.dto.ReviewResponseTempDto;
 import com.project.makecake.model.Review;
 import com.project.makecake.security.UserDetailsImpl;
 import com.project.makecake.service.ReviewService;
@@ -28,8 +29,8 @@ public class ReviewController {
 
     //매장 후기 상세 조회
     @GetMapping("/reviews/{reviewId}")
-    public ReviewResponseDto getReviewDetail(@PathVariable long reviewId){
-        return reviewService.getReviewDetial(reviewId);
+    public ReviewResponseTempDto getReviewDetail(@PathVariable long reviewId){
+        return reviewService.getReviewDetail(reviewId);
     }
 
     //매장 후기 수정
