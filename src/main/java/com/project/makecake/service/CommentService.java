@@ -37,7 +37,7 @@ public class CommentService {
         // 해당 게시글에 달린 댓글 리스트 가져오기
         Sort sort = Sort.by(Sort.Direction.DESC,"commentId");
         Pageable pageable = PageRequest.of(page,5,sort);
-        Page<Comment> foundCommentList = commentRepository.findAll(pageable);
+        Page<Comment> foundCommentList = commentRepository.findAllByPost(foundPost,pageable);
 
         // 반환 dto에 담기
         List<CommentResponseDto> responseDtoList = new ArrayList<>();
