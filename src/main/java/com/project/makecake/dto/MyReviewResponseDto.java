@@ -13,5 +13,5 @@ public class MyReviewResponseDto {
     public String name;
     public String content;
     public String createdDate;
-    public List<String> reviewImages;
+    public String reviewImages;
 }
