@@ -5,11 +5,11 @@ import com.project.makecake.enums.DesignState;
 import com.project.makecake.enums.FolderName;
 import com.project.makecake.model.*;
 import com.project.makecake.repository.*;
-import com.project.makecake.requestDto.LikeDto;
-import com.project.makecake.requestDto.PostRequestDto;
-import com.project.makecake.responseDto.DesignResponseDto;
-import com.project.makecake.responseDto.PostDetailResponseDto;
-import com.project.makecake.responseDto.PostSimpleResponseDto;
+import com.project.makecake.dto.LikeDto;
+import com.project.makecake.dto.PostRequestDto;
+import com.project.makecake.dto.DesignResponseDto;
+import com.project.makecake.dto.PostDetailResponseDto;
+import com.project.makecake.dto.PostSimpleResponseDto;
 import com.project.makecake.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -37,8 +37,8 @@ public class PostService {
     private final PostLikeRepository postLikeRepository;
     private final CommentRepository commentRepository;
 
-    // 게시된 도안 사진 리스트
-    public List<PostSimpleResponseDto> getAllPosts(UserDetailsImpl userDetails,int page, String sortType) {
+    // 게시된 도안 사진 리스트 조회 메소드
+    public List<PostSimpleResponseDto> getPostList(UserDetailsImpl userDetails, int page, String sortType) {
 
         // 비로그인 유저는 null 처리
         User user = null;
@@ -58,8 +58,6 @@ public class PostService {
             foundPostList = postRepository.findAll(pageable);
         }
 
-
-
         // 반환 Dto에 담기 + 좋아요 반영
         List<PostSimpleResponseDto> responseDtoList = new ArrayList<>();
         for (Post post : foundPostList) {
@@ -73,13 +71,12 @@ public class PostService {
             PostSimpleResponseDto responseDto = new PostSimpleResponseDto(post,myLike);
             responseDtoList.add(responseDto);
         }
-
         return responseDtoList;
     }
 
-    // 도안 그리고 난 후 이미지 저장
+    // 도안 그리고 난 후 이미지 저장 메소드
     @Transactional
-    public DesignResponseDto saveDesign(UserDetailsImpl userDetails, MultipartFile img) throws IOException {
+    public DesignResponseDto addDesign(UserDetailsImpl userDetails, MultipartFile img) throws IOException {
         User user = userDetails.getUser();
 
         // S3에 이미지 업로드하고 업로드 정보 받아오기
@@ -92,9 +89,9 @@ public class PostService {
         return new DesignResponseDto(savedDesign);
     }
 
-    // 도안 게시글 작성
+    // 도안 게시글 작성 메소드
     @Transactional
-    public HashMap<String,Long> savePost(Long designId, UserDetailsImpl userDetails, PostRequestDto requestDto) {
+    public HashMap<String,Long> addPost(Long designId, UserDetailsImpl userDetails, PostRequestDto requestDto) {
         User user = userDetails.getUser();
 
         // 도안 찾기
@@ -108,30 +105,29 @@ public class PostService {
 
         // 도안 게시글 저장
         // 제작 매장을 기입한 경우
+        HashMap<String,Long> responseDto = new HashMap<>();
+
         if (requestDto.isMade()&&requestDto.getStoreId()!=null) {
             Store foundStore = storeRepository.findById(requestDto.getStoreId())
                     .orElseThrow(()->new IllegalArgumentException("존재하지 않는 매장입니다."));
             Post post = new Post(requestDto,user,foundDesign,foundStore);
-            Post savePost = postRepository.save(post);
+            Post savedPost = postRepository.save(post);
             foundDesign.post(); // 도안 게시글 상태 POST로 변경
-            HashMap<String,Long> response = new HashMap<>();
-            response.put("postId",savePost.getPostId());
-            return response;
+            responseDto.put("postId",savedPost.getPostId());
 
         // 제작 매장을 기입하지 않은 경우
         } else {
             Post post = new Post(requestDto,user,foundDesign);
-            Post savePost = postRepository.save(post);
+            Post savedPost = postRepository.save(post);
             foundDesign.post(); // 도안 게시글 상태 POST로 변경
-            HashMap<String,Long> response = new HashMap<>();
-            response.put("postId",savePost.getPostId());
-            return response;
+            responseDto.put("postId",savedPost.getPostId());
         }
+        return responseDto;
     }
 
-    // 도안 게시글 수정
+    // 도안 게시글 수정 메소드
     @Transactional
-    public void updatePost(Long postId, UserDetailsImpl userDetails, PostRequestDto requestDto) {
+    public void editPost(Long postId, UserDetailsImpl userDetails, PostRequestDto requestDto) {
         User user = userDetails.getUser();
 
         // 게시글 찾기
@@ -188,7 +184,7 @@ public class PostService {
 
     // 도안 게시글 좋아요
     @Transactional
-    public LikeDto postLike(Long postId, LikeDto requestDto, UserDetailsImpl userDetails) {
+    public LikeDto likePost(Long postId, LikeDto requestDto, UserDetailsImpl userDetails) {
         User user = userDetails.getUser();
 
         // 게시글 찾기
@@ -210,7 +206,7 @@ public class PostService {
 
     // 도안 게시글 상세 조회
     @Transactional
-    public PostDetailResponseDto getPost(Long postId, UserDetailsImpl userDetails) {
+    public PostDetailResponseDto getPostDetails(Long postId, UserDetailsImpl userDetails) {
 
         // 비로그인 유저는 null 처리
         User user = null;
@@ -237,13 +233,13 @@ public class PostService {
         }
 
         // 댓글 수 세기
-        Long commentCnt = commentRepository.countByPost(foundPost);
+        int commentCnt = commentRepository.countByPost(foundPost).intValue();
 
-        return new PostDetailResponseDto(foundPost,myLike,commentCnt);
+        return new PostDetailResponseDto(foundPost, myLike, commentCnt);
     }
 
     // 도안 삭제
-    public void deleteDesign(UserDetailsImpl userDetails, Long designId) {
+    public void removeDesign(UserDetailsImpl userDetails, Long designId) {
 
         // 도안 찾기
         Design foundDesign = designRepository.findById(designId)

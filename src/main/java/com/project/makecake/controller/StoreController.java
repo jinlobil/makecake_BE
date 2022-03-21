@@ -1,8 +1,7 @@
 package com.project.makecake.controller;
 
 import com.project.makecake.dto.*;
-import com.project.makecake.model.User;
-import com.project.makecake.requestDto.LikeDto;
+import com.project.makecake.dto.LikeDto;
 import com.project.makecake.security.UserDetailsImpl;
 import com.project.makecake.service.CakeService;
 import com.project.makecake.service.ReviewService;
@@ -22,48 +21,57 @@ public class StoreController {
     private final ReviewService reviewService;
 
 
-    //홈탭(1) 핫매장, 핫케이크 5개씩
+    //(홈탭) 인기 매장, 인기 케이크 5개 조회 API
     @GetMapping("/api/home")
-    public HomeResponseDto getHomeStoreAndCake(){
-        List<HomeStoreDto> homeStoreDtoList = storeService.getHomeStoreList();
-        List<HomeCakeDto> homeCakeDtoList = cakeService.getHomeCakeList();
-        HomeResponseDto homeResponseDto = new HomeResponseDto(homeStoreDtoList, homeCakeDtoList);
+    public HomeResponseDto getStoreAndCakeAtHome() {
+        List<HomeStoreDto> storeResponseDtoList = storeService.getStoreListAtHome();
+        List<HomeCakeDto> cakeResponseDtoList = cakeService.getCakeListAtHome();
+        HomeResponseDto responseDto = new HomeResponseDto(storeResponseDtoList, cakeResponseDtoList);
 
-        return homeResponseDto;
+        return responseDto;
     }
 
-    //홉탭(2) 최신 리뷰 (페이지네이션)
+    //(홈탭) 최신 리뷰 조회 API
     @GetMapping("/api/home/review")
-    public List<HomeReviewDto> getHomeReview(){
-        return reviewService.getHomeReviewList();
+    public List<HomeReviewDto> getReviewListAtHome(){
+        return reviewService.getReviewListAtHome();
     }
 
-    //매장 검색 결과 보여주기
 
+    //매장 검색 결과 반환 API
     @PostMapping("/api/search")
-    public List<SearchResponseDto> getSearchStore(@RequestBody SearchRequestDto requestDto) throws IOException {
-        return storeService.getSearchStore(requestDto);
+    public List<SearchResponseDto> getStoreList(@RequestBody SearchRequestDto requestDto) throws IOException {
+        return storeService.getStoreList(requestDto);
     }
 
 
-
-    //매장 상세페이지
+    //매장 상세페이지 조회 API
     @GetMapping("/api/stores/{storeId}")
-    public StoreDetailResponseDto getStoreDetail(@PathVariable Long storeId, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return storeService.getStoreDetail(storeId, userDetails);
+    public StoreDetailResponseDto getStoreDetails(
+            @PathVariable Long storeId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        return storeService.getStoreDetails(storeId, userDetails);
     }
 
-    //매장 상세페이지 - 매장 케이크 (무한 스크롤 구현 필요) 9개씩
+    //(매장 상세페이지) 매장 케이크 조회 API (9개씩)
     @GetMapping("/api/stores/cakes")
-    public List<StoreDetailCakeResponseDto> getStoreDetailCakes(@RequestParam long storeId, @RequestParam int page, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return  storeService.getStoreDetailCakes(storeId, userDetails, page);
+    public List<StoreDetailCakeResponseDto> getCakeListAtStore(
+            @RequestParam long storeId,
+            @RequestParam int page,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        return  storeService.getCakeListAtStore(storeId, userDetails, page);
     }
 
 
-    //매장 상세페이지 - 매장 리뷰 (무한 스크롤 구현 필요)
+    //(매장 상세페이지) 매장 리뷰 조회 API (3개씩)
     @GetMapping("/api/stores/reviews")
-    public List<ReviewResponseDto> getStoreDetailReviews(@RequestParam long storeId, @RequestParam int page){
-        return  storeService.getStoreDetailReviews(storeId, page);
+    public List<ReviewResponseDto> getReviewListAtStore(
+            @RequestParam long storeId,
+            @RequestParam int page
+    ) {
+        return  storeService.getReviewListAtStore(storeId, page);
     }
 
     @DeleteMapping("/backOffice/stores/{storeId}")
@@ -72,10 +80,13 @@ public class StoreController {
     }
 
 
-    //매장 좋아요
+    // 매장 좋아요 API
     @PostMapping("/stores/like/{storeId}")
-    public LikeDto likeStore(@RequestBody LikeDto likeDto, @PathVariable Long storeId, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        User user = userDetails.getUser();
-        return storeService.likeStore(likeDto.isMyLike(), storeId, user);
+    public LikeDto likeStore(
+            @RequestBody LikeDto requestDto,
+            @PathVariable Long storeId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        return storeService.likeStore(requestDto.isMyLike(), storeId, userDetails);
     }
 }

@@ -1,8 +1,6 @@
 package com.project.makecake.controller;
 
-import com.project.makecake.dto.ReviewResponseDto;
 import com.project.makecake.dto.ReviewResponseTempDto;
-import com.project.makecake.model.Review;
 import com.project.makecake.security.UserDetailsImpl;
 import com.project.makecake.service.ReviewService;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +40,7 @@ public class ReviewController {
                              @RequestParam(value="imgUrls") List<String> imgUrls, //내가 원래 가지고 있던 이미지 중에서 안 지우고 이번에도 남길 이미지들
 //                             @RequestPart(value="imgUrls") String imgUrls,
                              @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException{
-        reviewService.updateReview(reviewId, content, imgFiles, imgUrls, userDetails);
+        reviewService.editReview(reviewId, content, imgFiles, imgUrls, userDetails);
     }
 
 
