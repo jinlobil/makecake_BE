@@ -2,7 +2,6 @@ package com.project.makecake.service;
 
 import com.project.makecake.dto.HomeReviewDto;
 import com.project.makecake.dto.ImageInfoDto;
-import com.project.makecake.dto.ReviewResponseDto;
 import com.project.makecake.dto.ReviewResponseTempDto;
 import com.project.makecake.enums.FolderName;
 import com.project.makecake.model.*;
@@ -29,7 +28,7 @@ public class ReviewService {
 
     //홈탭 : 최신 리뷰 보여주기 (페이지네이션)
     @Transactional
-    public List<HomeReviewDto> getHomeReviewList() {
+    public List<HomeReviewDto> getReviewListAtHome() {
         List<Review> rawReviewList = reviewRepository.findTop5ByOrderByCreatedAtDesc();
 
         List<HomeReviewDto> responseDtoList = new ArrayList<>();
@@ -89,14 +88,9 @@ public class ReviewService {
         storeRepository.save(store);
     }
 
-    public static void main(String[] args){
-
-    }
-
-
     //리뷰 수정하기 (프론트와 상의 후 구현 필요함)
     @Transactional
-    public void updateReview(long reviewId, String content, List<MultipartFile> imgFiles, List<String> imgUrls, UserDetailsImpl userDetails) throws IOException {
+    public void editReview(long reviewId, String content, List<MultipartFile> imgFiles, List<String> imgUrls, UserDetailsImpl userDetails) throws IOException {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(()->new IllegalArgumentException("존재하지 않는 리뷰입니다."));
 

@@ -8,8 +8,8 @@ import com.project.makecake.repository.CakeLikeRepository;
 import com.project.makecake.repository.CakeRepository;
 import com.project.makecake.repository.StoreRepository;
 import com.project.makecake.repository.UserRepository;
-import com.project.makecake.requestDto.LikeDto;
-import com.project.makecake.responseDto.CakeResponseDto;
+import com.project.makecake.dto.LikeDto;
+import com.project.makecake.dto.CakeResponseDto;
 import com.project.makecake.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -38,7 +38,7 @@ public class CakeService {
 
     //홈탭 케이크 불러오기
     @Transactional
-    public List<HomeCakeDto> getHomeCakeList() {
+    public List<HomeCakeDto> getCakeListAtHome() {
         List<HomeCakeDto> homeCakeDtoList = new ArrayList<>();
         List<Cake> rawCakeList = cakeRepository.findTop5ByOrderByLikeCnt();
 

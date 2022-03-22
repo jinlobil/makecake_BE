@@ -4,7 +4,7 @@ import com.project.makecake.dto.*;
 import com.project.makecake.enums.DesignState;
 import com.project.makecake.model.*;
 import com.project.makecake.repository.*;
-import com.project.makecake.responseDto.DesignResponseDto;
+import com.project.makecake.dto.DesignResponseDto;
 import com.project.makecake.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -29,87 +29,89 @@ public class MypageService {
     private final ReviewImgRepository reviewImgRepository;
     private final PostLikeRepository postLikeRepository;
 
-    // 마이페이지 조회
-    public MypageResponseDto mypage(UserDetailsImpl userDetails) {
+    // 마이프로필 조회 메소드
+    public MypageResponseDto getMyProfile(UserDetailsImpl userDetails) {
         if (userDetails == null) {
             throw new IllegalArgumentException("로그인을 해주세요.");
         }
-        User findUser = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
+
+        User foundUser = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
                 () -> new IllegalArgumentException("유저가 존재하지 않습니다.")
         );
-        String email = findUser.getUsername();
-        if (findUser.getProviderEmail() != null){
-            email = findUser.getProviderEmail();
+        String email = foundUser.getUsername();
+        if (foundUser.getProviderEmail() != null){
+            email = foundUser.getProviderEmail();
         }
-        MypageResponseDto mypage = MypageResponseDto.builder()
-                .nickname(findUser.getNickname())
-                .profileImg(findUser.getProfileImgUrl())
+        MypageResponseDto responseDto = MypageResponseDto.builder()
+                .nickname(foundUser.getNickname())
+                .profileImg(foundUser.getProfileImgUrl())
                 .email(email)
                 .build();
-        return mypage;
+        return responseDto;
     }
 
-    // 내가 그린 도안 조회
-    public List<MyDesignResponseDto> myDesigns(UserDetailsImpl userDetails, String option, int page) {
+    // 내가 그린 도안 조회 메소드
+    public List<MyDesignResponseDto> getMyDesignList(UserDetailsImpl userDetails, String option, int page) {
         if (userDetails == null) {
             throw new IllegalArgumentException("로그인을 해주세요.");
         }
-        User findUser = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
-                () -> new IllegalArgumentException("유저가 존재하지 않습니다.")
+        User foundUser = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
+                () -> new IllegalArgumentException("존재하지 않는 사용자입니다.")
         );
+
         Pageable pageable = PageRequest.of(page, 18);
-        List<MyDesignResponseDto> designList = new ArrayList<>();
+        List<MyDesignResponseDto> responseDtoList = new ArrayList<>();
         if (option.equals("nonpost")){
-            Page<Design> findDesign = designRepository.findByUserAndState(findUser, DesignState.UNPOST, pageable);
-            for (Design design : findDesign){
+            Page<Design> foundDesignList = designRepository.findByUserAndState(foundUser, DesignState.UNPOST, pageable);
+            for (Design design : foundDesignList){
                 MyDesignResponseDto responseDto = MyDesignResponseDto.builder()
                         .designId(design.getDesignId())
                         .img(design.getImgUrl())
                         .build();
-                designList.add(responseDto);
+                responseDtoList.add(responseDto);
             }
         } else if (option.equals("post")){
-            Page<Post> findPost = postRepository.findByUser(findUser, pageable);
-            for (Post post : findPost){
+            Page<Post> foundPostList = postRepository.findByUser(foundUser, pageable);
+            for (Post post : foundPostList){
                 MyDesignResponseDto responseDto = MyDesignResponseDto.builder()
                         .postId(post.getPostId())
                         .designId(post.getDesign().getDesignId())
                         .img(post.getDesign().getImgUrl())
                         .build();
-                designList.add(responseDto);
+                responseDtoList.add(responseDto);
             }
         }
-        return designList;
+        return responseDtoList;
     }
 
-    // 내가 그린 도안 상세 조회(게시X)
-    public DesignResponseDto getDesign(Long designId, UserDetailsImpl userDetails) {
+    // 내가 게시 안 한 도안 상세 조회 메소드
+    public DesignResponseDto getDesignDetails(Long designId, UserDetailsImpl userDetails) {
         if (userDetails == null) {
             throw new IllegalArgumentException("로그인을 해주세요.");
         }
 
         // 도안 찾기
         Design foundDesign = designRepository.findById(designId)
-                .orElseThrow(()->new IllegalArgumentException("도안이 존재하지 않습니다."));
+                .orElseThrow(()->new IllegalArgumentException("존재하지 않는 도안입니다."));
 
         DesignResponseDto responseDto = new DesignResponseDto(foundDesign);
 
         return responseDto;
     }
 
-    // 내가 좋아요 한 게시글
-    public List<MyReactPostResponceDto> myReactDesigns(UserDetailsImpl userDetails, int page) {
+    // 내가 좋아요 한 게시글 조회 메소드
+    public List<MyReactPostResponceDto> getMyLikePostList(UserDetailsImpl userDetails, int page) {
         if (userDetails == null) {
             throw new IllegalArgumentException("로그인을 해주세요.");
         }
-        User findUser = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
+        User foundUser = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
                 () -> new IllegalArgumentException("유저가 존재하지 않습니다.")
         );
         Pageable pageable = PageRequest.of(page, 5);
-        Page<PostLike> findPost = postLikeRepository.findByUser(findUser, pageable);
-        List<MyReactPostResponceDto> reactList = new ArrayList<>();
-        for (PostLike postLike : findPost){
-            MyReactPostResponceDto responceDto = MyReactPostResponceDto.builder()
+        Page<PostLike> foundPostList = postLikeRepository.findByUser(foundUser, pageable);
+        List<MyReactPostResponceDto> responseDtoList = new ArrayList<>();
+        for (PostLike postLike : foundPostList){
+            MyReactPostResponceDto responseDto = MyReactPostResponceDto.builder()
                     .postId(postLike.getPost().getPostId())
                     .img(postLike.getPost().getDesign().getImgUrl())
                     .nickname(postLike.getPost().getUser().getNickname())
@@ -117,23 +119,23 @@ public class MypageService {
                     .content(postLike.getPost().getContent())
                     .createdDate(postLike.getPost().getCreatedAt())
                     .build();
-            reactList.add(responceDto);
+            responseDtoList.add(responseDto);
         }
-        return reactList;
+        return responseDtoList;
     }
 
-    // 내가 남긴 댓글
-    public List<MyCommentResponseDto> myComments(UserDetailsImpl userDetails, int page) {
+    // 내가 남긴 댓글 조회 메소드
+    public List<MyCommentResponseDto> getMyCommentList(UserDetailsImpl userDetails, int page) {
         if (userDetails == null) {
             throw new IllegalArgumentException("로그인을 해주세요.");
         }
-        User findUser = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
-                () -> new IllegalArgumentException("유저가 존재하지 않습니다.")
+        User foundUser = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
+                () -> new IllegalArgumentException("존재하지 않는 사용자입니다.")
         );
         Pageable pageable = PageRequest.of(page, 5);
-        Page<Comment> findComment = commentRepository.findByUser(findUser, pageable);
-        List<MyCommentResponseDto> commentList = new ArrayList<>();
-        for (Comment comment : findComment){
+        Page<Comment> foundCommentList = commentRepository.findByUser(foundUser, pageable);
+        List<MyCommentResponseDto> responseDtoList = new ArrayList<>();
+        for (Comment comment : foundCommentList){
             MyCommentResponseDto responseDto = MyCommentResponseDto.builder()
                     .commentId(comment.getCommentId())
                     .content(comment.getContent())
@@ -141,23 +143,23 @@ public class MypageService {
                     .postId(comment.getPost().getPostId())
                     .postTitle(comment.getPost().getTitle())
                     .build();
-            commentList.add(responseDto);
+            responseDtoList.add(responseDto);
         }
-        return commentList;
+        return responseDtoList;
     }
 
-    // 내가 좋아요 한 매장
-    public List<MyReactStoreResponseDto> myReactStores(UserDetailsImpl userDetails, int page) {
+    // 내가 좋아요 한 매장 조회 메소드
+    public List<MyReactStoreResponseDto> getMyLikeStoreList(UserDetailsImpl userDetails, int page) {
         if (userDetails == null) {
             throw new IllegalArgumentException("로그인을 해주세요.");
         }
-        User findUser = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
-                () -> new IllegalArgumentException("유저가 존재하지 않습니다.")
+        User foundUser = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
+                () -> new IllegalArgumentException("존재하지 않는 사용자입니다.")
         );
         Pageable pageable = PageRequest.of(page, 8);
-        Page<StoreLike> findStore = storeLikeRepository.findByUser(findUser, pageable);
-        List<MyReactStoreResponseDto> storeList = new ArrayList<>();
-        for (StoreLike storeLike : findStore){
+        Page<StoreLike> foundStoreLikeList = storeLikeRepository.findByUser(foundUser, pageable);
+        List<MyReactStoreResponseDto> responseDtoList = new ArrayList<>();
+        for (StoreLike storeLike : foundStoreLikeList){
             String address = storeLike.getStore().getFullAddress();
             String[] custom = address.split(" ");
             String addressSimple = custom[0] + " " + custom[1] + " " + custom[2];
@@ -167,23 +169,23 @@ public class MypageService {
                     .addressSimple(addressSimple)
                     .mainImg(storeLike.getStore().getMainImg())
                     .build();
-            storeList.add(responseDto);
+            responseDtoList.add(responseDto);
         }
-        return storeList;
+        return responseDtoList;
     }
 
-    // 내가 남긴 후기
-    public List<MyReviewResponseDto> myReviews(UserDetailsImpl userDetails, int page) {
+    // 내가 남긴 후기 조회 메소드
+    public List<MyReviewResponseDto> getMyReviewList(UserDetailsImpl userDetails, int page) {
         if (userDetails == null) {
             throw new IllegalArgumentException("로그인을 해주세요.");
         }
-        User findUser = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
-                () -> new IllegalArgumentException("유저가 존재하지 않습니다.")
+        User foundUser = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
+                () -> new IllegalArgumentException("존재하지 않는 사용자입니다.")
         );
         Pageable pageable = PageRequest.of(page, 5);
-        Page<Review> findReview = reviewRepository.findByUser(findUser, pageable);
-        List<MyReviewResponseDto> reviewList = new ArrayList<>();
-        for (Review review : findReview){
+        Page<Review> foundReviewList = reviewRepository.findByUser(foundUser, pageable);
+        List<MyReviewResponseDto> responseDtoList = new ArrayList<>();
+        for (Review review : foundReviewList){
             ReviewImg reviewImg = reviewImgRepository.findTop1ByReview(review);
 //            String reviewImgUrl = "https://makecake.s3.ap-northeast-2.amazonaws.com/PROFILE/18d2090b-1b98-4c34-b92b-a9f50d03bd53makecake_default.png";
             String reviewImgUrl = "";
@@ -207,23 +209,23 @@ public class MypageService {
 //                    .reviewImages(reviewImgList)
                     .reviewImages(reviewImgUrl)
                     .build();
-            reviewList.add(responseDto);
+            responseDtoList.add(responseDto);
         }
-        return reviewList;
+        return responseDtoList;
     }
 
-    // 내가 좋아요 한 케이크
-    public List<MyReactCakeResponseDto> myReactCakes(UserDetailsImpl userDetails, int page) {
+    // 내가 좋아요 한 케이크 조회 메소드
+    public List<MyReactCakeResponseDto> getMyLikeCakeList(UserDetailsImpl userDetails, int page) {
         if (userDetails == null) {
             throw new IllegalArgumentException("로그인을 해주세요.");
         }
-        User findUser = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
-                () -> new IllegalArgumentException("유저가 존재하지 않습니다.")
+        User foundUser = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
+                () -> new IllegalArgumentException("존재하지 않는 사용자입니다.")
         );
         Pageable pageable = PageRequest.of(page, 8);
-        Page<CakeLike> findCake = cakeLikeRepository.findByUser(findUser, pageable);
-        List<MyReactCakeResponseDto> cakeList = new ArrayList<>();
-        for (CakeLike cakeLike : findCake){
+        Page<CakeLike> foundCakeList = cakeLikeRepository.findByUser(foundUser, pageable);
+        List<MyReactCakeResponseDto> responseDtoList = new ArrayList<>();
+        for (CakeLike cakeLike : foundCakeList) {
             MyReactCakeResponseDto responseDto = MyReactCakeResponseDto.builder()
                     .cakeId(cakeLike.getCake().getCakeId())
                     .img(cakeLike.getCake().getUrl())
@@ -231,9 +233,9 @@ public class MypageService {
                     .likeCnt(cakeLike.getCake().getLikeCnt())
                     .myLike(true)
                     .build();
-            cakeList.add(responseDto);
+            responseDtoList.add(responseDto);
         }
-        return cakeList;
+        return responseDtoList;
     }
 
 }

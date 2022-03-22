@@ -1,6 +1,6 @@
 package com.project.makecake.model;
 
-import com.project.makecake.requestDto.PostRequestDto;
+import com.project.makecake.dto.PostRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

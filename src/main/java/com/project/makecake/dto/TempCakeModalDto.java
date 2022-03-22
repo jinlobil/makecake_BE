@@ -1,7 +1,5 @@
 package com.project.makecake.dto;
 
-import com.project.makecake.model.Cake;
-import com.project.makecake.responseDto.CakeResponseDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

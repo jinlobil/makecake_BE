@@ -1,6 +1,7 @@
 package com.project.makecake.model;
 
-import com.project.makecake.backOffice.dto.CakeOptionRowDto;
+import com.project.makecake.dto.backoffice.CakeOptionRowDto;
+import com.project.makecake.enums.CakePriceState;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
