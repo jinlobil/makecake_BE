@@ -7,8 +7,7 @@ import com.project.makecake.dto.MypageResponseDto;
 import com.project.makecake.dto.SignupRequestDto;
 import com.project.makecake.enums.FolderName;
 import com.project.makecake.security.UserDetailsImpl;
-import com.project.makecake.service.S3UploadService;
-import com.project.makecake.service.UserService;
+import com.project.makecake.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -24,73 +23,103 @@ import java.util.HashMap;
 public class UserController {
 
     private final UserService userService;
+    private final KakaoLoginService kakaoLoginService;
+    private final NaverLoginService naverLoginService;
+    private final GoogleLoginService googleLoginService;
     private final S3UploadService s3UploadService;
 
-    // 회원가입
+    // 회원가입 API
     @PostMapping("/user/signup")
-    public HashMap<String, Boolean> registerUser(@RequestBody SignupRequestDto requestDto) {
-        return userService.registerUser(requestDto);
+    public HashMap<String, Boolean> addUser(
+            @RequestBody SignupRequestDto requestDto
+    ) {
+        return userService.addUser(requestDto);
     }
 
-    // username 중복검사
+    // username 중복검사 API
     @PostMapping("/user/usernameCheck")
-    public HashMap<String, Boolean> usernameCheck(@RequestBody SignupRequestDto requestDto) {
-        return userService.usernameCheck(requestDto);
+    public HashMap<String, Boolean> checkUsername(
+            @RequestBody SignupRequestDto requestDto
+    ) {
+        return userService.checkUsername(requestDto);
     }
 
-    // nickname 중복검사
+    // nickname 중복검사 API
     @PostMapping("/user/nicknameCheck")
-    public HashMap<String, Boolean> nicknameCheck(@RequestBody SignupRequestDto requestDto) {
-        return userService.nicknameCheck(requestDto);
+    public HashMap<String, Boolean> checkNickname(
+            @RequestBody SignupRequestDto requestDto
+    ) {
+        return userService.checkNickname(requestDto);
     }
 
-    // 로그인 체크
+    // 로그인 체크 API
     @GetMapping("/user/loginCheck")
-    public LoginCheckResponseDto loginCheck(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return userService.loginChecked(userDetails);
+    public LoginCheckResponseDto checkLogin(
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        return userService.checkLogin(userDetails);
     }
 
-    // 프로필이미지 수정
+    // 프로필이미지 수정 API
     @PutMapping("/user/editProfile")
-    public MypageResponseDto editProfile(@RequestParam(value = "img", required = false) MultipartFile multipartFile,
-                                         @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
-        return userService.editProfile(multipartFile, userDetails);
+    public MypageResponseDto editProfile(
+            @RequestParam(value = "imgFile", required = false) MultipartFile imgFile,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) throws IOException {
+        return userService.editProfile(imgFile, userDetails);
     }
 
-    // 닉네임 수정
+    // 닉네임 수정 API
     @PutMapping("/user/editNickname")
-    public MypageResponseDto editNickname(@RequestBody SignupRequestDto signupRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public MypageResponseDto editNickname(
+            @RequestBody SignupRequestDto signupRequestDto,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
         return userService.editNickname(signupRequestDto, userDetails);
     }
 
-    // 회원탈퇴
+    // 회원탈퇴 API
     @PutMapping("/user/resign")
-    public MypageResponseDto resignUser(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public MypageResponseDto resignUser(
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
         return userService.resignUser(userDetails);
     }
 
-    // (임시) 이미지 업로드
+    // (임시) 이미지 업로드 API
     @PostMapping("/user/image")
-    public ImageInfoDto userImage(@RequestParam(value = "imageFile", required = false) MultipartFile multipartFile) throws IOException {
-        ImageInfoDto imageInfoDto = s3UploadService.uploadFile(multipartFile, FolderName.PROFILE.name());
+    public ImageInfoDto userImage(
+            @RequestParam(value = "imgFile", required = false) MultipartFile imgFile
+    ) throws IOException {
+        ImageInfoDto imageInfoDto = s3UploadService.uploadFile(imgFile, FolderName.PROFILE.name());
         return imageInfoDto;
     }
 
-    // 카카오 로그인
+    // 카카오 로그인 API
     @GetMapping("/user/kakao/callback")
-    public void kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
-        userService.kakaoLogin(code, response);
+    public void kakaoLogin(
+            @RequestParam String code,
+            HttpServletResponse response
+    ) throws JsonProcessingException {
+        kakaoLoginService.kakaoLogin(code, response);
     }
 
-    // 네이버 로그인
+    // 네이버 로그인 API
     @GetMapping("/user/naver/callback")
-    public void naverLogin(@RequestParam String code, @RequestParam String state, HttpServletResponse response) throws JsonProcessingException {
-        userService.naverLogin(code, state, response);
+    public void naverLogin(
+            @RequestParam String code,
+            @RequestParam String state,
+            HttpServletResponse response
+    ) throws JsonProcessingException {
+        naverLoginService.naverLogin(code, state, response);
     }
 
-    // 구글 로그인
+    // 구글 로그인 API
     @GetMapping("/user/google/callback")
-    public void googleLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
-        userService.google(code, response);
+    public void googleLogin(
+            @RequestParam String code,
+            HttpServletResponse response
+    ) throws JsonProcessingException {
+        googleLoginService.googleLogin(code, response);
     }
 }
