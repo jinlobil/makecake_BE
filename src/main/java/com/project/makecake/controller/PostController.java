@@ -21,11 +21,12 @@ import java.util.List;
 public class PostController {
     private final PostService postService;
 
-    // 도안 그리고 난 후 이미지 저장하는 API
+    // 도안 저장 API
     @PostMapping("/designs")
     public DesignResponseDto addDesign(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @RequestParam MultipartFile imgFile) throws IOException {
+            @RequestParam MultipartFile imgFile
+    ) throws IOException {
         return postService.addDesign(userDetails, imgFile);
     }
 
@@ -33,12 +34,12 @@ public class PostController {
     @DeleteMapping("/designs/{designId}")
     public void removeDesign(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @PathVariable Long designId
+            @PathVariable long designId
     ) {
         postService.removeDesign(userDetails, designId);
     }
 
-    // 게시된 도안 사진 리스트 API (18개씩)
+    // 도안 게시글 리스트 조회 API (18개씩)
     @GetMapping("/api/designs")
     public List<PostSimpleResponseDto> getPostList(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -48,10 +49,10 @@ public class PostController {
         return postService.getPostList(userDetails, page, sortType);
     }
 
-    // 게시된 도안 상세 API
+    // 도안 게시글 상세 조회 API
     @GetMapping("/api/designs/{postId}")
     public PostDetailResponseDto getPostDetails(
-            @PathVariable Long postId,
+            @PathVariable long postId,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         return postService.getPostDetails(postId, userDetails);
@@ -60,7 +61,7 @@ public class PostController {
     // 도안 게시글 작성 API
     @PostMapping("/posts/{designId}")
     public HashMap<String,Long> addPost(
-            @PathVariable Long designId,
+            @PathVariable long designId,
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestBody PostRequestDto requestDto
     ) {
@@ -70,7 +71,7 @@ public class PostController {
     // 도안 게시글 수정 API
     @PutMapping("/posts/{postId}")
     public void editPost(
-            @PathVariable Long postId,
+            @PathVariable long postId,
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestBody PostRequestDto requestDto
     ) {
@@ -80,19 +81,19 @@ public class PostController {
     // 도안 게시글 삭제 API
     @DeleteMapping("/posts/{postId}")
     public void deletePost(
-            @PathVariable Long postId,
+            @PathVariable long postId,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         postService.deletePost(postId, userDetails);
     }
 
-    // 도안 게시글 좋아요 API
+    // 도안 게시글 좋아요 등록 및 삭제 API
     @PostMapping("/posts/like/{postId}")
-    public LikeDto likePost(
-            @PathVariable Long postId,
+    public LikeDto savePostLike(
+            @PathVariable long postId,
             @RequestBody LikeDto requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        return postService.likePost(postId, requestDto, userDetails);
+        return postService.savePostLike(postId, requestDto, userDetails);
     }
 }

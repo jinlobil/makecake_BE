@@ -26,22 +26,21 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
 
-    // 도안 게시글의 댓글 불러오기
-    public List<CommentResponseDto> getAllComments(Long postId, int page) {
+    // 도안 댓글 리스트 조회 메소드 (5개씩)
+    public List<CommentResponseDto> getCommentList(long postId, int page) {
 
         // 게시글 찾기
         Post foundPost = postRepository.findById(postId)
                 .orElseThrow(()->new IllegalArgumentException("존재하지 않는 게시글입니다."));
 
-        // 일단 전부
-        // 해당 게시글에 달린 댓글 리스트 가져오기
+        // 게시글에 달린 댓글 리스트 찾기 (5개씩)
         Sort sort = Sort.by(Sort.Direction.DESC,"commentId");
         Pageable pageable = PageRequest.of(page,5,sort);
-        Page<Comment> foundCommentList = commentRepository.findAllByPost(foundPost,pageable);
+        Page<Comment> foundCommentList = commentRepository.findAllByPost(foundPost, pageable);
 
-        // 반환 dto에 담기
+        // 반환 DTO에 담기
         List<CommentResponseDto> responseDtoList = new ArrayList<>();
-        for (Comment comment:foundCommentList) {
+        for (Comment comment : foundCommentList) {
             CommentResponseDto responseDto = new CommentResponseDto(comment);
             responseDtoList.add(responseDto);
         }
@@ -49,9 +48,10 @@ public class CommentService {
         return responseDtoList;
     }
 
-    // 도안 댓글 저장
+    // 도안 댓글 작성 메소드
     @Transactional
-    public void saveComment(Long postId, UserDetailsImpl userDetails, CommentRequestDto requestDto) {
+    public void addComment(long postId, UserDetailsImpl userDetails, CommentRequestDto requestDto) {
+
         User user = userDetails.getUser();
 
         // 게시글 찾기
@@ -59,16 +59,16 @@ public class CommentService {
                 .orElseThrow(()->new IllegalArgumentException("존재하지 않는 게시글입니다."));
 
         // 댓글 저장
-        Comment comment = new Comment(requestDto.getContent(),foundPost,user);
+        Comment comment = new Comment(requestDto.getContent(), foundPost, user);
         commentRepository.save(comment);
 
         // 도안 게시글 댓글수 증가
         foundPost.comment(true);
     }
 
-    // 도안 댓글 수정
+    // 도안 댓글 수정 메소드
     @Transactional
-    public void updateComment(Long commentId, UserDetailsImpl userDetails, CommentRequestDto requestDto) {
+    public void editComment(long commentId, UserDetailsImpl userDetails, CommentRequestDto requestDto) {
 
         User user = userDetails.getUser();
 
@@ -81,12 +81,12 @@ public class CommentService {
             throw new IllegalArgumentException("다른 사람의 댓글은 수정할 수 없습니다.");
         }
 
-        foundComment.update(requestDto.getContent());
+        foundComment.edit(requestDto.getContent());
     }
 
-    // 도안 댓글 삭제
+    // 도안 댓글 삭제 메소드
     @Transactional
-    public void deleteComment(Long commentId, UserDetailsImpl userDetails) {
+    public void deleteComment(long commentId, UserDetailsImpl userDetails) {
 
         User user = userDetails.getUser();
 
