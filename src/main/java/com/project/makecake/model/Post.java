@@ -86,7 +86,7 @@ public class Post extends Timestamped{
     }
 
     // 제작한 매장 이름이 없는 경우의 수정 메소드
-    public void update(PostRequestDto requestDto) {
+    public void edit(PostRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
         this.size = requestDto.getSize();
@@ -97,7 +97,7 @@ public class Post extends Timestamped{
     }
 
     // 제작한 매장 이름이 있는 경우의 수정 메소드
-    public void update(PostRequestDto requestDto, Store store) {
+    public void edit(PostRequestDto requestDto, Store store) {
         this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
         this.size = requestDto.getSize();
@@ -114,7 +114,7 @@ public class Post extends Timestamped{
     }
 
     // 좋아요 카운트
-    public boolean likePost(boolean myLike) {
+    public boolean like(boolean myLike) {
         if (myLike) {
             this.likeCnt += 1;
             return false;
@@ -125,7 +125,7 @@ public class Post extends Timestamped{
     }
 
     // 조회수 올리기
-    public void viewPost() {
+    public void view() {
         this.viewCnt +=1;
     }
 

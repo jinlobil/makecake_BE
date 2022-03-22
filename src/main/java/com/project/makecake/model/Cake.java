@@ -1,6 +1,5 @@
 package com.project.makecake.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -32,7 +31,7 @@ public class Cake  extends Timestamped{
     }
 
     // 좋아요
-    public boolean likeCake(boolean myLike) {
+    public boolean like(boolean myLike) {
         if (myLike) {
             this.likeCnt += 1;
             return false;

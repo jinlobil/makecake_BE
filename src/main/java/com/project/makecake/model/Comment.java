@@ -33,7 +33,7 @@ public class Comment extends Timestamped{
     }
 
     // 수정 메소드
-    public void update(String content) {
+    public void edit(String content) {
         this.content = content;
     }
 
