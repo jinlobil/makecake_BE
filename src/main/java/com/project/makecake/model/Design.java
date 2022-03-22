@@ -1,7 +1,6 @@
 package com.project.makecake.model;
 
 import com.project.makecake.dto.ImageInfoDto;
-import com.project.makecake.enums.DesignState;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,9 +21,11 @@ public class Design extends Timestamped{
     @Column(nullable = false)
     private String imgName;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private DesignState state;
+    private boolean post;
+
+    @Column(nullable = false)
+    private boolean orders;
 
     @ManyToOne
     @JoinColumn(name="userId")
@@ -34,17 +35,18 @@ public class Design extends Timestamped{
     public Design(ImageInfoDto imgInfo, User user) {
         this.imgUrl = imgInfo.getUrl();
         this.imgName = imgInfo.getName();
-        this.state = DesignState.UNPOST;
+        this.post = false;
+        this.orders = false;
         this.user = user;
     }
 
-    // 도안이 게시되면 상태 POST로 바꾸기
-    public void post() {
-        this.state = DesignState.POST;
+    // 도안 게시에 따라 postState 바꾸기
+    public void editPostState(boolean postState) {
+        this.post = postState;
     }
 
-    // 도안 게시글이 지워지면 상태 UNPOST로 바꾸기
-    public void unpost() {
-        this.state = DesignState.UNPOST;
+    // 도안 게시에 따라 orderState바꾸기
+    public void editOrderState(boolean orderState) {
+        this.orders = orderState;
     }
 }

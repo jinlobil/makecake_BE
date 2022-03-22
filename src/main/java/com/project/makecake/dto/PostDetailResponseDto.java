@@ -4,8 +4,6 @@ import com.project.makecake.model.Post;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.util.List;
-
 @RequiredArgsConstructor
 @Getter
 public class PostDetailResponseDto {
@@ -24,8 +22,7 @@ public class PostDetailResponseDto {
     private String size;
     private String shape;
     private String purpose;
-    private boolean made;
-    private String storeName;
+    private boolean orders;
 
     // 생성자
     public PostDetailResponseDto(Post post, boolean myLike, int commentCnt) {
@@ -44,12 +41,8 @@ public class PostDetailResponseDto {
         this.size = post.getSize();
         this.shape = post.getShape();
         this.purpose = post.getPurpose();
-        if (post.isMade()) {
-            this.made = post.isMade();
-            this.storeName = post.getStore().getName();
-        } else {
-            this.made = post.isMade();
-            this.storeName = null;
+        if (post.getDesign().isOrders()) {
+            this.orders = post.getDesign().isOrders();
         }
     }
 

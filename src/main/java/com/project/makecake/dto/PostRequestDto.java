@@ -11,6 +11,4 @@ public class PostRequestDto {
     private String size;
     private String shape;
     private String purpose;
-    private boolean made;
-    private Long storeId;
 }
