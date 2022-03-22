@@ -16,39 +16,41 @@ public class CommentController {
 
     private final CommentService commentService;
 
-    // 일단 전부
-    // 도안 댓글 리스트 불러오기 API
+    // 도안 댓글 리스트 조회 API (5개씩)
     @GetMapping("/api/designs/{postId}/comments")
-    public List<CommentResponseDto> getAllComments(@PathVariable Long postId, @RequestParam int page) {
-        return commentService.getAllComments(postId, page);
+    public List<CommentResponseDto> getCommentList(
+            @PathVariable long postId,
+            @RequestParam int page
+    ) {
+        return commentService.getCommentList(postId, page);
     }
 
     // 도안 댓글 작성 API
     @PostMapping("/comments/{postId}")
-    public void saveComment(
-            @PathVariable Long postId,
+    public void addComment(
+            @PathVariable long postId,
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestBody CommentRequestDto requestDto
-            ) {
-        commentService.saveComment(postId,userDetails,requestDto);
+    ) {
+        commentService.addComment(postId, userDetails, requestDto);
     }
 
     // 도안 댓글 수정 API
     @PutMapping("/comments/{commentId}")
-    public void updateComment(
-            @PathVariable Long commentId,
+    public void editComment(
+            @PathVariable long commentId,
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestBody CommentRequestDto requestDto
     ) {
-        commentService.updateComment(commentId,userDetails,requestDto);
+        commentService.editComment(commentId, userDetails, requestDto);
     }
 
     // 도안 댓글 삭제 API
     @DeleteMapping("/comments/{commentId}")
     public void deleteComment(
-            @PathVariable Long commentId,
+            @PathVariable long commentId,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        commentService.deleteComment(commentId,userDetails);
+        commentService.deleteComment(commentId, userDetails);
     }
 }

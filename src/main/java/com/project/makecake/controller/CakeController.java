@@ -20,51 +20,54 @@ public class CakeController {
 
     private final CakeService cakeService;
 
-    // 18개씩
-    // 케이크 사진 리스트 API
+    // 케이크 사진 리스트 조회 API (18개씩)
     @GetMapping("/api/cakes")
-    public List<CakeResponseDto> getAllCakes(
+    public List<CakeResponseDto> getCakeList(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestParam int page
-            ) {
-        return cakeService.getAllCakes(userDetails,page);
+    ) {
+        return cakeService.getCakeList(userDetails, page);
     }
 
-    // 케이크 사진 모달 API
+    // 케이크 사진 상세 조회 API
     @PostMapping("/api/cakes/detail")
-    public CakeResponseDto getCake(
+    public CakeResponseDto getCakeDetails(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestBody CakeIdRequestDto requestDto
-            ) {
-        return cakeService.getCake(userDetails,requestDto.getCakeId());
+    ) {
+        return cakeService.getCakeDetails(userDetails, requestDto.getCakeId());
     }
 
-    // 케이크 좋아요 누르기 API
+    // 케이크 좋아요 생성 및 삭제 API
     @PostMapping("/cakes/like/{cakeId}")
-    public LikeDto cakeLike(@PathVariable Long cakeId,
-                                    @RequestBody LikeDto likeDto,
-                                    @AuthenticationPrincipal UserDetailsImpl userDetails
-                                        ) {
-        return cakeService.cakeLike(cakeId, likeDto,userDetails);
+    public LikeDto saveCakeLike(
+            @PathVariable long cakeId,
+            @RequestBody LikeDto requestDto,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        return cakeService.saveCakeLike(cakeId, requestDto, userDetails);
     }
 
 
-    // 임시 API (가게별 케이크 사진 불러오기)
+    // (관리자용) 가게별 케이크 사진 리스트 조회 API
     @GetMapping("/api/temp/cakes/{storeId}")
-    public List<Cake> tempGetCake(@PathVariable Long storeId) {
-        return cakeService.tempGetCake(storeId);
+    public List<Cake> GetCakeListAtBackoffice(@PathVariable long storeId) {
+        return cakeService.GetCakeListAtBackoffice(storeId);
     }
 
-    // 임시 API (케이크 사진 지우기)
+    // (관리자용) 케이크 사진 삭제 API
     @DeleteMapping("/api/temp/cakes/{cakeId}")
-    public Long tempDeleteCake(@PathVariable Long cakeId) {
-        return cakeService.tempDeleteCake(cakeId);
+    public long deleteCake(@PathVariable long cakeId) {
+        return cakeService.deleteCake(cakeId);
     }
 
-    // 임시 API (케이크 사진 넣기)
+    // (관리자용) 케이크 사진 저장 API
     @PostMapping("/api/temp/cakes/{storeId}")
-    public void tempSaveCake(@PathVariable Long storeId, @RequestParam List<MultipartFile> imgFiles) throws IOException {
-        cakeService.tempSaveCake(storeId,imgFiles);
+    public void addCakeList(
+            @PathVariable long storeId,
+            @RequestParam List<MultipartFile> imgFileList
+    ) throws IOException {
+        cakeService.addCakeList(storeId, imgFileList);
     }
 
 }

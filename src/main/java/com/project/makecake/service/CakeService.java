@@ -53,39 +53,44 @@ public class CakeService {
         return homeCakeDtoList;
     }
 
-    // 케이크 사진 리스트 메소드
-    @Transactional
-    public List<CakeResponseDto> getAllCakes(UserDetailsImpl userDetails,int page) {
+    // 케이크 사진 리스트 조회 메소드
+    public List<CakeResponseDto> getCakeList(UserDetailsImpl userDetails, int page) {
+
         // 비로그인 유저는 null 처리
         User user = null;
         if (userDetails!=null) {
             user = userDetails.getUser();
         }
 
-        // 일단 15개씩 페이징
+        // 18개씩 페이징
         Sort sort = Sort.by(new Sort.Order(Sort.Direction.DESC,"likeCnt"), new Sort.Order(Sort.Direction.DESC,"cakeId"));
         Pageable pageable = PageRequest.of(page,18,sort);
         Page<Cake> foundCakeList = cakeRepository.findAll(pageable);
 
 
-        // 반환 Dto에 담기 + 좋아요 반영
+        // 좋아요 반영해서 반환 DTO에 담기
         List<CakeResponseDto> responseDtoList = new ArrayList<>();
         for (Cake cake : foundCakeList) {
-            boolean myLike = false; // myLike 디폴트 : false
-            if(user!=null) { // 로그인 유저는 좋아요 여부 반영
-                Optional<CakeLike> foundCakeLike = cakeLikeRepository.findByUserAndCake(user,cake);
+
+            // myLike 디폴트는 false
+            boolean myLike = false;
+
+            // 로그인 유저는 좋아요 여부 반영
+            if(user!=null) {
+                Optional<CakeLike> foundCakeLike = cakeLikeRepository.findByUserAndCake(user, cake);
                 if (foundCakeLike.isPresent()) {
                     myLike = true;
                 }
             }
-            CakeResponseDto responseDto = new CakeResponseDto(cake,myLike);
+            CakeResponseDto responseDto = new CakeResponseDto(cake, myLike);
             responseDtoList.add(responseDto);
         }
         return responseDtoList;
     }
 
-    // 케이크 사진 상세
-    public CakeResponseDto getCake(UserDetailsImpl userDetails, Long cakeId) {
+    // 케이크 사진 상세 조회 메소드
+    public CakeResponseDto getCakeDetails(UserDetailsImpl userDetails, long cakeId) {
+
         // 비로그인 유저는 null 처리
         User user = null;
         if (userDetails!=null) {
@@ -96,22 +101,25 @@ public class CakeService {
         Cake foundCake = cakeRepository.findById(cakeId)
                 .orElseThrow(()->new IllegalArgumentException("케이크를 찾을 수 없습니다."));
 
-        // 좋아요 반영
-        boolean myLike = false; // myLike 디폴트 : false
-        if(user!=null) { // 로그인 유저는 좋아요 여부 반영
+        // myLike 디폴트는 false
+        boolean myLike = false;
+
+        // 로그인 유저는 좋아요 여부 반영
+        if(user!=null) {
             Optional<CakeLike> foundCakeLike = cakeLikeRepository.findByUserAndCake(user, foundCake);
             if (foundCakeLike.isPresent()) {
                 myLike = true;
             }
         }
 
-        // Dto에 담아 반환
+        // DTO에 담아 반환
         return new CakeResponseDto(foundCake,myLike);
     }
 
-    // 케이크 좋아요
+    // 케이크 좋아요 생성 및 삭제 메소드
     @Transactional
-    public LikeDto cakeLike(Long cakeId, LikeDto requestDto, UserDetailsImpl userDetails) {
+    public LikeDto saveCakeLike(long cakeId, LikeDto requestDto, UserDetailsImpl userDetails) {
+
         User user = userDetails.getUser();
 
         // 케이크 찾기
@@ -122,51 +130,54 @@ public class CakeService {
         if (requestDto.isMyLike()) {
             CakeLike cakeLike = new CakeLike(foundCake, user);
             cakeLikeRepository.save(cakeLike);
-            // myLike가 false이면 기존 cakeLike 삭제
+
+        // myLike가 false이면 기존 cakeLike 삭제
         } else {
-            cakeLikeRepository.deleteByUserAndCake(user,foundCake);
+            cakeLikeRepository.deleteByUserAndCake(user, foundCake);
         }
+
         // likeCnt 변경
-        boolean likeResult = foundCake.likeCake(requestDto.isMyLike());
+        boolean likeResult = foundCake.like(requestDto.isMyLike());
         return new LikeDto(likeResult);
 
     }
 
-    // 임시 API (가게별 케이크 사진 불러오기)
-    @Transactional
-    public List<Cake> tempGetCake(Long storeId) {
+    // 가게별 케이크 사진 리스트 조회 메소드
+    public List<Cake> GetCakeListAtBackoffice(long storeId) {
 
-        Store store = storeRepository.findById(storeId)
-                .orElseThrow(()->new IllegalArgumentException("스토어 없음"));
-        List<Cake> cakeList = cakeRepository.findAllByStore(store);
-        return cakeList;
+        Store foundStore = storeRepository.findById(storeId)
+                .orElseThrow(()->new IllegalArgumentException("존재하지 않는 가게입니다."));
+
+        List<Cake> foundCakeList = cakeRepository.findAllByStore(foundStore);
+        return foundCakeList;
     }
 
-    // 임시 API (케이크 사진 지우기)
+    // 케이크 사진 삭제 메소드
     @Transactional
-    public Long tempDeleteCake(Long cakeId) {
-        Cake cake = cakeRepository.findById(cakeId)
-                .orElseThrow(()->new IllegalArgumentException("케이크 없음"));
+    public long deleteCake(long cakeId) {
 
-        cakeLikeRepository.deleteAllByCake(cake);
+        Cake foundCake = cakeRepository.findById(cakeId)
+                .orElseThrow(()->new IllegalArgumentException("존재하지 않는 케이크입니다."));
 
-        Long num = cake.getCakeId();
+        // 좋아요 삭제
+        cakeLikeRepository.deleteAllByCake(foundCake);
 
-        cakeRepository.delete(cake);
+        // 케이크 삭제
+        cakeRepository.delete(foundCake);
 
-        return num;
+        return foundCake.getCakeId();
     }
 
-    // 임시 API (케이크 사진 넣기)
+    // 케이크 사진 저장 메소드
     @Transactional
-    public void tempSaveCake(Long storeId, List<MultipartFile> imgFiles) throws IOException {
-        Store store = storeRepository.findById(storeId)
-                .orElseThrow(()->new IllegalArgumentException("스토어 없음"));
+    public void addCakeList(long storeId, List<MultipartFile> imgFileList) throws IOException {
+        Store foundStore = storeRepository.findById(storeId)
+                .orElseThrow(()->new IllegalArgumentException("존재하지 않는 가게입니다."));
 
-        if(imgFiles != null){
-            for(MultipartFile imgFile : imgFiles){
-                ImageInfoDto imageInfoDto = s3UploadService.uploadFile(imgFile, FolderName.Cake.name());
-                Cake cake = new Cake(imageInfoDto.getUrl(),store);
+        if(imgFileList != null){
+            for(MultipartFile imgFile : imgFileList){
+                ImageInfoDto imgInfo = s3UploadService.uploadFile(imgFile, FolderName.Cake.name());
+                Cake cake = new Cake(imgInfo.getUrl(), foundStore);
                 cakeRepository.save(cake);
             }
         }
