@@ -58,18 +58,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 // PreFlight 요청 인증 X
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                // 로그인 요청 인증 X
-                .antMatchers(HttpMethod.POST, "/login").permitAll()
-                // 회원가입, 중복체크 등 인증 X
-                .antMatchers(HttpMethod.POST, "/user/**").permitAll()
-                // 로그인 체크 인증 X
-                .antMatchers(HttpMethod.GET, "/user/**").permitAll()
-                // /api로 된 POST 요청 인증 X
-                .antMatchers(HttpMethod.POST, "/api/**").permitAll()
-                // /api로 된 GET 요청 인증 X
-                .antMatchers(HttpMethod.GET,"/api/**").permitAll()
-                // 그 외 요청 모두 인증
-                .anyRequest().authenticated()
+//                // 로그인 요청 인증 X
+//                .antMatchers(HttpMethod.POST, "/login").permitAll()
+//                // 회원가입, 중복체크 등 인증 X
+//                .antMatchers(HttpMethod.POST, "/user/**").permitAll()
+//                // 로그인 체크 인증 X
+//                .antMatchers(HttpMethod.GET, "/user/**").permitAll()
+//                // /api로 된 POST 요청 인증 X
+//                .antMatchers(HttpMethod.POST, "/api/**").permitAll()
+//                // /api로 된 GET 요청 인증 X
+//                .antMatchers(HttpMethod.GET,"/api/**").permitAll()
+//                // 그 외 요청 모두 인증
+//                .anyRequest().authenticated()
+                .anyRequest().permitAll()
                 .and().cors();
 
     }
