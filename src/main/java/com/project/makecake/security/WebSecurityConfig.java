@@ -1,12 +1,16 @@
 package com.project.makecake.security;
 
+import com.project.makecake.enums.UserRoleEnum;
 import com.project.makecake.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -29,6 +33,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+    // static 폴더 내부 정적자원들은 보안 필터를 적용하지 않음
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
+    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
@@ -46,9 +56,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // BasicAuthenticationFilter 단계에서 jwt토큰 검증
                 .addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository))
                 .authorizeRequests()
-                // PreFlight 요청 모두 허가
+                // PreFlight 요청 인증 X
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                .anyRequest().permitAll()
+                // 로그인 요청 인증 X
+                .antMatchers(HttpMethod.POST, "/login").permitAll()
+                // 회원가입, 중복체크 등 인증 X
+                .antMatchers(HttpMethod.POST, "/user/**").permitAll()
+                // 로그인 체크 인증 X
+                .antMatchers(HttpMethod.GET, "/user/**").permitAll()
+                // /api로 된 POST 요청 인증 X
+                .antMatchers(HttpMethod.POST, "/api/**").permitAll()
+                // /api로 된 GET 요청 인증 X
+                .antMatchers(HttpMethod.GET,"/api/**").permitAll()
+                // 그 외 요청 모두 인증
+                .anyRequest().authenticated()
                 .and().cors();
 
     }
