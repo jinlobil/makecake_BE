@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Entity
 public class Cake extends Timestamped{
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
     private Long cakeId;
 
