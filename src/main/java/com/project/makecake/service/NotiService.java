@@ -237,9 +237,10 @@ public class NotiService {
         String timeDiff;
         if (diff<60) {
             timeDiff = diff+"분 전";
+        } else if (diff<60*24) {
+            timeDiff = diff/60+"시간 전";
         } else {
-            diff = diff/60;
-            timeDiff = diff+"시간 전";
+            timeDiff = diff/(60*24)+"일 전";
         }
 
         return timeDiff;
