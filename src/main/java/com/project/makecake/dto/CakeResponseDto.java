@@ -1,23 +1,19 @@
 package com.project.makecake.dto;
 
 import com.project.makecake.model.Cake;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
 public class CakeResponseDto {
 
-    private Long cakeId;
-    private String img;
-    private Long storeId;
-    private String storeName;
+    private Long cakeId, storeId;
+    private String img, storeName;
     private int likeCnt;
     private boolean myLike;
 
-    // 생성자
-    public CakeResponseDto(Cake cake,boolean myLike) {
+    @Builder
+    public CakeResponseDto(Cake cake, boolean myLike) {
         this.cakeId = cake.getCakeId();
         this.img = cake.getUrl();
         this.storeId = cake.getStore().getStoreId();

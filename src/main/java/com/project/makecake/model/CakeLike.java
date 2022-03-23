@@ -1,5 +1,6 @@
 package com.project.makecake.model;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,7 +11,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class CakeLike extends Timestamped{
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cakeLikeId;
 
     @ManyToOne
@@ -21,7 +22,7 @@ public class CakeLike extends Timestamped{
     @JoinColumn(name="userId")
     private User user;
 
-    // 생성자
+    @Builder
     public CakeLike(Cake cake, User user) {
         this.cake = cake;
         this.user = user;

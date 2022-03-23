@@ -1,6 +1,7 @@
 package com.project.makecake.model;
 
 import com.project.makecake.dto.ImageInfoDto;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -31,7 +32,7 @@ public class Design extends Timestamped{
     @JoinColumn(name="userId")
     private User user;
 
-    // 생성자
+    @Builder
     public Design(ImageInfoDto imgInfo, User user) {
         this.imgUrl = imgInfo.getUrl();
         this.imgName = imgInfo.getName();

@@ -46,7 +46,10 @@ public class PostService {
         ImageInfoDto imgInfo = s3UploadService.uploadFile(img, FolderName.DESIGN.name());
 
         // 디비에 저장
-        Design design = new Design(imgInfo, user);
+        Design design = Design.builder()
+                .imgInfo(imgInfo)
+                .user(user)
+                .build();
         Design savedDesign = designRepository.save(design);
 
         return new DesignResponseDto(savedDesign);
@@ -54,6 +57,7 @@ public class PostService {
 
 
     // 도안 삭제 메소드
+    @Transactional
     public void removeDesign(UserDetailsImpl userDetails, long designId) {
 
         // 도안 찾기
@@ -108,7 +112,10 @@ public class PostService {
                     myLike = true;
                 }
             }
-            PostSimpleResponseDto responseDto = new PostSimpleResponseDto(post, myLike);
+            PostSimpleResponseDto responseDto = PostSimpleResponseDto.builder()
+                    .post(post)
+                    .myLike(myLike)
+                    .build();
             responseDtoList.add(responseDto);
         }
         return responseDtoList;
@@ -129,7 +136,7 @@ public class PostService {
                 .orElseThrow(()->new IllegalArgumentException("게시글이 존재하지 않습니다."));
 
         // 조회수 추가
-        foundPost.view();
+        foundPost.addViewCnt();
 
         // myLike 디폴트 false
         boolean myLike = false;
@@ -145,7 +152,11 @@ public class PostService {
         // 댓글 수 세기
         int commentCnt = commentRepository.countByPost(foundPost).intValue();
 
-        return new PostDetailResponseDto(foundPost, myLike, commentCnt);
+        return PostDetailResponseDto.builder()
+                .post(foundPost)
+                .myLike(myLike)
+                .commentCnt(commentCnt)
+                .build();
     }
 
     // 도안 게시글 작성 메소드
@@ -164,7 +175,11 @@ public class PostService {
         }
 
         // 도안 게시글 저장
-        Post post = new Post(requestDto, user, foundDesign);
+        Post post = Post.builder()
+                .requestDto(requestDto)
+                .user(user)
+                .design(foundDesign)
+                .build();
         Post savedPost = postRepository.save(post);
 
         // 도안 post true로 변경
@@ -237,15 +252,19 @@ public class PostService {
 
         // myLike가 true이면 새로운 postLike 저장
         if (requestDto.isMyLike()) {
-            PostLike postLike = new PostLike(foundPost, user);
+            PostLike postLike = PostLike.builder()
+                    .post(foundPost)
+                    .user(user)
+                    .build();
             postLikeRepository.save(postLike);
+
         // myLike가 false이면 기존 postLike 삭제
         } else {
             postLikeRepository.deleteByUserAndPost(user,foundPost);
         }
 
         // likeCnt 변경
-        boolean likeResult = foundPost.like(requestDto.isMyLike());
+        boolean likeResult = foundPost.addLikeCnt(requestDto.isMyLike());
         return new LikeDto(likeResult);
     }
 }
