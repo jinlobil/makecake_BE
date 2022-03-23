@@ -1,5 +1,6 @@
 package com.project.makecake.model;
 
+import com.project.makecake.dto.NotiContentRequestDto;
 import com.project.makecake.dto.NotiRequestDto;
 import com.project.makecake.enums.NotiType;
 import lombok.Builder;
@@ -30,6 +31,12 @@ public class Noti {
     @Builder
     public Noti(NotiRequestDto requestDto) {
         this.type = NotiType.valueOf(requestDto.getType().toUpperCase());
+        this.mainContent = requestDto.getMainContent();
+        this.subContent = requestDto.getSubContent();
+    }
+
+    // 내용 수정 메소드
+    public void editContent(NotiContentRequestDto requestDto) {
         this.mainContent = requestDto.getMainContent();
         this.subContent = requestDto.getSubContent();
     }

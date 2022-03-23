@@ -57,6 +57,28 @@ public class NotiService {
         notiRepository.save(noti);
     }
 
+    // 알림 내용 수정 메소드
+    @Transactional
+    public void editNoti(long notiId, NotiContentRequestDto requestDto) {
+
+        // mainContent 값이 있는지 확인
+        if (requestDto.getMainContent()==null || requestDto.getMainContent().equals("")) {
+            throw new IllegalArgumentException("mainContent가 작성되지 않았습니다.");
+        }
+
+        // 알림 찾기
+        Noti foundNoti = notiRepository.findById(notiId)
+                .orElseThrow(()->new IllegalArgumentException("존재하지 않는 알림입니다."));
+
+        // 메세지에 {닉네임}이 포함되어야 하는 알림 타입은 {닉네임}이 있는지 확인
+        if (foundNoti.getType().isNeedMessageEdit() && !requestDto.getMainContent().contains("{닉네임}")) {
+            throw new IllegalArgumentException("내용에 {닉네임}이 포함되지 않았습니다.");
+        }
+
+        // 알림 내용 수정
+        foundNoti.editContent(requestDto);
+    }
+
     // 고정 알림 띄우는 메소드
     @Transactional
     public void addFixNoti(long notiId) {
@@ -87,7 +109,7 @@ public class NotiService {
         foundFixNoti.editReveal();
     }
 
-    //알림 발송 API
+    //알림 발송 메소드
     @Transactional
     public void addPersonalNoti(long notiId) {
 
@@ -236,7 +258,4 @@ public class NotiService {
         return mainContent;
     }
 
-
-    public void editNoti(long notiId, NotiContentRequestDto requestDto) {
-    }
 }
