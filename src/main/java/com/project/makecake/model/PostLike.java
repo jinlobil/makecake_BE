@@ -1,5 +1,6 @@
 package com.project.makecake.model;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,7 +23,7 @@ public class PostLike extends Timestamped{
     @JoinColumn(name="userId")
     private User user;
 
-    // 생성자
+    @Builder
     public PostLike(Post post, User user) {
         this.post = post;
         this.user = user;

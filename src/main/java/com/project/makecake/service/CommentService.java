@@ -59,11 +59,15 @@ public class CommentService {
                 .orElseThrow(()->new IllegalArgumentException("존재하지 않는 게시글입니다."));
 
         // 댓글 저장
-        Comment comment = new Comment(requestDto.getContent(), foundPost, user);
+        Comment comment = Comment.builder()
+                .content(requestDto.getContent())
+                .post(foundPost)
+                .user(user)
+                .build();
         commentRepository.save(comment);
 
         // 도안 게시글 댓글수 증가
-        foundPost.comment(true);
+        foundPost.editCommentCnt(true);
     }
 
     // 도안 댓글 수정 메소드
@@ -81,7 +85,7 @@ public class CommentService {
             throw new IllegalArgumentException("다른 사람의 댓글은 수정할 수 없습니다.");
         }
 
-        foundComment.edit(requestDto.getContent());
+        foundComment.editContent(requestDto.getContent());
     }
 
     // 도안 댓글 삭제 메소드
@@ -100,7 +104,7 @@ public class CommentService {
         }
 
         // 도안 게시글 댓글수 감소
-        foundComment.getPost().comment(false);
+        foundComment.getPost().editCommentCnt(false);
 
         // 연관관계 삭제
         foundComment.deleteRelation();

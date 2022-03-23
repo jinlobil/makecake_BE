@@ -1,6 +1,7 @@
 package com.project.makecake.model;
 
 import com.project.makecake.dto.PostRequestDto;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -35,15 +36,8 @@ public class Post extends Timestamped{
     @Column(nullable = false)
     private String shape;
 
-    @Column(nullable = true)
-    private String purpose;
-
     @Column(nullable = false)
-    private boolean isMade;
-
-    @ManyToOne
-    @JoinColumn(name="storeId", nullable = true)
-    private Store store;
+    private String purpose;
 
     @Column
     private int viewCnt;
@@ -54,7 +48,7 @@ public class Post extends Timestamped{
     @Column
     private int commentCnt;
 
-    // 제작한 매장 이름이 없는 경우의 생성자
+    @Builder
     public Post(PostRequestDto requestDto, User user, Design design) {
         this.title = requestDto.getTitle();
         this.design = design;
@@ -63,58 +57,27 @@ public class Post extends Timestamped{
         this.size = requestDto.getSize();
         this.shape = requestDto.getShape();
         this.purpose = requestDto.getPurpose();
-        this.isMade = requestDto.isMade();
         this.viewCnt = 0;
         this.likeCnt = 0;
         this.commentCnt = 0;
     }
 
-    // 제작한 매장 이름이 있는 경우의 생성자
-    public Post(PostRequestDto requestDto, User user, Design design, Store store) {
-        this.title = requestDto.getTitle();
-        this.design = design;
-        this.user = user;
-        this.content = requestDto.getContent();
-        this.size = requestDto.getSize();
-        this.shape = requestDto.getShape();
-        this.purpose = requestDto.getPurpose();
-        this.isMade = requestDto.isMade();
-        this.store = store;
-        this.viewCnt = 0;
-        this.likeCnt = 0;
-        this.commentCnt = 0;
-    }
-
-    // 제작한 매장 이름이 없는 경우의 수정 메소드
+    // 수정 메소드
     public void edit(PostRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
         this.size = requestDto.getSize();
         this.shape = requestDto.getShape();
         this.purpose = requestDto.getPurpose();
-        this.isMade = requestDto.isMade();
-        this.store = null;
-    }
-
-    // 제작한 매장 이름이 있는 경우의 수정 메소드
-    public void edit(PostRequestDto requestDto, Store store) {
-        this.title = requestDto.getTitle();
-        this.content = requestDto.getContent();
-        this.size = requestDto.getSize();
-        this.shape = requestDto.getShape();
-        this.purpose = requestDto.getPurpose();
-        this.isMade = requestDto.isMade();
-        this.store = store;
     }
 
     // 연관관계 삭제 메소드
     public void deleteRelation() {
-        this.store = null;
         this.design = null;
     }
 
-    // 좋아요 카운트
-    public boolean like(boolean myLike) {
+    // likeCnt 변경 메소드
+    public boolean addLikeCnt(boolean myLike) {
         if (myLike) {
             this.likeCnt += 1;
             return false;
@@ -124,13 +87,13 @@ public class Post extends Timestamped{
         }
     }
 
-    // 조회수 올리기
-    public void view() {
+    // 조회수 올리기 메소드
+    public void addViewCnt() {
         this.viewCnt +=1;
     }
 
-    // 댓글 카운트
-    public void comment(boolean comment) {
+    // commentCnt 변경 메소드
+    public void editCommentCnt(boolean comment) {
         if(comment) {
             this.commentCnt +=1;
         } else {

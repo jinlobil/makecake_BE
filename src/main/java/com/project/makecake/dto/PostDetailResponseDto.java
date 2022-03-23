@@ -1,33 +1,18 @@
 package com.project.makecake.dto;
 
 import com.project.makecake.model.Post;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.util.List;
-
-@RequiredArgsConstructor
 @Getter
 public class PostDetailResponseDto {
-    private Long postId;
-    private String title;
-    private Long designId;
-    private String img;
-    private String profileImg;
-    private String nickname;
-    private int likeCnt;
-    private boolean myLike;
-    private int viewCnt;
-    private int commentCnt;
-    private String createdDate;
-    private String content;
-    private String size;
-    private String shape;
-    private String purpose;
-    private boolean made;
-    private String storeName;
+    private Long postId, designId;
+    private String title, img, profileImg, nickname, createdDate, content, size, shape, purpose;
+    private int likeCnt, viewCnt, commentCnt;
+    private boolean myLike, orders;
 
-    // 생성자
+    @Builder
     public PostDetailResponseDto(Post post, boolean myLike, int commentCnt) {
         this.postId = post.getPostId();
         this.title = post.getTitle();
@@ -44,12 +29,8 @@ public class PostDetailResponseDto {
         this.size = post.getSize();
         this.shape = post.getShape();
         this.purpose = post.getPurpose();
-        if (post.isMade()) {
-            this.made = post.isMade();
-            this.storeName = post.getStore().getName();
-        } else {
-            this.made = post.isMade();
-            this.storeName = null;
+        if (post.getDesign().isOrders()) {
+            this.orders = post.getDesign().isOrders();
         }
     }
 

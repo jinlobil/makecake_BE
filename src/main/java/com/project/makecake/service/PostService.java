@@ -1,7 +1,6 @@
 package com.project.makecake.service;
 
 import com.project.makecake.dto.ImageInfoDto;
-import com.project.makecake.enums.DesignState;
 import com.project.makecake.enums.FolderName;
 import com.project.makecake.model.*;
 import com.project.makecake.repository.*;
@@ -47,7 +46,10 @@ public class PostService {
         ImageInfoDto imgInfo = s3UploadService.uploadFile(img, FolderName.DESIGN.name());
 
         // 디비에 저장
-        Design design = new Design(imgInfo, user);
+        Design design = Design.builder()
+                .imgInfo(imgInfo)
+                .user(user)
+                .build();
         Design savedDesign = designRepository.save(design);
 
         return new DesignResponseDto(savedDesign);
@@ -55,6 +57,7 @@ public class PostService {
 
 
     // 도안 삭제 메소드
+    @Transactional
     public void removeDesign(UserDetailsImpl userDetails, long designId) {
 
         // 도안 찾기
@@ -62,7 +65,7 @@ public class PostService {
                 .orElseThrow(()->new IllegalArgumentException("존재하지 않는 도안입니다."));
 
         // 게시되지 않은 도안인지 확인
-        if (foundDesign.getState().equals(DesignState.POST)) {
+        if (foundDesign.isPost()) {
             throw new IllegalArgumentException("게시중인 도안은 삭제할 수 없습니다.");
         }
 
@@ -109,7 +112,10 @@ public class PostService {
                     myLike = true;
                 }
             }
-            PostSimpleResponseDto responseDto = new PostSimpleResponseDto(post, myLike);
+            PostSimpleResponseDto responseDto = PostSimpleResponseDto.builder()
+                    .post(post)
+                    .myLike(myLike)
+                    .build();
             responseDtoList.add(responseDto);
         }
         return responseDtoList;
@@ -130,7 +136,7 @@ public class PostService {
                 .orElseThrow(()->new IllegalArgumentException("게시글이 존재하지 않습니다."));
 
         // 조회수 추가
-        foundPost.view();
+        foundPost.addViewCnt();
 
         // myLike 디폴트 false
         boolean myLike = false;
@@ -146,7 +152,11 @@ public class PostService {
         // 댓글 수 세기
         int commentCnt = commentRepository.countByPost(foundPost).intValue();
 
-        return new PostDetailResponseDto(foundPost, myLike, commentCnt);
+        return PostDetailResponseDto.builder()
+                .post(foundPost)
+                .myLike(myLike)
+                .commentCnt(commentCnt)
+                .build();
     }
 
     // 도안 게시글 작성 메소드
@@ -160,29 +170,24 @@ public class PostService {
                 .orElseThrow(()->new IllegalArgumentException("존재하지 않는 도안입니다."));
 
         // 이미 게시글이 작성된 도안인지 확인 (도안 하나당 게시글 하나만 작성 가능)
-        if (foundDesign.getState().equals(DesignState.POST)) {
+        if (foundDesign.isPost()) {
             throw new IllegalArgumentException("이미 게시된 도안입니다.");
         }
 
         // 도안 게시글 저장
+        Post post = Post.builder()
+                .requestDto(requestDto)
+                .user(user)
+                .design(foundDesign)
+                .build();
+        Post savedPost = postRepository.save(post);
+
+        // 도안 post true로 변경
+        foundDesign.editPostState(true);
+
+        // 반환 객체 생성
         HashMap<String,Long> responseDto = new HashMap<>();
-
-        // 제작 매장을 기입한 경우
-        if (requestDto.isMade()&&requestDto.getStoreId()!=null) {
-            Store foundStore = storeRepository.findById(requestDto.getStoreId())
-                    .orElseThrow(()->new IllegalArgumentException("존재하지 않는 매장입니다."));
-            Post post = new Post(requestDto, user, foundDesign, foundStore);
-            Post savedPost = postRepository.save(post);
-            foundDesign.post(); // 도안 게시글 상태 POST로 변경
-            responseDto.put("postId", savedPost.getPostId());
-
-        // 제작 매장을 기입하지 않은 경우
-        } else {
-            Post post = new Post(requestDto, user, foundDesign);
-            Post savedPost = postRepository.save(post);
-            foundDesign.post(); // 도안 게시글 상태 POST로 변경
-            responseDto.put("postId", savedPost.getPostId());
-        }
+        responseDto.put("postId", savedPost.getPostId());
         return responseDto;
     }
 
@@ -202,17 +207,8 @@ public class PostService {
         }
 
         // 게시글 수정
-        // 제작 매장을 기입한 경우
-        if (requestDto.isMade()&&requestDto.getStoreId()!=null) {
-            Store foundStore = storeRepository.findById(requestDto.getStoreId())
-                    .orElseThrow(()->new IllegalArgumentException("존재하지 않는 매장입니다."));
-            foundPost.edit(requestDto, foundStore);
-            postRepository.save(foundPost);
-        // 제작 매장을 기입하지 않은 경우
-        } else {
-            foundPost.edit(requestDto);
-            postRepository.save(foundPost);
-        }
+        foundPost.edit(requestDto);
+        postRepository.save(foundPost);
     }
 
     // 도안 게시글 삭제 메소드
@@ -230,10 +226,10 @@ public class PostService {
             throw new IllegalArgumentException("다른 사람의 게시글은 삭제할 수 없습니다.");
         }
 
-        // 도안과 관계 끊고 도안 상태를 UNPOST로 바꾸기
+        // 도안과 관계 끊고 도안 post를 false로 바꾸기
         Design connectDesign = foundPost.getDesign();
         foundPost.deleteRelation();
-        connectDesign.unpost();
+        connectDesign.editPostState(false);
 
         // 도안 게시글 좋아요 삭제
         postLikeRepository.deleteAllByPost(foundPost);
@@ -256,15 +252,19 @@ public class PostService {
 
         // myLike가 true이면 새로운 postLike 저장
         if (requestDto.isMyLike()) {
-            PostLike postLike = new PostLike(foundPost, user);
+            PostLike postLike = PostLike.builder()
+                    .post(foundPost)
+                    .user(user)
+                    .build();
             postLikeRepository.save(postLike);
+
         // myLike가 false이면 기존 postLike 삭제
         } else {
             postLikeRepository.deleteByUserAndPost(user,foundPost);
         }
 
         // likeCnt 변경
-        boolean likeResult = foundPost.like(requestDto.isMyLike());
+        boolean likeResult = foundPost.addLikeCnt(requestDto.isMyLike());
         return new LikeDto(likeResult);
     }
 }
