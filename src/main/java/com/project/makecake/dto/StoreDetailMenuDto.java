@@ -2,8 +2,6 @@ package com.project.makecake.dto;
 
 import com.project.makecake.model.CakeMenu;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Getter

@@ -1,13 +1,13 @@
 package com.project.makecake.dto;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
 @Builder
-@Data
+@Getter
 public class MyReactStoreResponseDto {
-    public Long storeId;
-    public String name;
-    public String addressSimple;
-    public String mainImg;
+    private Long storeId;
+    private String name;
+    private String addressSimple;
+    private String mainImg;
 }

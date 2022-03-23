@@ -1,15 +1,15 @@
 package com.project.makecake.dto;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
 @Builder
-@Data
+@Getter
 public class MyReactPostResponceDto {
-    public Long postId;
-    public String img;
-    public String nickname;
-    public String profileImg;
-    public String content;
-    public String createdDate;
+    private Long postId;
+    private String img;
+    private String nickname;
+    private String profileImg;
+    private String content;
+    private String createdDate;
 }

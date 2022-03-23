@@ -1,9 +1,9 @@
 package com.project.makecake.dto;
 
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 public class LoginRequestDto {
-    public String username;
-    public String password;
+    private String username;
+    private String password;
 }

@@ -3,7 +3,6 @@ package com.project.makecake.dto;
 import com.project.makecake.model.Post;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
 public class PostSimpleResponseDto {
