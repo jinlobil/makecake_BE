@@ -1,8 +1,6 @@
 package com.project.makecake.dto;
 
-import com.project.makecake.model.OpenTime;
 import com.project.makecake.model.Store;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.Getter;
 import lombok.Setter;
 
