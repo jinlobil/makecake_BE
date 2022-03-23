@@ -2,18 +2,18 @@ package com.project.makecake.dto;
 
 import com.project.makecake.enums.UserRoleEnum;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
 @Builder
-@Data
+@Getter
 public class UserInfoDto {
-    public Long userId;
-    public String username;
-    public String nickname;
-    public String profileImgUrl;
-    public String profileImgName;
-    public String provider;
-    public UserRoleEnum role;
-    public String createdDate;
-    public String modifiedDate;
+    private Long userId;
+    private String username;
+    private String nickname;
+    private String profileImgUrl;
+    private String profileImgName;
+    private String provider;
+    private UserRoleEnum role;
+    private String createdDate;
+    private String modifiedDate;
 }

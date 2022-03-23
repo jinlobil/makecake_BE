@@ -1,7 +1,6 @@
 
 package com.project.makecake.dto;
-import com.project.makecake.dto.HomeCakeDto;
-import com.project.makecake.dto.HomeStoreDto;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;

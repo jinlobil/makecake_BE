@@ -1,12 +1,12 @@
 package com.project.makecake.dto;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
 @Builder
-@Data
+@Getter
 public class MyDesignResponseDto {
-    public Long postId;
-    public Long designId;
-    public String img;
+    private Long postId;
+    private Long designId;
+    private String img;
 }

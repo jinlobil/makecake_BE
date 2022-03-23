@@ -54,7 +54,10 @@ public class S3UploadService {
 
 
         // 4. S3에 저장된 파일 이름과 주소 반환
-        return new ImageInfoDto(uploadImageUrl,uploadImageName);
+        return ImageInfoDto.builder()
+                .url(uploadImageUrl)
+                .name(uploadImageName)
+                .build();
     }
 
     // 파일 삭제하기

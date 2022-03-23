@@ -1,12 +1,12 @@
 package com.project.makecake.dto;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
 @Builder
-@Data
+@Getter
 public class MypageResponseDto {
-    public String profileImg;
-    public String nickname;
-    public String email;
+    private String profileImg;
+    private String nickname;
+    private String email;
 }

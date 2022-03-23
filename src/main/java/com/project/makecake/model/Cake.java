@@ -1,16 +1,17 @@
 package com.project.makecake.model;
 
-import lombok.Data;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @NoArgsConstructor
-@Data
+@Getter
 @Entity
-public class Cake  extends Timestamped{
+public class Cake extends Timestamped{
 
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long cakeId;
 
@@ -24,14 +25,14 @@ public class Cake  extends Timestamped{
     @Column
     private int likeCnt;
 
-    // 생성자
-    public Cake(String url,Store store) {
-        this.url=url;
+    @Builder
+    public Cake(String url, Store store) {
+        this.url = url;
         this.store = store;
     }
 
-    // 좋아요
-    public boolean like(boolean myLike) {
+    // 좋아요수 변경 메소드
+    public boolean editLikeCnt(boolean myLike) {
         if (myLike) {
             this.likeCnt += 1;
             return false;

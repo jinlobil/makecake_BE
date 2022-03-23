@@ -82,7 +82,11 @@ public class CakeService {
                     myLike = true;
                 }
             }
-            CakeResponseDto responseDto = new CakeResponseDto(cake, myLike);
+
+            CakeResponseDto responseDto = CakeResponseDto.builder()
+                    .cake(cake)
+                    .myLike(myLike)
+                    .build();
             responseDtoList.add(responseDto);
         }
         return responseDtoList;
@@ -113,7 +117,10 @@ public class CakeService {
         }
 
         // DTO에 담아 반환
-        return new CakeResponseDto(foundCake,myLike);
+        return CakeResponseDto.builder()
+                .cake(foundCake)
+                .myLike(myLike)
+                .build();
     }
 
     // 케이크 좋아요 생성 및 삭제 메소드
@@ -128,7 +135,10 @@ public class CakeService {
 
         // myLike가 true이면 새로운 cakeLike 저장
         if (requestDto.isMyLike()) {
-            CakeLike cakeLike = new CakeLike(foundCake, user);
+            CakeLike cakeLike = CakeLike.builder()
+                    .cake(foundCake)
+                    .user(user)
+                    .build();
             cakeLikeRepository.save(cakeLike);
 
         // myLike가 false이면 기존 cakeLike 삭제
@@ -137,12 +147,12 @@ public class CakeService {
         }
 
         // likeCnt 변경
-        boolean likeResult = foundCake.like(requestDto.isMyLike());
+        boolean likeResult = foundCake.editLikeCnt(requestDto.isMyLike());
         return new LikeDto(likeResult);
 
     }
 
-    // 가게별 케이크 사진 리스트 조회 메소드
+    // (관리자용) 가게별 케이크 사진 리스트 조회 메소드
     public List<Cake> GetCakeListAtBackoffice(long storeId) {
 
         Store foundStore = storeRepository.findById(storeId)
@@ -152,7 +162,7 @@ public class CakeService {
         return foundCakeList;
     }
 
-    // 케이크 사진 삭제 메소드
+    // (관리자용) 케이크 사진 삭제 메소드
     @Transactional
     public long deleteCake(long cakeId) {
 
@@ -168,16 +178,20 @@ public class CakeService {
         return foundCake.getCakeId();
     }
 
-    // 케이크 사진 저장 메소드
+    // (관리자용) 케이크 사진 저장 메소드
     @Transactional
     public void addCakeList(long storeId, List<MultipartFile> imgFileList) throws IOException {
+
         Store foundStore = storeRepository.findById(storeId)
                 .orElseThrow(()->new IllegalArgumentException("존재하지 않는 가게입니다."));
 
         if(imgFileList != null){
             for(MultipartFile imgFile : imgFileList){
                 ImageInfoDto imgInfo = s3UploadService.uploadFile(imgFile, FolderName.Cake.name());
-                Cake cake = new Cake(imgInfo.getUrl(), foundStore);
+                Cake cake = Cake.builder()
+                        .url(imgInfo.getUrl())
+                        .store(foundStore)
+                        .build();
                 cakeRepository.save(cake);
             }
         }

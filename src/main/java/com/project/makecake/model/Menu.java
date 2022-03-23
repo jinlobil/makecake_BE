@@ -1,10 +1,13 @@
 package com.project.makecake.model;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 
-@Data
+@Setter
+@Getter
 @Entity
 public class Menu  extends Timestamped{
 

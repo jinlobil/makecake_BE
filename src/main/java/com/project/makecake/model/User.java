@@ -2,13 +2,16 @@ package com.project.makecake.model;
 
 import com.project.makecake.enums.UserRoleEnum;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 
+
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 @Entity
 public class User  extends Timestamped{
 

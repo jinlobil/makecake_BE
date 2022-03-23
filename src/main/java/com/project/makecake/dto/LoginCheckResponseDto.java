@@ -1,11 +1,11 @@
 package com.project.makecake.dto;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
 @Builder
-@Data
+@Getter
 public class LoginCheckResponseDto {
-    public Long userId;
-    public String nickname;
+    private Long userId;
+    private String nickname;
 }
