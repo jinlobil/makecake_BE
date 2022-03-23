@@ -32,11 +32,23 @@ public class NotiResponseDto {
         private boolean checked;
         private long postId;
 
-        @Builder
-        public Personal(PersonalNoti personalNoti, String mainContent, String timeDiff) {
+        // 광고, 공지 알림인 경우 생성자
+        @Builder(builderMethodName = "nonEditBuilder", buildMethodName = "nonEditBuild")
+        public Personal(PersonalNoti personalNoti, String timeDiff) {
             Noti noti = personalNoti.getNoti();
             this.type = noti.getType().toString();
-            this.mainContent = mainContent;
+            this.mainContent = noti.getMainContent();
+            this.subContent = noti.getSubContent();
+            this.checked = personalNoti.isChecked();
+            this.timeDiff = timeDiff;
+        }
+
+        // 좋아요, 댓글 알림인 경우 생성자
+        @Builder(builderMethodName = "editBuilder", buildMethodName = "editBuild")
+        public Personal(PersonalNoti personalNoti, String editedMainContent, String timeDiff) {
+            Noti noti = personalNoti.getNoti();
+            this.type = noti.getType().toString();
+            this.mainContent = editedMainContent;
             this.subContent = noti.getSubContent();
             this.checked = personalNoti.isChecked();
             this.postId = personalNoti.getPost().getPostId();

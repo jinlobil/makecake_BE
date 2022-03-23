@@ -1,5 +1,6 @@
 package com.project.makecake.controller;
 
+import com.project.makecake.dto.NotiContentRequestDto;
 import com.project.makecake.dto.NotiRequestDto;
 import com.project.makecake.dto.NotiResponseDto;
 import com.project.makecake.security.UserDetailsImpl;
@@ -22,6 +23,15 @@ public class NotiController {
         notiService.addNoti(requestDto);
     }
 
+    // 알림 내용 수정 API
+    @PutMapping("/api/notis/{notiId}")
+    public void editNoti(
+            @PathVariable long notiId,
+            @RequestBody NotiContentRequestDto requestDto
+    ) {
+        notiService.editNoti(notiId,requestDto);
+    }
+
     // 고정 알림 추가 API
     @PostMapping("/api/notis/{notiId}/fix")
     public void addFixNoti(@PathVariable long notiId) {
@@ -34,10 +44,17 @@ public class NotiController {
         notiService.editFixNoti(fixNotiId);
     }
 
+    // 알림 발송 API
+    @PostMapping("/api/notis/{notiId}/personal")
+    public void addPersonalNoti(@PathVariable long notiId) {
+        notiService.addPersonalNoti(notiId);
+    }
+
     // 알림 조회 API
     @GetMapping("/noti")
-    public NotiResponseDto getNotiList(@AuthenticationPrincipal UserDetailsImpl userDetails) throws ParseException {
-        NotiResponseDto responseDto = notiService.getNotiList(userDetails);
-        return responseDto;
+    public NotiResponseDto getNotiList(
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) throws ParseException {
+        return notiService.getNotiList(userDetails);
     }
 }

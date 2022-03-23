@@ -6,13 +6,13 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum NotiType {
-    LIKE(false, false, true),
-    COMMENT(false, false, true),
-    AD(true, true, false),
-    NOTICE(true, true, false),
-    BETA(true, true, false);
+    LIKE(false, true),
+    COMMENT(false, true),
+    AD(true, false),
+    NOTICE(true, false),
+    BETA(true, false);
 
-    private final boolean addAble;
-    private final boolean fixAble;
-    private final boolean messageEditAble;
+    private final boolean adminManage;
+    private final boolean needMessageEdit;
+
 }
