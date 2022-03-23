@@ -21,7 +21,7 @@ public class StoreController {
     private final ReviewService reviewService;
 
 
-    //(홈탭) 인기 매장, 인기 케이크 5개 조회 API
+    // (홈탭) 인기 매장, 인기 케이크 5개 조회 API
     @GetMapping("/api/home")
     public HomeResponseDto getStoreAndCakeAtHome() {
         List<HomeStoreDto> storeResponseDtoList = storeService.getStoreListAtHome();
@@ -31,21 +31,21 @@ public class StoreController {
         return responseDto;
     }
 
-    //(홈탭) 최신 리뷰 조회 API
+    // (홈탭) 최신 리뷰 조회 API
     @GetMapping("/api/home/review")
     public List<HomeReviewDto> getReviewListAtHome(){
         return reviewService.getReviewListAtHome();
     }
 
 
-    //매장 검색 결과 반환 API
+    // 매장 검색 결과 반환 API
     @PostMapping("/api/search")
     public List<SearchResponseDto> getStoreList(@RequestBody SearchRequestDto requestDto) throws IOException {
         return storeService.getStoreList(requestDto);
     }
 
 
-    //매장 상세페이지 조회 API
+    // 매장 상세페이지 조회 API
     @GetMapping("/api/stores/{storeId}")
     public StoreDetailResponseDto getStoreDetails(
             @PathVariable Long storeId,
@@ -54,7 +54,7 @@ public class StoreController {
         return storeService.getStoreDetails(storeId, userDetails);
     }
 
-    //(매장 상세페이지) 매장 케이크 조회 API (9개씩)
+    // (매장 상세페이지) 매장 케이크 조회 API (9개씩)
     @GetMapping("/api/stores/cakes")
     public List<StoreDetailCakeResponseDto> getCakeListAtStore(
             @RequestParam long storeId,
@@ -65,7 +65,7 @@ public class StoreController {
     }
 
 
-    //(매장 상세페이지) 매장 리뷰 조회 API (3개씩)
+    // (매장 상세페이지) 매장 리뷰 조회 API (3개씩)
     @GetMapping("/api/stores/reviews")
     public List<ReviewResponseDto> getReviewListAtStore(
             @RequestParam long storeId,

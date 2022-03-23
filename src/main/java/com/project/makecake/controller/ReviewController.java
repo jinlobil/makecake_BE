@@ -16,35 +16,34 @@ import java.util.List;
 public class ReviewController {
     private final ReviewService reviewService;
 
-    //매장 후기 쓰기
+    // 매장 후기 작성 API
     @PostMapping("/reviews/{storeId}")
-    public void writeReview(@PathVariable long storeId,
-                            @RequestPart(value="content") String content,
-                            @RequestParam(required = false) List<MultipartFile> imgFiles,
-                            @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
-        reviewService.writeReview(storeId, content, imgFiles, userDetails);
+    public void addReview(
+            @PathVariable long storeId,
+            @RequestPart(value="content") String content,
+            @RequestParam(required = false) List<MultipartFile> imgFileList,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) throws IOException {
+        reviewService.addReview(storeId, content, imgFileList, userDetails);
     }
 
-    //매장 후기 상세 조회
+    // 매장 후기 상세 조회 API
     @GetMapping("/reviews/{reviewId}")
-    public ReviewResponseTempDto getReviewDetail(@PathVariable long reviewId){
-        return reviewService.getReviewDetail(reviewId);
+    public ReviewResponseTempDto getReviewDetails(@PathVariable long reviewId){
+        return reviewService.getReviewDetails(reviewId);
     }
 
-    //매장 후기 수정
-
+    // 매장 후기 수정 API
     @PutMapping(path = "/reviews/{reviewId}", consumes = {"multipart/form-data"})
-    public void updateReview(@PathVariable long reviewId,
-                             @RequestParam(value="content") String content,
-                             @RequestPart(required = false) List<MultipartFile> imgFiles,
-                             @RequestParam(value="imgUrls") List<String> imgUrls, //내가 원래 가지고 있던 이미지 중에서 안 지우고 이번에도 남길 이미지들
-//                             @RequestPart(value="imgUrls") String imgUrls,
-                             @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException{
-        reviewService.editReview(reviewId, content, imgFiles, imgUrls, userDetails);
+    public void editReview(@PathVariable long reviewId,
+                           @RequestParam(value="content") String content,
+                           @RequestPart(required = false) List<MultipartFile> imgFileList,
+                           @RequestParam(value= "imgUrlList") List<String> imgUrlList,
+                           @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException{
+        reviewService.editReview(reviewId, content, imgFileList, imgUrlList, userDetails);
     }
 
-
-    //매장 후기 삭제
+    // 매장 후기 삭제 API
     @DeleteMapping("/reviews/{reviewId}")
     public void deleteReview(@PathVariable long reviewId){
         reviewService.deleteReview(reviewId);

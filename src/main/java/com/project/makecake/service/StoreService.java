@@ -2,7 +2,6 @@ package com.project.makecake.service;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import com.project.makecake.dto.*;
 import com.project.makecake.model.*;
 import com.project.makecake.repository.*;
@@ -16,11 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.time.LocalDate;
 import java.util.*;
@@ -40,6 +35,7 @@ public class StoreService {
     private final CakeLikeRepository cakeLikeRepository;
     private final OpenTimeRepository openTimeRepository;
     private final CakeMenuRepository cakeMenuRepository;
+    private final OpenApiService openApiService;
 
     // (홈탭) 인기 매장 리스트 조회 메소드
     public List<HomeStoreDto> getStoreListAtHome() {
@@ -85,7 +81,6 @@ public class StoreService {
     }
 
     // 매장 상세 조회 메소드
-    @Transactional
     public StoreDetailResponseDto getStoreDetails(Long storeId, UserDetailsImpl userDetails) {
 
         // store
@@ -211,7 +206,9 @@ public class StoreService {
             float minY = 0;
             float maxY = 0;
 
-            JsonElement element = CrawlingSearch(searchText);
+            // 네이버 지도 검색 api url
+            String urlString = "https://map.naver.com/v5/api/search?caller=pcweb&query=" + URLEncoder.encode(searchText, "UTF-8") + "&type=all&searchCoord=127.0234346;37.4979517&page=1&displayCount=20&isPlaceRecommendationReplace=true&lang=ko";
+            JsonElement element = openApiService.getOpenApiResult(urlString);
 
             JsonArray rawJsonArray = element.getAsJsonObject().get("result").getAsJsonObject().get("place").getAsJsonObject().get("boundary").getAsJsonArray();
 
@@ -255,7 +252,6 @@ public class StoreService {
         return responseDtoList;
     }
 
-
     // **미완 매장 삭제 메소드
     @Transactional
     public void deleteStore(Long storeId) {
@@ -266,35 +262,7 @@ public class StoreService {
         storeRepository.deleteById(storeId);
     }
 
-    // 외부 api 요청 컨트롤러 파서 여기에다가 넣기
-    public JsonElement CrawlingSearch(String searchText) throws IOException {
-        URL url = new URL( "https://map.naver.com/v5/api/search?caller=pcweb&query=" + URLEncoder.encode(searchText, "UTF-8") + "&type=all&searchCoord=127.0234346;37.4979517&page=1&displayCount=20&isPlaceRecommendationReplace=true&lang=ko");
-
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-
-        conn.setRequestMethod("GET");
-        conn.setDoOutput(true);
-
-        //결과 코드가 200이라면 성공
-        int responseCode = conn.getResponseCode();
-        System.out.println("responseCode : " + responseCode);
-
-        //요청을 통해 얻은 JSON타입의 Response 메세지 읽어오기
-        BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-        String line = "";
-        String result = "";
-
-        while ((line = br.readLine()) != null) {
-            result += line;
-        }
-
-        //Gson 라이브러리로 JSON파싱
-        JsonParser parser = new JsonParser();
-        JsonElement element = parser.parse(result);
-        return element;
-    }
-
-    //(리팩토링 매우 필요)
+    // (매장 상세 페이지 조회 메소드) 매장 홈페이지 url 2개 반환 메소드 (리팩토링 매우 필요)
     public List<StoreDetailUrlDto> getUrlList(long storeId){
         List<StoreDetailUrlDto> urlList = new ArrayList<>();
         List<StoreUrl> foundUrlList = storeUrlRepository.findAllByStore_StoreId(storeId);
@@ -330,6 +298,7 @@ public class StoreService {
         return urlList;
     }
 
+    // (매장 상세 페이지 조회 메소드) 오늘의 영업 시간 조회 메소드
     public OpenTimeResponseDto getOpenTime(long storeId){
 
         //요일 반환
