@@ -1,14 +1,14 @@
 package com.project.makecake.dto;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
 @Builder
-@Data
+@Getter
 public class MyCommentResponseDto {
-    public Long commentId;
-    public String content;
-    public String createdDate;
-    public Long postId;
-    public String postTitle;
+    private Long commentId;
+    private String content;
+    private String createdDate;
+    private Long postId;
+    private String postTitle;
 }

@@ -1,11 +1,11 @@
 package com.project.makecake.dto;
 
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 public class SignupRequestDto {
-    public String username;
-    public String nickname;
-    public String password;
-    public String passwordCheck;
+    private String username;
+    private String nickname;
+    private String password;
+    private String passwordCheck;
 }
