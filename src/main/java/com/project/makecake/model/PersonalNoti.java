@@ -1,5 +1,6 @@
 package com.project.makecake.model;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -32,4 +33,13 @@ public class PersonalNoti extends Timestamped{
 
     @Column(nullable = false)
     private boolean checked;
+
+    @Builder
+    public PersonalNoti(User recieveUser, User createUser, Noti noti, Post post) {
+        this.recieveUser = recieveUser;
+        this.createUser = createUser;
+        this.noti = noti;
+        this.post = post;
+        this.checked = false;
+    }
 }
