@@ -21,4 +21,15 @@ public class FixNoti extends Timestamped {
     @Column(nullable = false)
     private boolean reveal;
 
+    // 생성자
+    public FixNoti(Noti noti) {
+        this.noti = noti;
+        this.reveal = true;
+    }
+
+    // 고정 알림 내리는 메소드 (reveal을 false로)
+    public void editReveal() {
+        this.reveal = false;
+    }
+
 }

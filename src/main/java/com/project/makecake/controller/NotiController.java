@@ -3,9 +3,7 @@ package com.project.makecake.controller;
 import com.project.makecake.dto.NotiRequestDto;
 import com.project.makecake.service.NotiService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -17,5 +15,17 @@ public class NotiController {
     @PostMapping("/api/noti")
     public void addNoti(@RequestBody NotiRequestDto requestDto) {
         notiService.addNoti(requestDto);
+    }
+
+    // 고정 알림 추가 API
+    @PostMapping("/api/notis/{notiId}/fix")
+    public void addFixNoti(@PathVariable long notiId) {
+        notiService.addFixNoti(notiId);
+    }
+
+    // 고정 알림 reveal값 변경 API
+    @PutMapping("/api/fixNotis/{fixNotiId}")
+    public void editFixNoti(@PathVariable long fixNotiId) {
+        notiService.editFixNoti(fixNotiId);
     }
 }
