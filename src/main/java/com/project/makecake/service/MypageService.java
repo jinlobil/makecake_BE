@@ -1,7 +1,6 @@
 package com.project.makecake.service;
 
 import com.project.makecake.dto.*;
-import com.project.makecake.enums.DesignState;
 import com.project.makecake.model.*;
 import com.project.makecake.repository.*;
 import com.project.makecake.dto.DesignResponseDto;
@@ -62,7 +61,7 @@ public class MypageService {
         Pageable pageable = PageRequest.of(page, 18);
         List<MyDesignResponseDto> responseDtoList = new ArrayList<>();
         if (option.equals("nonpost")){
-            Page<Design> foundDesignList = designRepository.findByUserAndState(foundUser, DesignState.UNPOST, pageable);
+            Page<Design> foundDesignList = designRepository.findByUserAndPost(foundUser, false, pageable);
             for (Design design : foundDesignList){
                 MyDesignResponseDto responseDto = MyDesignResponseDto.builder()
                         .designId(design.getDesignId())

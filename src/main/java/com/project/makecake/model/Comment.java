@@ -1,5 +1,6 @@
 package com.project.makecake.model;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,7 +11,7 @@ import javax.persistence.*;
 @Entity
 public class Comment extends Timestamped{
 
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long commentId;
 
@@ -25,7 +26,7 @@ public class Comment extends Timestamped{
     @JoinColumn(name="userId")
     private User user;
 
-    // 생성자
+    @Builder
     public Comment(String content, Post post, User user){
         this.content = content;
         this.post = post;
@@ -33,7 +34,7 @@ public class Comment extends Timestamped{
     }
 
     // 수정 메소드
-    public void edit(String content) {
+    public void editContent(String content) {
         this.content = content;
     }
 
