@@ -1,9 +1,14 @@
 package com.project.makecake.controller;
 
 import com.project.makecake.dto.NotiRequestDto;
+import com.project.makecake.dto.NotiResponseDto;
+import com.project.makecake.security.UserDetailsImpl;
 import com.project.makecake.service.NotiService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.text.ParseException;
 
 @RequiredArgsConstructor
 @RestController
@@ -27,5 +32,12 @@ public class NotiController {
     @PutMapping("/api/fixNotis/{fixNotiId}")
     public void editFixNoti(@PathVariable long fixNotiId) {
         notiService.editFixNoti(fixNotiId);
+    }
+
+    // 알림 조회 API
+    @GetMapping("/noti")
+    public NotiResponseDto getNotiList(@AuthenticationPrincipal UserDetailsImpl userDetails) throws ParseException {
+        NotiResponseDto responseDto = notiService.getNotiList(userDetails);
+        return responseDto;
     }
 }

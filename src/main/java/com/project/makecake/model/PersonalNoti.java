@@ -42,4 +42,9 @@ public class PersonalNoti extends Timestamped{
         this.post = post;
         this.checked = false;
     }
+
+    // checked 변경 메소드
+    public void editChecked() {
+        this.checked=true;
+    }
 }
