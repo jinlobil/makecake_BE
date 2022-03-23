@@ -24,7 +24,20 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: '8'
+        
+    # Build
     - name: Build with Gradle
       uses: gradle/gradle-build-action@937999e9cc2425eddc7fd62d1053baf041147db7
       with:
         arguments: build
+        
+    # 압축파일 형태로 전달
+    - name: Make zip file
+      run: zip -r ./$GITHUB_SHA.zip .
+      
+    # S3 Bucket으로 전달
+    - name: AWS S3 Upload
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_ACCESS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_ACCESS_KEY }}
+      run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://$S3_BUCKET_NAME/$GITHUB_SHA.zip
