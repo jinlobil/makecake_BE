@@ -10,6 +10,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
+import java.util.HashMap;
 
 @RequiredArgsConstructor
 @RestController
@@ -48,6 +49,12 @@ public class NotiController {
     @PostMapping("/api/notis/{notiId}/personal")
     public void addPersonalNoti(@PathVariable long notiId) {
         notiService.addPersonalNoti(notiId);
+    }
+
+    // 새로운 알림 여부 조회 API
+    @GetMapping("/api/newNoti")
+    public HashMap<String,Boolean> getNewNoti(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return notiService.getNewNoti(userDetails);
     }
 
     // 알림 조회 API

@@ -20,9 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -135,6 +133,33 @@ public class NotiService {
                     .build();
             personalNotiRepository.save(personalNoti);
         }
+    }
+
+    // 새로운 알림 여부 조회 메소드
+    public HashMap<String, Boolean> getNewNoti(UserDetailsImpl userDetails) {
+
+        // 반환 DTO
+        HashMap<String,Boolean> responseDto = new HashMap<>();
+
+        // 비회원이면 new값을 false로 return
+        if (userDetails == null) {
+            responseDto.put("new",false);
+            return responseDto;
+        }
+
+        User user = userDetails.getUser();
+
+        // 체크하지 않은 PersonalNoti 찾기
+        Optional<PersonalNoti> foundPersonalNoti = personalNotiRepository.findByRecieveUserAndChecked(user,false);
+
+        // 반환 DTO 생성
+        if (foundPersonalNoti.isPresent()) {
+            responseDto.put("new",true);
+        } else {
+            responseDto.put("new",false);
+        }
+
+        return responseDto;
     }
 
     // 알림 조회 메소드
@@ -257,5 +282,4 @@ public class NotiService {
 
         return mainContent;
     }
-
 }
