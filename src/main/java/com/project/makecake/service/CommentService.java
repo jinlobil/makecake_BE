@@ -1,13 +1,13 @@
 package com.project.makecake.service;
 
+import com.project.makecake.dto.CommentRequestDto;
+import com.project.makecake.dto.CommentResponseDto;
 import com.project.makecake.enums.NotiType;
 import com.project.makecake.model.*;
 import com.project.makecake.repository.CommentRepository;
 import com.project.makecake.repository.NotiRepository;
 import com.project.makecake.repository.PersonalNotiRepository;
 import com.project.makecake.repository.PostRepository;
-import com.project.makecake.dto.CommentRequestDto;
-import com.project.makecake.dto.CommentResponseDto;
 import com.project.makecake.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
