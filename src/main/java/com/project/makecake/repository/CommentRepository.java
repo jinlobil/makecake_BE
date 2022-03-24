@@ -7,11 +7,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
-
 public interface CommentRepository extends JpaRepository<Comment,Long> {
     void deleteAllByPost(Post foundPost);
-    Page<Comment> findByUser(User user, Pageable pageable);
+    Page<Comment> findByUserOrderByCreatedAtDesc(User user, Pageable pageable);
 
     Long countByPost(Post foundPost);
 

@@ -1,14 +1,10 @@
 package com.project.makecake.service;
 
-import com.project.makecake.dto.ImageInfoDto;
+import com.project.makecake.dto.*;
 import com.project.makecake.enums.FolderName;
+import com.project.makecake.enums.NotiType;
 import com.project.makecake.model.*;
 import com.project.makecake.repository.*;
-import com.project.makecake.dto.LikeDto;
-import com.project.makecake.dto.PostRequestDto;
-import com.project.makecake.dto.DesignResponseDto;
-import com.project.makecake.dto.PostDetailResponseDto;
-import com.project.makecake.dto.PostSimpleResponseDto;
 import com.project.makecake.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -35,6 +31,8 @@ public class PostService {
     private final StoreRepository storeRepository;
     private final PostLikeRepository postLikeRepository;
     private final CommentRepository commentRepository;
+    private final NotiRepository notiRepository;
+    private final PersonalNotiRepository personalNotiRepository;
 
     // 도안 저장 메소드
     @Transactional
@@ -258,13 +256,38 @@ public class PostService {
                     .build();
             postLikeRepository.save(postLike);
 
+            // 좋아요 누른 유저와 게시글 작성자가 다를 경우에만 좋아요 알림 발송
+            if (!user.getUserId().equals(foundPost.getUser().getUserId())) {
+                addLikeNoti(foundPost, user);
+            }
+
         // myLike가 false이면 기존 postLike 삭제
         } else {
             postLikeRepository.deleteByUserAndPost(user,foundPost);
         }
 
+
+
         // likeCnt 변경
-        boolean likeResult = foundPost.addLikeCnt(requestDto.isMyLike());
-        return new LikeDto(likeResult);
+        foundPost.addLikeCnt(requestDto.isMyLike());
+        return new LikeDto(requestDto.isMyLike());
+    }
+
+    // 좋아요 알림 발송 메소드
+    public void addLikeNoti(Post foundPost, User createUser) {
+
+        // 알림 찾기
+        Noti foundNoti = notiRepository.findByType(NotiType.LIKE);
+
+        // personalNoti 생성
+        PersonalNoti personalNoti = PersonalNoti.builder()
+                .recieveUser(foundPost.getUser())
+                .createUser(createUser)
+                .noti(foundNoti)
+                .post(foundPost)
+                .build();
+
+        // 저장
+        personalNotiRepository.save(personalNoti);
     }
 }

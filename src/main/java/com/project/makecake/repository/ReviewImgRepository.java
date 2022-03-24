@@ -2,7 +2,6 @@ package com.project.makecake.repository;
 
 import com.project.makecake.model.Review;
 import com.project.makecake.model.ReviewImg;
-import com.project.makecake.service.ReviewService;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

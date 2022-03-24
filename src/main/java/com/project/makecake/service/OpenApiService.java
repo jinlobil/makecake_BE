@@ -2,21 +2,18 @@ package com.project.makecake.service;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.project.makecake.model.*;
 import com.project.makecake.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
-
-import com.google.gson.*;
-
-import javax.transaction.Transactional;
 
 @Service
 @RequiredArgsConstructor

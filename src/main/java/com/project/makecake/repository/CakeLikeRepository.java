@@ -7,7 +7,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface CakeLikeRepository extends JpaRepository<CakeLike, Long> {
@@ -16,7 +15,7 @@ public interface CakeLikeRepository extends JpaRepository<CakeLike, Long> {
 
     void deleteByUserAndCake(User user, Cake foundCake);
 
-    Page<CakeLike> findByUser(User user, Pageable pageable);
+    Page<CakeLike> findByUserOrderByCreatedAtDesc(User user, Pageable pageable);
 
     void deleteAllByCake(Cake cake);
 }

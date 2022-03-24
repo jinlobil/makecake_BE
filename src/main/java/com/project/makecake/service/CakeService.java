@@ -1,15 +1,18 @@
 package com.project.makecake.service;
 
+import com.project.makecake.dto.CakeResponseDto;
 import com.project.makecake.dto.HomeCakeDto;
 import com.project.makecake.dto.ImageInfoDto;
+import com.project.makecake.dto.LikeDto;
 import com.project.makecake.enums.FolderName;
-import com.project.makecake.model.*;
+import com.project.makecake.model.Cake;
+import com.project.makecake.model.CakeLike;
+import com.project.makecake.model.Store;
+import com.project.makecake.model.User;
 import com.project.makecake.repository.CakeLikeRepository;
 import com.project.makecake.repository.CakeRepository;
 import com.project.makecake.repository.StoreRepository;
 import com.project.makecake.repository.UserRepository;
-import com.project.makecake.dto.LikeDto;
-import com.project.makecake.dto.CakeResponseDto;
 import com.project.makecake.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -147,8 +150,8 @@ public class CakeService {
         }
 
         // likeCnt 변경
-        boolean likeResult = foundCake.editLikeCnt(requestDto.isMyLike());
-        return new LikeDto(likeResult);
+        foundCake.editLikeCnt(requestDto.isMyLike());
+        return new LikeDto(requestDto.isMyLike());
 
     }
 

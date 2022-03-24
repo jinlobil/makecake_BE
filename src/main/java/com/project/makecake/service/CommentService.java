@@ -1,12 +1,13 @@
 package com.project.makecake.service;
 
-import com.project.makecake.model.Comment;
-import com.project.makecake.model.Post;
-import com.project.makecake.model.User;
-import com.project.makecake.repository.CommentRepository;
-import com.project.makecake.repository.PostRepository;
 import com.project.makecake.dto.CommentRequestDto;
 import com.project.makecake.dto.CommentResponseDto;
+import com.project.makecake.enums.NotiType;
+import com.project.makecake.model.*;
+import com.project.makecake.repository.CommentRepository;
+import com.project.makecake.repository.NotiRepository;
+import com.project.makecake.repository.PersonalNotiRepository;
+import com.project.makecake.repository.PostRepository;
 import com.project.makecake.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,6 +26,8 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
+    private final NotiRepository notiRepository;
+    private final PersonalNotiRepository personalNotiRepository;
 
     // 도안 댓글 리스트 조회 메소드 (5개씩)
     public List<CommentResponseDto> getCommentList(long postId, int page) {
@@ -65,6 +68,11 @@ public class CommentService {
                 .user(user)
                 .build();
         commentRepository.save(comment);
+
+        // 댓글 작성자와 게시글 작성자가 다를 경우에만 댓글 알림 발송
+        if (!user.getUserId().equals(foundPost.getUser().getUserId())) {
+            addCommentNoti(foundPost,user);
+        }
 
         // 도안 게시글 댓글수 증가
         foundPost.editCommentCnt(true);
@@ -111,5 +119,22 @@ public class CommentService {
 
         // 댓글 삭제
         commentRepository.delete(foundComment);
+    }
+
+    // 댓글 알림 발송 메소드
+    public void addCommentNoti(Post foundPost, User createUser) {
+
+        // 알림 찾기
+        Noti foundNoti = notiRepository.findByType(NotiType.COMMENT);
+
+        // personalNoti 생성
+        PersonalNoti personalNoti = PersonalNoti.builder()
+                .recieveUser(foundPost.getUser())
+                .createUser(createUser)
+                .noti(foundNoti)
+                .post(foundPost).build();
+
+        // 저장
+        personalNotiRepository.save(personalNoti);
     }
 }

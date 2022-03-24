@@ -1,7 +1,6 @@
 package com.project.makecake.controller;
 
 import com.project.makecake.dto.*;
-import com.project.makecake.dto.LikeDto;
 import com.project.makecake.security.UserDetailsImpl;
 import com.project.makecake.service.CakeService;
 import com.project.makecake.service.ReviewService;

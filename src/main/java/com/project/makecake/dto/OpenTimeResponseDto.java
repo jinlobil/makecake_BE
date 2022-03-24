@@ -2,7 +2,6 @@ package com.project.makecake.dto;
 
 import com.project.makecake.model.OpenTime;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Getter

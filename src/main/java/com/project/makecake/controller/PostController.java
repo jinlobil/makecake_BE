@@ -1,10 +1,6 @@
 package com.project.makecake.controller;
 
-import com.project.makecake.dto.LikeDto;
-import com.project.makecake.dto.PostRequestDto;
-import com.project.makecake.dto.DesignResponseDto;
-import com.project.makecake.dto.PostDetailResponseDto;
-import com.project.makecake.dto.PostSimpleResponseDto;
+import com.project.makecake.dto.*;
 import com.project.makecake.security.UserDetailsImpl;
 import com.project.makecake.service.PostService;
 import lombok.RequiredArgsConstructor;
