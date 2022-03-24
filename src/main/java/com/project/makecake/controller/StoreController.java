@@ -81,8 +81,8 @@ public class StoreController {
 
     // 매장 좋아요 API
     @PostMapping("/stores/like/{storeId}")
-    public LikeDto likeStore(
-            @RequestBody LikeDto requestDto,
+    public LikeRequestDto likeStore(
+            @RequestBody LikeRequestDto requestDto,
             @PathVariable Long storeId,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {

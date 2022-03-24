@@ -3,6 +3,7 @@ package com.project.makecake.service;
 import com.project.makecake.dto.NotiContentRequestDto;
 import com.project.makecake.dto.NotiRequestDto;
 import com.project.makecake.dto.NotiResponseDto;
+import com.project.makecake.dto.RedirectUrlRequestDto;
 import com.project.makecake.enums.NotiType;
 import com.project.makecake.enums.UserRoleEnum;
 import com.project.makecake.model.FixNoti;
@@ -79,7 +80,7 @@ public class NotiService {
 
     // 고정 알림 띄우는 메소드
     @Transactional
-    public void addFixNoti(long notiId) {
+    public void addFixNoti(long notiId, RedirectUrlRequestDto requestDto) {
 
         // 알림 찾기
         Noti foundNoti = notiRepository.findById(notiId)
@@ -91,7 +92,11 @@ public class NotiService {
         }
 
         // 고정 알림 생성
-        FixNoti fixNoti = new FixNoti(foundNoti);
+        FixNoti fixNoti = FixNoti.builder()
+                .noti(foundNoti)
+                .redirectUrl(requestDto.getRedirectUrl())
+                .build();
+
         fixNotiRepository.save(fixNoti);
     }
 
@@ -109,7 +114,7 @@ public class NotiService {
 
     //알림 발송 메소드
     @Transactional
-    public void addPersonalNoti(long notiId) {
+    public void addPersonalNoti(long notiId, RedirectUrlRequestDto requestDto) {
 
         // 알림 찾기
         Noti foundNoti = notiRepository.findById(notiId)
@@ -129,7 +134,7 @@ public class NotiService {
                     .recieveUser(user)
                     .createUser(null)
                     .noti(foundNoti)
-                    .post(null)
+                    .redirectUrl(requestDto.getRedirectUrl())
                     .build();
             personalNotiRepository.save(personalNoti);
         }
@@ -190,7 +195,7 @@ public class NotiService {
         // 반환 DTO에 담기
         List<NotiResponseDto.Fix> fixNotiResponseDtoList = new ArrayList<>();
         for (FixNoti fixNoti : foundFixNotiList) {
-            NotiResponseDto.Fix responseDto = new NotiResponseDto.Fix(fixNoti.getNoti());
+            NotiResponseDto.Fix responseDto = new NotiResponseDto.Fix(fixNoti);
             fixNotiResponseDtoList.add(responseDto);
         }
 
@@ -236,11 +241,11 @@ public class NotiService {
 
         String timeDiff;
         if (diff<60) {
-            timeDiff = diff+"분 전";
+            timeDiff = diff+"분전";
         } else if (diff<60*24) {
-            timeDiff = diff/60+"시간 전";
+            timeDiff = diff/60+"시간전";
         } else {
-            timeDiff = diff/(60*24)+"일 전";
+            timeDiff = diff/(60*24)+"일전";
         }
 
         return timeDiff;

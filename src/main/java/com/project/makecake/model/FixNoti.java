@@ -1,5 +1,6 @@
 package com.project.makecake.model;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -19,11 +20,16 @@ public class FixNoti extends Timestamped {
     private Noti noti;
 
     @Column(nullable = false)
+    private String redirectUrl;
+
+    @Column(nullable = false)
     private boolean reveal;
 
     // 생성자
-    public FixNoti(Noti noti) {
+    @Builder
+    public FixNoti(Noti noti, String redirectUrl) {
         this.noti = noti;
+        this.redirectUrl = redirectUrl;
         this.reveal = true;
     }
 
