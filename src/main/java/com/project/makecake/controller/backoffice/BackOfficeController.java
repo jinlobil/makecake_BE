@@ -21,8 +21,8 @@ public class BackOfficeController {
     }
 
     @PostMapping("/api/backOffice/store/saveMenuAndOption")
-    public String saveMenuAndOption(@RequestBody CakeMenuOptionPeekRequestDto requestDto){
-        return backOfficeService.saveMenuAndOption(backOfficeService.peekMenuAndOption(requestDto));
+    public String addMenuAndOption(@RequestBody CakeMenuOptionPeekRequestDto requestDto){
+        return backOfficeService.addMenuAndOption(backOfficeService.peekMenuAndOption(requestDto));
     }
 
     @PostMapping("/api/backOffice/store/searchId")
