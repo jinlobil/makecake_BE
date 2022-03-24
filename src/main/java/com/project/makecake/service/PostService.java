@@ -241,15 +241,24 @@ public class PostService {
 
     // 도안 게시글 좋아요 등록 및 삭제 메소드
     @Transactional
-    public LikeDto savePostLike(long postId, LikeDto requestDto, UserDetailsImpl userDetails) {
+    public LikeResponseDto savePostLike(long postId, LikeRequestDto requestDto, UserDetailsImpl userDetails) {
         User user = userDetails.getUser();
 
         // 게시글 찾기
         Post foundPost = postRepository.findById(postId)
                 .orElseThrow(()->new IllegalArgumentException("게시글이 존재하지 않습니다."));
 
+        // 게시글 좋아요 찾기
+        Optional<PostLike> foundPostLike = postLikeRepository.findByUserAndPost(user,foundPost);
+
         // myLike가 true이면 새로운 postLike 저장
         if (requestDto.isMyLike()) {
+
+            // 이미 좋아요를 누른 게시글이면 exception
+            if (foundPostLike.isPresent()) {
+                throw new IllegalArgumentException("이미 좋아요를 누른 게시글입니다.");
+            }
+
             PostLike postLike = PostLike.builder()
                     .post(foundPost)
                     .user(user)
@@ -257,20 +266,31 @@ public class PostService {
             postLikeRepository.save(postLike);
 
             // 좋아요 누른 유저와 게시글 작성자가 다를 경우에만 좋아요 알림 발송
-            if (!user.getUserId().equals(foundPost.getUser().getUserId())) {
+            if (
+                    !user.getUserId().equals(foundPost.getUser().getUserId())
+                    && foundPost.getUser().getRole()!=null
+            ) {
                 addLikeNoti(foundPost, user);
             }
 
         // myLike가 false이면 기존 postLike 삭제
         } else {
+
+            // 좋아요를 누르지 않은 게시글이면 exception
+            if (!foundPostLike.isPresent()) {
+                throw new IllegalArgumentException("좋아요를 누르지 않은 게시글입니다.");
+            }
+
             postLikeRepository.deleteByUserAndPost(user,foundPost);
         }
 
-
-
         // likeCnt 변경
-        boolean likeResult = foundPost.addLikeCnt(requestDto.isMyLike());
-        return new LikeDto(likeResult);
+        foundPost.addLikeCnt(requestDto.isMyLike());
+
+        return LikeResponseDto.builder()
+                .myLike(requestDto.isMyLike())
+                .likeCnt(foundPost.getLikeCnt())
+                .build();
     }
 
     // 좋아요 알림 발송 메소드
@@ -284,7 +304,7 @@ public class PostService {
                 .recieveUser(foundPost.getUser())
                 .createUser(createUser)
                 .noti(foundNoti)
-                .post(foundPost)
+                .redirectUrl("https://ko.dict.naver.com/#/entry/koko/6cbf564655854b4d8225477320c63e7a")
                 .build();
 
         // 저장

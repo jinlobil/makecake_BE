@@ -70,7 +70,10 @@ public class CommentService {
         commentRepository.save(comment);
 
         // 댓글 작성자와 게시글 작성자가 다를 경우에만 댓글 알림 발송
-        if (!user.getUserId().equals(foundPost.getUser().getUserId())) {
+        if (
+                !user.getUserId().equals(foundPost.getUser().getUserId())
+                && foundPost.getUser().getRole()!=null
+        ) {
             addCommentNoti(foundPost,user);
         }
 
@@ -132,7 +135,8 @@ public class CommentService {
                 .recieveUser(foundPost.getUser())
                 .createUser(createUser)
                 .noti(foundNoti)
-                .post(foundPost).build();
+                .redirectUrl("https://ko.dict.naver.com/#/entry/koko/b91939f752b6463a86d4dd5a57ff17c5")
+                .build();
 
         // 저장
         personalNotiRepository.save(personalNoti);

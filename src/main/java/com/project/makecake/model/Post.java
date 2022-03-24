@@ -77,13 +77,11 @@ public class Post extends Timestamped{
     }
 
     // likeCnt 변경 메소드
-    public boolean addLikeCnt(boolean myLike) {
+    public void addLikeCnt(boolean myLike) {
         if (myLike) {
             this.likeCnt += 1;
-            return false;
         } else {
             this.likeCnt -= 1;
-            return true;
         }
     }
 

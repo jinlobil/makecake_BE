@@ -1,9 +1,6 @@
 package com.project.makecake.service;
 
-import com.project.makecake.dto.CakeResponseDto;
-import com.project.makecake.dto.HomeCakeDto;
-import com.project.makecake.dto.ImageInfoDto;
-import com.project.makecake.dto.LikeDto;
+import com.project.makecake.dto.*;
 import com.project.makecake.enums.FolderName;
 import com.project.makecake.model.Cake;
 import com.project.makecake.model.CakeLike;
@@ -128,7 +125,7 @@ public class CakeService {
 
     // 케이크 좋아요 생성 및 삭제 메소드
     @Transactional
-    public LikeDto saveCakeLike(long cakeId, LikeDto requestDto, UserDetailsImpl userDetails) {
+    public LikeResponseDto saveCakeLike(long cakeId, LikeRequestDto requestDto, UserDetailsImpl userDetails) {
 
         User user = userDetails.getUser();
 
@@ -136,8 +133,17 @@ public class CakeService {
         Cake foundCake = cakeRepository.findById(cakeId)
                 .orElseThrow(()->new IllegalArgumentException("케이크가 존재하지 않습니다."));
 
+        // 케이크 좋아요 찾기
+        Optional<CakeLike> foundCakeLike = cakeLikeRepository.findByUserAndCake(user,foundCake);
+
         // myLike가 true이면 새로운 cakeLike 저장
         if (requestDto.isMyLike()) {
+
+            // 이미 좋아요를 누른 케이크이면 exception
+            if (foundCakeLike.isPresent()) {
+                throw new IllegalArgumentException("이미 좋아요를 누른 케이크입니다.");
+            }
+
             CakeLike cakeLike = CakeLike.builder()
                     .cake(foundCake)
                     .user(user)
@@ -146,12 +152,22 @@ public class CakeService {
 
         // myLike가 false이면 기존 cakeLike 삭제
         } else {
+
+            // 좋아요를 누르지 않은 케이크이면 exception
+            if (!foundCakeLike.isPresent()) {
+                throw new IllegalArgumentException("좋아요를 누르지 않은 케이크입니다.");
+            }
+
             cakeLikeRepository.deleteByUserAndCake(user, foundCake);
         }
 
         // likeCnt 변경
-        boolean likeResult = foundCake.editLikeCnt(requestDto.isMyLike());
-        return new LikeDto(likeResult);
+        foundCake.editLikeCnt(requestDto.isMyLike());
+
+        return LikeResponseDto.builder()
+                .myLike(requestDto.isMyLike())
+                .likeCnt(foundCake.getLikeCnt())
+                .build();
 
     }
 

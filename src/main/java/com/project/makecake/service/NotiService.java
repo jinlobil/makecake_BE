@@ -1,8 +1,6 @@
 package com.project.makecake.service;
 
-import com.project.makecake.dto.NotiContentRequestDto;
-import com.project.makecake.dto.NotiRequestDto;
-import com.project.makecake.dto.NotiResponseDto;
+import com.project.makecake.dto.*;
 import com.project.makecake.enums.NotiType;
 import com.project.makecake.enums.UserRoleEnum;
 import com.project.makecake.model.FixNoti;
@@ -20,7 +18,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -79,7 +80,7 @@ public class NotiService {
 
     // 고정 알림 띄우는 메소드
     @Transactional
-    public void addFixNoti(long notiId) {
+    public void addFixNoti(long notiId, RedirectUrlRequestDto requestDto) {
 
         // 알림 찾기
         Noti foundNoti = notiRepository.findById(notiId)
@@ -91,7 +92,11 @@ public class NotiService {
         }
 
         // 고정 알림 생성
-        FixNoti fixNoti = new FixNoti(foundNoti);
+        FixNoti fixNoti = FixNoti.builder()
+                .noti(foundNoti)
+                .redirectUrl(requestDto.getRedirectUrl())
+                .build();
+
         fixNotiRepository.save(fixNoti);
     }
 
@@ -109,7 +114,7 @@ public class NotiService {
 
     //알림 발송 메소드
     @Transactional
-    public void addPersonalNoti(long notiId) {
+    public void addPersonalNoti(long notiId, RedirectUrlRequestDto requestDto) {
 
         // 알림 찾기
         Noti foundNoti = notiRepository.findById(notiId)
@@ -129,22 +134,18 @@ public class NotiService {
                     .recieveUser(user)
                     .createUser(null)
                     .noti(foundNoti)
-                    .post(null)
+                    .redirectUrl(requestDto.getRedirectUrl())
                     .build();
             personalNotiRepository.save(personalNoti);
         }
     }
 
     // 새로운 알림 여부 조회 메소드
-    public HashMap<String, Boolean> getNewNoti(UserDetailsImpl userDetails) {
-
-        // 반환 DTO
-        HashMap<String,Boolean> responseDto = new HashMap<>();
+    public NewNotiResponseDto getNewNoti(UserDetailsImpl userDetails) {
 
         // 비회원이면 new값을 false로 return
         if (userDetails == null) {
-            responseDto.put("new",false);
-            return responseDto;
+            return new NewNotiResponseDto(true);
         }
 
         User user = userDetails.getUser();
@@ -154,12 +155,10 @@ public class NotiService {
 
         // 반환 DTO 생성
         if (foundPersonalNoti.isPresent()) {
-            responseDto.put("new",true);
+            return new NewNotiResponseDto(false);
         } else {
-            responseDto.put("new",false);
+            return new NewNotiResponseDto(true);
         }
-
-        return responseDto;
     }
 
     // 알림 조회 메소드
@@ -190,7 +189,7 @@ public class NotiService {
         // 반환 DTO에 담기
         List<NotiResponseDto.Fix> fixNotiResponseDtoList = new ArrayList<>();
         for (FixNoti fixNoti : foundFixNotiList) {
-            NotiResponseDto.Fix responseDto = new NotiResponseDto.Fix(fixNoti.getNoti());
+            NotiResponseDto.Fix responseDto = new NotiResponseDto.Fix(fixNoti);
             fixNotiResponseDtoList.add(responseDto);
         }
 
@@ -201,7 +200,7 @@ public class NotiService {
     public List<NotiResponseDto.Personal> getPersonalNotiList(User user) throws ParseException {
 
         // PersonalNoti 찾기
-        List<PersonalNoti> foundPersonalNotiList = personalNotiRepository.findAllByRecieveUserOrderByCreatedAtDesc(user);
+        List<PersonalNoti> foundPersonalNotiList = personalNotiRepository.findTop30ByRecieveUserOrderByCreatedAtDesc(user);
 
         // personalNoti들을 DTO에 담기
         List<NotiResponseDto.Personal> personalNotiResponseDtoList = new ArrayList<>();
@@ -221,6 +220,12 @@ public class NotiService {
             personalNoti.editChecked();
         }
 
+        // 최신 30개에 포함되지 않은 알림은 자동 읽음 처리
+        List<PersonalNoti> foundUncheckedPersonalNotiList = personalNotiRepository.findAllByRecieveUserAndChecked(user,false);
+        for (PersonalNoti personalNoti : foundUncheckedPersonalNotiList) {
+            personalNoti.editChecked();
+        }
+
         return personalNotiResponseDtoList;
     }
 
@@ -236,11 +241,11 @@ public class NotiService {
 
         String timeDiff;
         if (diff<60) {
-            timeDiff = diff+"분 전";
+            timeDiff = diff+"분전";
         } else if (diff<60*24) {
-            timeDiff = diff/60+"시간 전";
+            timeDiff = diff/60+"시간전";
         } else {
-            timeDiff = diff/(60*24)+"일 전";
+            timeDiff = diff/(60*24)+"일전";
         }
 
         return timeDiff;
