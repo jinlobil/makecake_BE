@@ -1,8 +1,9 @@
 package com.project.makecake.dto;
 
 import lombok.Builder;
-import lombok.Setter;
+import lombok.Getter;
 
+@Getter
 @Builder
 public class HomeReviewDto {
     private long reviewId;

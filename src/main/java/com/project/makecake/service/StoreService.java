@@ -5,7 +5,6 @@ import com.google.gson.JsonElement;
 import com.project.makecake.dto.*;
 import com.project.makecake.model.*;
 import com.project.makecake.repository.*;
-import com.project.makecake.dto.LikeDto;
 import com.project.makecake.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,7 +17,9 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service

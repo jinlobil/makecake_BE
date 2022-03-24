@@ -1,7 +1,6 @@
 package com.project.makecake.controller;
 
 import com.project.makecake.dto.*;
-import com.project.makecake.dto.DesignResponseDto;
 import com.project.makecake.security.UserDetailsImpl;
 import com.project.makecake.service.MypageService;
 import lombok.RequiredArgsConstructor;

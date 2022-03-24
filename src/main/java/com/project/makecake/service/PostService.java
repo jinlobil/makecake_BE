@@ -1,15 +1,10 @@
 package com.project.makecake.service;
 
-import com.project.makecake.dto.ImageInfoDto;
+import com.project.makecake.dto.*;
 import com.project.makecake.enums.FolderName;
 import com.project.makecake.enums.NotiType;
 import com.project.makecake.model.*;
 import com.project.makecake.repository.*;
-import com.project.makecake.dto.LikeDto;
-import com.project.makecake.dto.PostRequestDto;
-import com.project.makecake.dto.DesignResponseDto;
-import com.project.makecake.dto.PostDetailResponseDto;
-import com.project.makecake.dto.PostSimpleResponseDto;
 import com.project.makecake.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

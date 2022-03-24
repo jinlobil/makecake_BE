@@ -5,8 +5,8 @@ import com.project.makecake.dto.LoginCheckResponseDto;
 import com.project.makecake.dto.MypageResponseDto;
 import com.project.makecake.dto.SignupRequestDto;
 import com.project.makecake.enums.FolderName;
-import com.project.makecake.model.User;
 import com.project.makecake.enums.UserRoleEnum;
+import com.project.makecake.model.User;
 import com.project.makecake.repository.UserRepository;
 import com.project.makecake.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Optional;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
