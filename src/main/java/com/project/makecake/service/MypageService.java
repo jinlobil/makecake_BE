@@ -61,9 +61,8 @@ public class MypageService {
 
         List<MyDesignResponseDto> responseDtoList = new ArrayList<>();
         if (option.equals("nonpost")){
-            Sort sort = Sort.by(Sort.Direction.DESC,"designId");
-            Pageable pageable = PageRequest.of(page, 18, sort);
-            Page<Design> foundDesignList = designRepository.findByUserAndPost(foundUser, false, pageable);
+            Pageable pageable = PageRequest.of(page, 18);
+            Page<Design> foundDesignList = designRepository.findByUserAndPostOrderByCreatedAtDesc(foundUser, false, pageable);
             for (Design design : foundDesignList){
                 MyDesignResponseDto responseDto = MyDesignResponseDto.builder()
                         .designId(design.getDesignId())
@@ -72,9 +71,8 @@ public class MypageService {
                 responseDtoList.add(responseDto);
             }
         } else if (option.equals("post")){
-            Sort sort = Sort.by(Sort.Direction.DESC,"postId");
-            Pageable pageable = PageRequest.of(page, 18, sort);
-            Page<Post> foundPostList = postRepository.findByUser(foundUser, pageable);
+            Pageable pageable = PageRequest.of(page, 18);
+            Page<Post> foundPostList = postRepository.findByUserOrderByCreatedAtDesc(foundUser, pageable);
             for (Post post : foundPostList){
                 MyDesignResponseDto responseDto = MyDesignResponseDto.builder()
                         .postId(post.getPostId())
@@ -111,7 +109,7 @@ public class MypageService {
                 () -> new IllegalArgumentException("유저가 존재하지 않습니다.")
         );
         Pageable pageable = PageRequest.of(page, 5);
-        Page<PostLike> foundPostList = postLikeRepository.findByUser(foundUser, pageable);
+        Page<PostLike> foundPostList = postLikeRepository.findByUserOrderByCreatedAtDesc(foundUser, pageable);
         List<MyReactPostResponceDto> responseDtoList = new ArrayList<>();
         for (PostLike postLike : foundPostList){
             MyReactPostResponceDto responseDto = MyReactPostResponceDto.builder()
@@ -136,7 +134,7 @@ public class MypageService {
                 () -> new IllegalArgumentException("존재하지 않는 사용자입니다.")
         );
         Pageable pageable = PageRequest.of(page, 5);
-        Page<Comment> foundCommentList = commentRepository.findByUser(foundUser, pageable);
+        Page<Comment> foundCommentList = commentRepository.findByUserOrderByCreatedAtDesc(foundUser, pageable);
         List<MyCommentResponseDto> responseDtoList = new ArrayList<>();
         for (Comment comment : foundCommentList){
             MyCommentResponseDto responseDto = MyCommentResponseDto.builder()
@@ -160,7 +158,7 @@ public class MypageService {
                 () -> new IllegalArgumentException("존재하지 않는 사용자입니다.")
         );
         Pageable pageable = PageRequest.of(page, 8);
-        Page<StoreLike> foundStoreLikeList = storeLikeRepository.findByUser(foundUser, pageable);
+        Page<StoreLike> foundStoreLikeList = storeLikeRepository.findByUserOrderByCreatedAtDesc(foundUser, pageable);
         List<MyReactStoreResponseDto> responseDtoList = new ArrayList<>();
         for (StoreLike storeLike : foundStoreLikeList){
             String address = storeLike.getStore().getFullAddress();
@@ -186,7 +184,7 @@ public class MypageService {
                 () -> new IllegalArgumentException("존재하지 않는 사용자입니다.")
         );
         Pageable pageable = PageRequest.of(page, 5);
-        Page<Review> foundReviewList = reviewRepository.findByUser(foundUser, pageable);
+        Page<Review> foundReviewList = reviewRepository.findByUserOrderByCreatedAtDesc(foundUser, pageable);
         List<MyReviewResponseDto> responseDtoList = new ArrayList<>();
         for (Review review : foundReviewList){
             ReviewImg reviewImg = reviewImgRepository.findTop1ByReview(review);
@@ -226,7 +224,7 @@ public class MypageService {
                 () -> new IllegalArgumentException("존재하지 않는 사용자입니다.")
         );
         Pageable pageable = PageRequest.of(page, 8);
-        Page<CakeLike> foundCakeList = cakeLikeRepository.findByUser(foundUser, pageable);
+        Page<CakeLike> foundCakeList = cakeLikeRepository.findByUserOrderByCreatedAtDesc(foundUser, pageable);
         List<MyReactCakeResponseDto> responseDtoList = new ArrayList<>();
         for (CakeLike cakeLike : foundCakeList) {
             MyReactCakeResponseDto responseDto = MyReactCakeResponseDto.builder()

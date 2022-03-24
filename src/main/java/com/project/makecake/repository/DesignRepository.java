@@ -7,5 +7,5 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface DesignRepository extends JpaRepository<Design,Long> {
-    Page<Design> findByUserAndPost(User user, boolean post , Pageable pageable);
+    Page<Design> findByUserAndPostOrderByCreatedAtDesc(User user, boolean post , Pageable pageable);
 }

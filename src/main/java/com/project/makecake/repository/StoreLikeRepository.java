@@ -10,5 +10,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface StoreLikeRepository extends JpaRepository<StoreLike, Long> {
     StoreLike findByStoreAndUser(Store store, User user);
     void deleteByStoreAndUser(Store store, User user);
-    Page<StoreLike> findByUser(User user, Pageable pageable);
+    Page<StoreLike> findByUserOrderByCreatedAtDesc(User user, Pageable pageable);
 }
