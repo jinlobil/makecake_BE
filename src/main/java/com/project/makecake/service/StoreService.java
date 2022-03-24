@@ -58,7 +58,7 @@ public class StoreService {
 
     // 매장 좋아요 메소드
     @Transactional
-    public LikeRequestDto likeStore(Boolean myLike, Long storeId, UserDetailsImpl userDetails) {
+    public LikeResponseDto likeStore(Boolean myLike, Long storeId, UserDetailsImpl userDetails) {
         User user = userDetails.getUser();
 
         //true 추가(좋아요 누르기), false 삭제(좋아요 취소)
@@ -72,12 +72,12 @@ public class StoreService {
             storeLikeRepository.save(storeLike);
             store.setLikeCnt(store.getLikeCnt() +1);
             storeRepository.save(store);
-            return new LikeRequestDto(true);
+            return LikeResponseDto.builder().myLike(true).likeCnt(store.getLikeCnt()).build();
         } else {
             storeLikeRepository.deleteByStoreAndUser(store, user);
             store.setLikeCnt(store.getLikeCnt() -1);
             storeRepository.save(store);
-            return new LikeRequestDto(false);
+            return LikeResponseDto.builder().myLike(false).likeCnt(store.getLikeCnt()).build();
         }
     }
 
