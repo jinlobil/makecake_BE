@@ -206,7 +206,7 @@ public class NotiService {
     public List<NotiResponseDto.Personal> getPersonalNotiList(User user) throws ParseException {
 
         // PersonalNoti 찾기
-        List<PersonalNoti> foundPersonalNotiList = personalNotiRepository.findAllByRecieveUserOrderByCreatedAtDesc(user);
+        List<PersonalNoti> foundPersonalNotiList = personalNotiRepository.findTop30ByRecieveUserOrderByCreatedAtDesc(user);
 
         // personalNoti들을 DTO에 담기
         List<NotiResponseDto.Personal> personalNotiResponseDtoList = new ArrayList<>();
@@ -223,6 +223,12 @@ public class NotiService {
             personalNotiResponseDtoList.add(responseDto);
 
             // 알림 읽음으로 변경
+            personalNoti.editChecked();
+        }
+
+        // 최신 30개에 포함되지 않은 알림은 자동 읽음 처리
+        List<PersonalNoti> foundUncheckedPersonalNotiList = personalNotiRepository.findAllByRecieveUserAndChecked(user,false);
+        for (PersonalNoti personalNoti : foundUncheckedPersonalNotiList) {
             personalNoti.editChecked();
         }
 
