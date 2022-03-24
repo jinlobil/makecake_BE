@@ -3,6 +3,7 @@ package com.project.makecake.service;
 import com.project.makecake.dto.*;
 import com.project.makecake.enums.FolderName;
 import com.project.makecake.enums.NotiType;
+import com.project.makecake.enums.UserRoleEnum;
 import com.project.makecake.model.*;
 import com.project.makecake.repository.*;
 import com.project.makecake.security.UserDetailsImpl;
@@ -266,7 +267,10 @@ public class PostService {
             postLikeRepository.save(postLike);
 
             // 좋아요 누른 유저와 게시글 작성자가 다를 경우에만 좋아요 알림 발송
-            if (!user.getUserId().equals(foundPost.getUser().getUserId())) {
+            if (
+                    !user.getUserId().equals(foundPost.getUser().getUserId())
+                    && foundPost.getUser().getRole()!=null
+            ) {
                 addLikeNoti(foundPost, user);
             }
 
