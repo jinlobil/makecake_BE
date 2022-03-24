@@ -9,9 +9,9 @@ import java.util.Optional;
 
 public interface PersonalNotiRepository extends JpaRepository<com.project.makecake.model.PersonalNoti,Long> {
 
-    List<PersonalNoti> findAllByRecieveUserOrderByCreatedAtDesc(User user);
-
     Optional<PersonalNoti> findByRecieveUserAndChecked(User user, boolean b);
 
-    // findAllByOrderByCreatedAtDesc
+    List<PersonalNoti> findTop30ByRecieveUserOrderByCreatedAtDesc(User user);
+
+    List<PersonalNoti> findAllByRecieveUserAndChecked(User user, boolean b);
 }
