@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -57,9 +58,11 @@ public class MypageService {
                 () -> new IllegalArgumentException("존재하지 않는 사용자입니다.")
         );
 
-        Pageable pageable = PageRequest.of(page, 18);
+
         List<MyDesignResponseDto> responseDtoList = new ArrayList<>();
         if (option.equals("nonpost")){
+            Sort sort = Sort.by(Sort.Direction.DESC,"designId");
+            Pageable pageable = PageRequest.of(page, 18, sort);
             Page<Design> foundDesignList = designRepository.findByUserAndPost(foundUser, false, pageable);
             for (Design design : foundDesignList){
                 MyDesignResponseDto responseDto = MyDesignResponseDto.builder()
@@ -69,6 +72,8 @@ public class MypageService {
                 responseDtoList.add(responseDto);
             }
         } else if (option.equals("post")){
+            Sort sort = Sort.by(Sort.Direction.DESC,"postId");
+            Pageable pageable = PageRequest.of(page, 18, sort);
             Page<Post> foundPostList = postRepository.findByUser(foundUser, pageable);
             for (Post post : foundPostList){
                 MyDesignResponseDto responseDto = MyDesignResponseDto.builder()
