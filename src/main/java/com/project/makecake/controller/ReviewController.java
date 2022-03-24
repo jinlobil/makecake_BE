@@ -37,7 +37,7 @@ public class ReviewController {
     @PutMapping(path = "/reviews/{reviewId}", consumes = {"multipart/form-data"})
     public void editReview(@PathVariable long reviewId,
                            @RequestParam(value="content") String content,
-                           @RequestPart(required = false) List<MultipartFile> imgFileList,
+                           @RequestParam(required = false) List<MultipartFile> imgFileList,
                            @RequestParam(value= "imgUrlList") List<String> imgUrlList,
                            @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException{
         reviewService.editReview(reviewId, content, imgFileList, imgUrlList, userDetails);

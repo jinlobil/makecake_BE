@@ -62,13 +62,4 @@ public class Store extends Timestamped{
         }
     }
 
-//    @OneToMany(mappedBy = "store")
-//    private List<StoreUrl> storeUrlList = new ArrayList<>();
-//
-//    @OneToMany(mappedBy = "store")
-//    private List<Menu> menuList = new ArrayList<>();
-//
-//    @OneToMany(mappedBy = "store")
-//    private List<Cake> cakeList = new ArrayList<>();
-
 }
