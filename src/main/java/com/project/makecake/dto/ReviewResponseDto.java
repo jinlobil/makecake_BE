@@ -2,12 +2,12 @@ package com.project.makecake.dto;
 
 import com.project.makecake.model.Review;
 import lombok.Getter;
-import lombok.Setter;
 
+import java.util.List;
 import java.util.List;
 
 @Getter
-@Setter
+
 public class ReviewResponseDto {
     private Long reviewId;
     private String writerNickname;

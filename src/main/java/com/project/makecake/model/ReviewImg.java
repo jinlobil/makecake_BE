@@ -1,6 +1,7 @@
 package com.project.makecake.model;
 
 import com.project.makecake.dto.ImageInfoDto;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,7 +10,6 @@ import javax.persistence.*;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor
 public class ReviewImg extends Timestamped{
     @Id
@@ -28,6 +28,7 @@ public class ReviewImg extends Timestamped{
     private Review review;
 
     //생성자
+    @Builder
     public ReviewImg(ImageInfoDto imgInfo, Review review){
         this.imgUrl = imgInfo.getUrl();
         this.imgName = imgInfo.getName();

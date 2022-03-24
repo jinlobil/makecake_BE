@@ -53,13 +53,13 @@ public class Store extends Timestamped{
     @Column(columnDefinition = "integer default 0")
     private int reviewCnt;
 
-//    @OneToMany(mappedBy = "store")
-//    private List<StoreUrl> storeUrlList = new ArrayList<>();
-//
-//    @OneToMany(mappedBy = "store")
-//    private List<Menu> menuList = new ArrayList<>();
-//
-//    @OneToMany(mappedBy = "store")
-//    private List<Cake> cakeList = new ArrayList<>();
+    // 매장 후기 수 Cnt
+    public void countReview(boolean bool) {
+        if(bool) {
+            this.reviewCnt +=1;
+        } else {
+            this.reviewCnt -=1;
+        }
+    }
 
 }

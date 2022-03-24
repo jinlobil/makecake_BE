@@ -1,14 +1,14 @@
 package com.project.makecake.dto;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
 @Builder
-@Data
+@Getter
 public class MyReactCakeResponseDto {
-    public Long cakeId;
-    public String img;
-    public String storeName;
-    public int likeCnt;
-    public Boolean myLike;
+    private Long cakeId;
+    private String img;
+    private String storeName;
+    private int likeCnt;
+    private Boolean myLike;
 }

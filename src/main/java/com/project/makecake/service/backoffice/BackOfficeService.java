@@ -60,7 +60,7 @@ public class BackOfficeService {
     }
 
     //케이크 메뉴, 옵션 데이터 저장
-    public String saveMenuAndOption(CakeMenuOptionPeekResponseDto requestDto) {
+    public String addMenuAndOption(CakeMenuOptionPeekResponseDto requestDto) {
         Store store = storeRepository.getById(requestDto.getStoreId());
 
         //케이크 메뉴 저장

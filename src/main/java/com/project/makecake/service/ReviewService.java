@@ -20,63 +20,81 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+
 public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final ReviewImgRepository reviewImgRepository;
     private final S3UploadService s3UploadService;
     private final StoreRepository storeRepository;
 
-    //홈탭 : 최신 리뷰 보여주기 (페이지네이션)
-    @Transactional
+    // (홈탭) 최신 매장 후기 조회 메소드 (5개)
     public List<HomeReviewDto> getReviewListAtHome() {
-        List<Review> rawReviewList = reviewRepository.findTop5ByOrderByCreatedAtDesc();
+        List<Review> foundReviewList = reviewRepository.findTop5ByOrderByCreatedAtDesc();
 
         List<HomeReviewDto> responseDtoList = new ArrayList<>();
-        for(Review rawReview : rawReviewList){
-            Store store = rawReview.getStore();
-            HomeReviewDto responseDto = new HomeReviewDto();
-            long reviewId = rawReview.getReviewId();
-            responseDto.setReviewId(reviewId);
-            responseDto.setNickname(rawReview.getUser().getNickname());
-            responseDto.setCreatedDate(rawReview.getCreatedAt());
-            responseDto.setContent(rawReview.getContent());
-            responseDto.setStoreId(store.getStoreId());
-            responseDto.setStoreName(store.getName());
+        for(Review review : foundReviewList){
+            Store store = review.getStore();
+
+            long reviewId = review.getReviewId();
+
             String img = "https://makecake.s3.ap-northeast-2.amazonaws.com/PROFILE/%EC%97%B0%ED%95%9C%EC%BC%80%EC%9D%B4%ED%81%AC.png";
             if(!reviewImgRepository.findAllByReview_ReviewId(reviewId).isEmpty()){
                 img = reviewImgRepository.findAllByReview_ReviewId(reviewId).get(0).getImgUrl();
             }
-            responseDto.setImg(img);
+
+            HomeReviewDto responseDto = HomeReviewDto.builder()
+                    .reviewId(reviewId)
+                    .nickname(review.getUser().getNickname())
+                    .createdDate(review.getCreatedAt())
+                    .content(review.getContent())
+                    .storeId(store.getStoreId())
+                    .storeName(store.getName())
+                    .img(img)
+                    .build();
+
             responseDtoList.add(responseDto);
         }
         return responseDtoList;
     }
 
-    //리뷰 작성하기
+    // 매장 후기 작성 메소드
     @Transactional
-    public void writeReview(long storeId, String content, List<MultipartFile> imgFiles, UserDetailsImpl userDetails) throws IOException {
+    public void addReview(long storeId, String content, List<MultipartFile> imgFileList, UserDetailsImpl userDetails) throws IOException {
         User user = userDetails.getUser();
 
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(()->new IllegalArgumentException("존재하지 않는 매장입니다."));
 
-        //본문은 무조건 있어야 함
-        Review review = new Review(content, store, user);
+        // 리뷰 본문 저장
+        Review review = Review.builder()
+                .user(user)
+                .store(store)
+                .content(content)
+                .build();
+
         reviewRepository.save(review);
 
-        //이미지도 업로드할 경우 저장해줌
-        if(imgFiles != null){
-            for(MultipartFile imgFile : imgFiles){
+        // 이미지 S3 업로드 및 DB 저장
+        if(imgFileList != null){
+            for(MultipartFile imgFile : imgFileList){
                 ImageInfoDto imageInfoDto = s3UploadService.uploadFile(imgFile, FolderName.REVIEW.name());
-                ReviewImg reviewImg = new ReviewImg(imageInfoDto, review);
+
+                ReviewImg reviewImg = ReviewImg.builder()
+                        .imgInfo(imageInfoDto)
+                        .review(review)
+                        .build();
+
                 reviewImgRepository.save(reviewImg);
             }
         }
-        store.setReviewCnt(store.getReviewCnt() +1);
+        // 매장 reviewCnt 변경
+        boolean bool = true;
+        store.countReview(bool);
+
         storeRepository.save(store);
     }
 
-    //리뷰 삭제하기
+    // 매장 후기 삭제 메소드
     @Transactional
     public void deleteReview(long reviewId){
         Store store = reviewRepository.getById(reviewId).getStore();
@@ -84,13 +102,14 @@ public class ReviewService {
         reviewImgRepository.deleteAllByReview_ReviewId(reviewId);
         reviewRepository.deleteById(reviewId);
 
-        store.setReviewCnt(store.getReviewCnt() -1);
+        boolean bool = false;
+        store.countReview(bool);
         storeRepository.save(store);
     }
 
-    //리뷰 수정하기 (프론트와 상의 후 구현 필요함)
+    // 매장 후기 수정 메소드
     @Transactional
-    public void editReview(long reviewId, String content, List<MultipartFile> imgFiles, List<String> imgUrls, UserDetailsImpl userDetails) throws IOException {
+    public void editReview(long reviewId, String content, List<MultipartFile> imgFileList, List<String> imgUrlList, UserDetailsImpl userDetails) throws IOException {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(()->new IllegalArgumentException("존재하지 않는 리뷰입니다."));
 
@@ -98,70 +117,61 @@ public class ReviewService {
             throw new IllegalArgumentException("다른 회원이 작성한 리뷰는 수정할 수 없습니다.");
         }
 
-        //imgUrls (기존에 있던 이미지 URL 중 사용자가 없이 보낸 것만 삭제)
+        //imgUrlList (imgUrlList에서 없는 url을 삭제)
         if(reviewImgRepository.findAllByReview_ReviewId(reviewId) != null){
-            List<ReviewImg> originReviewImgList = reviewImgRepository.findAllByReview_ReviewId(reviewId);
+            List<ReviewImg> foundReviewImgList = reviewImgRepository.findAllByReview_ReviewId(reviewId);
 
-            //기존에 있던 리뷰 이미지 리스트 : 오리진 리뷰
-            if(originReviewImgList.size() != imgUrls.size()){
-                List<String> originUrlList = new ArrayList<>();
+            // DB에서 찾아온 foundReviewImgList, foundImgUrlList
+            if(foundReviewImgList.size() != imgUrlList.size()){
+                List<String> foundImgUrlList = new ArrayList<>();
 
-                for(int i=0; i< originReviewImgList.size(); i++){
-                    originUrlList.add(originReviewImgList.get(i).getImgUrl());
+                for(int i=0; i< foundReviewImgList.size(); i++){
+                    foundImgUrlList.add(foundReviewImgList.get(i).getImgUrl());
                 }
 
-                originUrlList.removeAll(imgUrls); //원래 이미지 리스트 - 남길 애들 = 삭제할 애들만 남음
+                // 삭제할 이미지 리스트 = 원래 이미지 리스트 - 삭제 되지 않은 이미지 리스트
+                foundImgUrlList.removeAll(imgUrlList);
 
-                System.out.println("삭제할 url 리스트 : " + originUrlList.toString());
-
-                for(int j=0; j< originUrlList.size(); j++){
-                    //s3에서 지우기
-                    ReviewImg reviewImg = reviewImgRepository.findByImgUrl(originUrlList.get(j));
+                for(int j=0; j< foundImgUrlList.size(); j++){
+                    //s3에서 삭제
+                    ReviewImg reviewImg = reviewImgRepository.findByImgUrl(foundImgUrlList.get(j));
                     s3UploadService.deleteFile(reviewImg.getImgName());
 
-                    //db 삭제
-                    reviewImgRepository.deleteByImgUrl(originUrlList.get(j));
+                    //db에서 삭제
+                    reviewImgRepository.deleteByImgUrl(foundImgUrlList.get(j));
                 }
             }
         }
 
-        //기존 이미지 수정 안 하면
-        if(imgUrls != null)
-
-        //imgFiles 들어온 경우 (새로 등록하는 이미지)
-        if(imgFiles != null){
-            System.out.println("이미지 파일 들어옴");
-            for(MultipartFile imgFile : imgFiles){
+        // 새로운 이미지를 추가한 경우
+        if(imgFileList != null){
+            for(MultipartFile imgFile : imgFileList){
                 ImageInfoDto imageInfoDto = s3UploadService.uploadFile(imgFile, FolderName.REVIEW.name());
-                ReviewImg reviewImg = new ReviewImg(imageInfoDto, review);
+                ReviewImg reviewImg = ReviewImg.builder()
+                        .imgInfo(imageInfoDto)
+                        .review(review)
+                        .build();
                 reviewImgRepository.save(reviewImg);
             }
         }
 
-        //content : 다시 업데이트
-        review.setContent(content);
+        // 후기 본문 덮어쓰기
+        review.edit(content);
         reviewRepository.save(review);
-
-
-
-
     }
 
-    public ReviewResponseTempDto getReviewDetail(long reviewId) {
+    // 매장 후기 상세 조회 메소드
+    public ReviewResponseTempDto getReviewDetails(long reviewId) {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 리뷰입니다."));
 
-//        List<String> reviewImages = new ArrayList<>();
-        List<ReviewImg> rawReviewImgList = reviewImgRepository.findAllByReview_ReviewId(reviewId);
-//        for(ReviewImg rawReviewImg : rawReviewImgList){
-//            reviewImages.add(rawReviewImg.getImgUrl());
-//        }
+        List<ReviewImg> foundReviewImgList = reviewImgRepository.findAllByReview_ReviewId(reviewId);
+
         String reviewImage = "";
 
-        if(rawReviewImgList.size() != 0){
-            reviewImage = rawReviewImgList.get(0).getImgUrl();
+        if(foundReviewImgList.size() != 0){
+            reviewImage = foundReviewImgList.get(0).getImgUrl();
         }
-        System.out.println(reviewImage);
 
         return new ReviewResponseTempDto(review, reviewImage);
     }

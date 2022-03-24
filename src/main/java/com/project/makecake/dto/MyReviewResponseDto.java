@@ -1,17 +1,16 @@
 package com.project.makecake.dto;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
-import java.util.List;
 
 @Builder
-@Data
+@Getter
 public class MyReviewResponseDto {
-    public Long reviewId;
-    public Long storeId;
-    public String name;
-    public String content;
-    public String createdDate;
-    public String reviewImages;
+    private Long reviewId;
+    private Long storeId;
+    private String name;
+    private String content;
+    private String createdDate;
+    private String reviewImages;
 }

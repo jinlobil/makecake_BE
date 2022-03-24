@@ -4,8 +4,6 @@ import com.project.makecake.model.Review;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
 public class ReviewResponseTempDto {

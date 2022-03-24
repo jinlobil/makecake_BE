@@ -27,6 +27,7 @@ public class OpenApiService {
     private final StoreRepository storeRepository;
     private final OpenTimeRepository openTimeRepository;
 
+    // 유니코드 -> 한글 변환 메소드
     public String uniToKor(String uni){
         StringBuffer result = new StringBuffer();
 
@@ -42,10 +43,9 @@ public class OpenApiService {
         return result.toString();
     }
 
-
-    @Transactional
-    public void TryCrawlingLetteringCake(int productNo) throws IOException {
-        URL url = new URL( "https://map.naver.com/v5/api/sites/summary/" + productNo + "?lang=ko");
+    // api 요청 JSON 반환 메소드
+    public JsonElement getOpenApiResult(String urlString) throws IOException {
+        URL url = new URL(urlString);
 
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
@@ -64,11 +64,20 @@ public class OpenApiService {
         while ((line = br.readLine()) != null) {
             result += line;
         }
-//        System.out.println("response body : " + result);
+        br.close();
 
         //Gson 라이브러리로 JSON파싱
         JsonParser parser = new JsonParser();
         JsonElement element = parser.parse(result);
+        return element;
+    }
+
+
+    @Transactional
+    public void collectStoreData(int productNo) throws IOException {
+        String urlString = "https://map.naver.com/v5/api/sites/summary/" + productNo + "?lang=ko";
+
+        JsonElement element = getOpenApiResult(urlString);
 
         long id = element.getAsJsonObject().get("id").getAsLong();
         String name = element.getAsJsonObject().get("name").getAsString();
@@ -103,7 +112,6 @@ public class OpenApiService {
 
         storeRepository.save(store);
 
-
         JsonArray arr = element.getAsJsonObject().get("urlList").getAsJsonArray();
         for (int i=0; i<arr.size();i++) {
             String type = arr.get(i).getAsJsonObject().get("type").getAsString();
@@ -137,8 +145,7 @@ public class OpenApiService {
         }
 
 
-
-        //cake
+        // 네이버 지도 검색 결과 중 업체 사진 가져오기
         JsonArray images = element.getAsJsonObject().get("images").getAsJsonArray();
 
         for(int i = 0; i < images.size(); i++){
@@ -170,23 +177,6 @@ public class OpenApiService {
                 openTimeRepository.save(openTime);
             }
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        br.close();
     }
 
 }
