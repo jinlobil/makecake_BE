@@ -1,9 +1,6 @@
 package com.project.makecake.controller;
 
-import com.project.makecake.dto.NotiContentRequestDto;
-import com.project.makecake.dto.NotiRequestDto;
-import com.project.makecake.dto.NotiResponseDto;
-import com.project.makecake.dto.RedirectUrlRequestDto;
+import com.project.makecake.dto.*;
 import com.project.makecake.security.UserDetailsImpl;
 import com.project.makecake.service.NotiService;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +8,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
-import java.util.HashMap;
 
 @RequiredArgsConstructor
 @RestController
@@ -60,7 +56,7 @@ public class NotiController {
 
     // 새로운 알림 여부 조회 API
     @GetMapping("/api/newNoti")
-    public HashMap<String,Boolean> getNewNoti(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public NewNotiResponseDto getNewNoti(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return notiService.getNewNoti(userDetails);
     }
 

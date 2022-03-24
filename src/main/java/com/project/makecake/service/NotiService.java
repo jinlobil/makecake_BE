@@ -1,9 +1,6 @@
 package com.project.makecake.service;
 
-import com.project.makecake.dto.NotiContentRequestDto;
-import com.project.makecake.dto.NotiRequestDto;
-import com.project.makecake.dto.NotiResponseDto;
-import com.project.makecake.dto.RedirectUrlRequestDto;
+import com.project.makecake.dto.*;
 import com.project.makecake.enums.NotiType;
 import com.project.makecake.enums.UserRoleEnum;
 import com.project.makecake.model.FixNoti;
@@ -21,7 +18,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -141,15 +141,11 @@ public class NotiService {
     }
 
     // 새로운 알림 여부 조회 메소드
-    public HashMap<String, Boolean> getNewNoti(UserDetailsImpl userDetails) {
-
-        // 반환 DTO
-        HashMap<String,Boolean> responseDto = new HashMap<>();
+    public NewNotiResponseDto getNewNoti(UserDetailsImpl userDetails) {
 
         // 비회원이면 new값을 false로 return
         if (userDetails == null) {
-            responseDto.put("new",false);
-            return responseDto;
+            return new NewNotiResponseDto(true);
         }
 
         User user = userDetails.getUser();
@@ -159,12 +155,10 @@ public class NotiService {
 
         // 반환 DTO 생성
         if (foundPersonalNoti.isPresent()) {
-            responseDto.put("new",true);
+            return new NewNotiResponseDto(false);
         } else {
-            responseDto.put("new",false);
+            return new NewNotiResponseDto(true);
         }
-
-        return responseDto;
     }
 
     // 알림 조회 메소드
