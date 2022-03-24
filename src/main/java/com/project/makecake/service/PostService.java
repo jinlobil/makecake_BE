@@ -269,8 +269,8 @@ public class PostService {
 
 
         // likeCnt 변경
-        boolean likeResult = foundPost.addLikeCnt(requestDto.isMyLike());
-        return new LikeDto(likeResult);
+        foundPost.addLikeCnt(requestDto.isMyLike());
+        return new LikeDto(requestDto.isMyLike());
     }
 
     // 좋아요 알림 발송 메소드
