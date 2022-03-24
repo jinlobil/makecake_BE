@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class LikeDto {
+public class LikeRequestDto {
     private boolean myLike;
 }
