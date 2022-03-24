@@ -39,8 +39,9 @@ dependencies {
     implementation 'com.auth0:java-jwt:3.13.0'
     implementation 'commons-codec:commons-codec:1.5'
 
-    // Oauth2
-//    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    // Jasypt
+    implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.4'
+
     // https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-aws
     implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-aws', version: '2.2.1.RELEASE'
 
@@ -50,4 +51,5 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+    systemProperty "jasypt.encryptor.password", project.getProperties().get("jasypt.encryptor.password")
 }
