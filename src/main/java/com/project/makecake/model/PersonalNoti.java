@@ -27,19 +27,18 @@ public class PersonalNoti extends Timestamped{
     @JoinColumn(name="notiId")
     private Noti noti;
 
-    @ManyToOne
-    @JoinColumn(name="postId")
-    private Post post;
+    @Column
+    private String redirectUrl;
 
     @Column(nullable = false)
     private boolean checked;
 
     @Builder
-    public PersonalNoti(User recieveUser, User createUser, Noti noti, Post post) {
+    public PersonalNoti(User recieveUser, User createUser, Noti noti, String redirectUrl) {
         this.recieveUser = recieveUser;
         this.createUser = createUser;
         this.noti = noti;
-        this.post = post;
+        this.redirectUrl = redirectUrl;
         this.checked = false;
     }
 

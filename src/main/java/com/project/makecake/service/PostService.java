@@ -241,7 +241,7 @@ public class PostService {
 
     // 도안 게시글 좋아요 등록 및 삭제 메소드
     @Transactional
-    public LikeDto savePostLike(long postId, LikeDto requestDto, UserDetailsImpl userDetails) {
+    public LikeResponseDto savePostLike(long postId, LikeRequestDto requestDto, UserDetailsImpl userDetails) {
         User user = userDetails.getUser();
 
         // 게시글 찾기
@@ -266,11 +266,13 @@ public class PostService {
             postLikeRepository.deleteByUserAndPost(user,foundPost);
         }
 
-
-
         // likeCnt 변경
         foundPost.addLikeCnt(requestDto.isMyLike());
-        return new LikeDto(requestDto.isMyLike());
+
+        return LikeResponseDto.builder()
+                .myLike(requestDto.isMyLike())
+                .likeCnt(foundPost.getLikeCnt())
+                .build();
     }
 
     // 좋아요 알림 발송 메소드
@@ -284,7 +286,7 @@ public class PostService {
                 .recieveUser(foundPost.getUser())
                 .createUser(createUser)
                 .noti(foundNoti)
-                .post(foundPost)
+                .redirectUrl("https://ko.dict.naver.com/#/entry/koko/6cbf564655854b4d8225477320c63e7a")
                 .build();
 
         // 저장

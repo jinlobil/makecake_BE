@@ -85,9 +85,9 @@ public class PostController {
 
     // 도안 게시글 좋아요 등록 및 삭제 API
     @PostMapping("/posts/like/{postId}")
-    public LikeDto savePostLike(
+    public LikeResponseDto savePostLike(
             @PathVariable long postId,
-            @RequestBody LikeDto requestDto,
+            @RequestBody LikeRequestDto requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         return postService.savePostLike(postId, requestDto, userDetails);

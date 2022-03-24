@@ -132,7 +132,8 @@ public class CommentService {
                 .recieveUser(foundPost.getUser())
                 .createUser(createUser)
                 .noti(foundNoti)
-                .post(foundPost).build();
+                .redirectUrl("https://ko.dict.naver.com/#/entry/koko/b91939f752b6463a86d4dd5a57ff17c5")
+                .build();
 
         // 저장
         personalNotiRepository.save(personalNoti);

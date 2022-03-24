@@ -1,9 +1,6 @@
 package com.project.makecake.service;
 
-import com.project.makecake.dto.CakeResponseDto;
-import com.project.makecake.dto.HomeCakeDto;
-import com.project.makecake.dto.ImageInfoDto;
-import com.project.makecake.dto.LikeDto;
+import com.project.makecake.dto.*;
 import com.project.makecake.enums.FolderName;
 import com.project.makecake.model.Cake;
 import com.project.makecake.model.CakeLike;
@@ -128,7 +125,7 @@ public class CakeService {
 
     // 케이크 좋아요 생성 및 삭제 메소드
     @Transactional
-    public LikeDto saveCakeLike(long cakeId, LikeDto requestDto, UserDetailsImpl userDetails) {
+    public LikeResponseDto saveCakeLike(long cakeId, LikeRequestDto requestDto, UserDetailsImpl userDetails) {
 
         User user = userDetails.getUser();
 
@@ -151,7 +148,11 @@ public class CakeService {
 
         // likeCnt 변경
         foundCake.editLikeCnt(requestDto.isMyLike());
-        return new LikeDto(requestDto.isMyLike());
+
+        return LikeResponseDto.builder()
+                .myLike(requestDto.isMyLike())
+                .likeCnt(foundCake.getLikeCnt())
+                .build();
 
     }
 
