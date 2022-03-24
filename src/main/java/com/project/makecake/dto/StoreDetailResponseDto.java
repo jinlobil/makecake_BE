@@ -23,7 +23,7 @@ public class StoreDetailResponseDto {
     private List<StoreDetailCakeResponseDto> cakeImages;
 
     public StoreDetailResponseDto(Store store, OpenTimeResponseDto openTimeToday, List<StoreDetailUrlDto> urls,
-                                  Boolean myLike,List<StoreDetailMenuDto> menus, List<StoreDetailCakeResponseDto> cakeImages){
+                                  Boolean myLike,int likeCnt, List<StoreDetailMenuDto> menus, List<StoreDetailCakeResponseDto> cakeImages){
         this.storeId = store.getStoreId();
         this.mainImg = store.getMainImg();
         this.name = store.getName();
@@ -33,6 +33,7 @@ public class StoreDetailResponseDto {
         this.phone = store.getPhone();
         this.urls = urls;
         this.myLike = myLike;
+        this.likeCnt = likeCnt;
         this.menus = menus;
         this.cakeImages = cakeImages;
     }

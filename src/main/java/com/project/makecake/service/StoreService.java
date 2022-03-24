@@ -126,7 +126,7 @@ public class StoreService {
             cakeImgList.add(cakeDto);
         }
 
-        return new StoreDetailResponseDto(store, openTimeToday, urlList, myLike, menus, cakeImgList);
+        return new StoreDetailResponseDto(store, openTimeToday, urlList, myLike, store.getLikeCnt(), menus, cakeImgList);
     }
 
     // (매장 상세) 케이크 조회 메소드
