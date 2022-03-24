@@ -32,13 +32,11 @@ public class Cake extends Timestamped{
     }
 
     // 좋아요수 변경 메소드
-    public boolean editLikeCnt(boolean myLike) {
+    public void editLikeCnt(boolean myLike) {
         if (myLike) {
             this.likeCnt += 1;
-            return false;
         } else {
             this.likeCnt -= 1;
-            return true;
         }
     }
 }

@@ -150,8 +150,8 @@ public class CakeService {
         }
 
         // likeCnt 변경
-        boolean likeResult = foundCake.editLikeCnt(requestDto.isMyLike());
-        return new LikeDto(likeResult);
+        foundCake.editLikeCnt(requestDto.isMyLike());
+        return new LikeDto(requestDto.isMyLike());
 
     }
 
