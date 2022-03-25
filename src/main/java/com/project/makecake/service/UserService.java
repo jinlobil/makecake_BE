@@ -159,6 +159,7 @@ public class UserService {
         }
         String nickname = foundUser.getNickname();
         if (!nickname.equals(editNickname)){
+            // 닉네임 중복체크
             Optional<User> checkNickname = userRepository.findByNickname(editNickname);
             if (checkNickname.isPresent()){
                 throw new IllegalArgumentException("중복된 닉네임이 존재합니다.");
