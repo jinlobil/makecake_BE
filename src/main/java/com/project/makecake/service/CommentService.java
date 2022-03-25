@@ -70,7 +70,10 @@ public class CommentService {
         commentRepository.save(comment);
 
         // 댓글 작성자와 게시글 작성자가 다를 경우에만 댓글 알림 발송
-        if (!user.getUserId().equals(foundPost.getUser().getUserId())) {
+        if (
+                !user.getUserId().equals(foundPost.getUser().getUserId())
+                && foundPost.getUser().getRole()!=null
+        ) {
             addCommentNoti(foundPost,user);
         }
 
