@@ -1,6 +1,5 @@
 package com.project.makecake.dto;
 
-import com.project.makecake.model.CakeMenu;
 import lombok.Builder;
 import lombok.Getter;
 

@@ -2,6 +2,7 @@ package com.project.makecake.controller;
 
 import com.project.makecake.dto.OrderFormDetailResponseDto;
 import com.project.makecake.dto.UserOrderRequestDto;
+import com.project.makecake.dto.UserOrdersDetailResponseDto;
 import com.project.makecake.security.UserDetailsImpl;
 import com.project.makecake.service.UserOrdersService;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,15 @@ public class UserOrdersController {
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         return userOrdersService.addUserOrders(orderFormId, requestDto, userDetails);
+    }
+
+    // (주문하기) 사용자가 작성한 주문서 상세 보기
+    @GetMapping("/orders/{userOrdersId}")
+    public UserOrdersDetailResponseDto getUserOrdersDetails(
+            @PathVariable long userOrdersId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        return userOrdersService.getUserOrdersDetails(userOrdersId, userDetails);
     }
 
 }
