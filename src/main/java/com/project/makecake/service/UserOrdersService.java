@@ -16,9 +16,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -33,6 +35,7 @@ public class UserOrdersService {
     private final DesignRepository designRepository;
     private final UserOrdersRepository userOrdersRepository;
     private final OrderFormRepository orderFormRepository;
+    private final S3Service s3Service;
 
 
     // (마이페이지 > 케이크 주문) 주문 안 된/된 도안 리스트 조회 메소드
@@ -177,4 +180,14 @@ public class UserOrdersService {
 
     }
 
+    // 주문서의 도안 전송 메소드
+    public ResponseEntity<byte[]> getDesignAtOrders(long userOrdersId) throws IOException {
+
+        UserOrders foundUserOrders = userOrdersRepository.findById(userOrdersId)
+                .orElseThrow(()-> new IllegalArgumentException("주문서가 존재하지 않습니다."));
+
+        String foundFileName = foundUserOrders.getDesign().getImgName();
+
+        return s3Service.downloadFile(foundFileName);
+    }
 }
