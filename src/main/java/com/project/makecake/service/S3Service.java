@@ -2,11 +2,18 @@ package com.project.makecake.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.services.s3.model.S3ObjectInputStream;
+import com.amazonaws.util.IOUtils;
 import com.project.makecake.dto.ImageInfoDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tika.Tika;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,7 +23,7 @@ import java.util.UUID;
 @Slf4j // 스프링 부트에서 로그를 남기는 방법 중 가장 편하게 사용되는 어노테이션
 @RequiredArgsConstructor
 @Component
-public class S3UploadService {
+public class S3Service {
     private final AmazonS3Client amazonS3Client;
 
     @Value("${aws.s3.image.bucket}")
@@ -63,6 +70,22 @@ public class S3UploadService {
         amazonS3Client.deleteObject(bucket, fileName);
     }
 
+    // 파일 다운로드하기
+    public ResponseEntity<byte[]> downloadFile(String storedFileName) throws IOException {
+        S3Object o = amazonS3Client.getObject(bucket, storedFileName);
+        S3ObjectInputStream objectInputStream = o.getObjectContent();
+        byte[] bytes = IOUtils.toByteArray(objectInputStream);
+
+        // String fileName = URLEncoder.encode(storedFileName, "UTF-8").replaceAll("\\+", "%20");
+        String fileName = "makecake-" + UUID.randomUUID();
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.IMAGE_JPEG);
+        httpHeaders.setContentLength(bytes.length);
+        httpHeaders.setContentDispositionFormData("attachment", fileName);
+
+        return new ResponseEntity<>(bytes, httpHeaders, HttpStatus.OK);
+
+    }
 
     // 파일 이름 생성 메소드
     private String createFileName(MultipartFile multipartFile) {

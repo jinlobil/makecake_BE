@@ -27,7 +27,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final DesignRepository designRepository;
-    private final S3UploadService s3UploadService;
+    private final S3Service s3Service;
     private final StoreRepository storeRepository;
     private final PostLikeRepository postLikeRepository;
     private final CommentRepository commentRepository;
@@ -41,7 +41,7 @@ public class PostService {
         User user = userDetails.getUser();
 
         // S3에 이미지 업로드하고 업로드 정보 받아오기
-        ImageInfoDto imgInfo = s3UploadService.uploadFile(img, FolderName.DESIGN.name());
+        ImageInfoDto imgInfo = s3Service.uploadFile(img, FolderName.DESIGN.name());
 
         // 디비에 저장
         Design design = Design.builder()

@@ -27,7 +27,7 @@ import java.util.List;
 public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final ReviewImgRepository reviewImgRepository;
-    private final S3UploadService s3UploadService;
+    private final S3Service s3Service;
     private final StoreRepository storeRepository;
 
     // (홈탭) 최신 매장 후기 조회 메소드 (5개)
@@ -80,7 +80,7 @@ public class ReviewService {
         // 이미지 S3 업로드 및 DB 저장
         if(imgFileList != null){
             for(MultipartFile imgFile : imgFileList){
-                ImageInfoDto imageInfoDto = s3UploadService.uploadFile(imgFile, FolderName.REVIEW.name());
+                ImageInfoDto imageInfoDto = s3Service.uploadFile(imgFile, FolderName.REVIEW.name());
 
                 ReviewImg reviewImg = ReviewImg.builder()
                         .imgInfo(imageInfoDto)
@@ -138,7 +138,7 @@ public class ReviewService {
                 for(int j=0; j< foundImgUrlList.size(); j++){
                     //s3에서 삭제
                     ReviewImg reviewImg = reviewImgRepository.findByImgUrl(foundImgUrlList.get(j));
-                    s3UploadService.deleteFile(reviewImg.getImgName());
+                    s3Service.deleteFile(reviewImg.getImgName());
 
                     //db에서 삭제
                     reviewImgRepository.deleteByImgUrl(foundImgUrlList.get(j));
@@ -149,7 +149,7 @@ public class ReviewService {
         // 새로운 이미지를 추가한 경우
         if(imgFileList != null){
             for(MultipartFile imgFile : imgFileList){
-                ImageInfoDto imageInfoDto = s3UploadService.uploadFile(imgFile, FolderName.REVIEW.name());
+                ImageInfoDto imageInfoDto = s3Service.uploadFile(imgFile, FolderName.REVIEW.name());
                 ReviewImg reviewImg = ReviewImg.builder()
                         .imgInfo(imageInfoDto)
                         .review(review)

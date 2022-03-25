@@ -23,7 +23,7 @@ public class UserController {
     private final KakaoLoginService kakaoLoginService;
     private final NaverLoginService naverLoginService;
     private final GoogleLoginService googleLoginService;
-    private final S3UploadService s3UploadService;
+    private final S3Service s3Service;
 
     // 회원가입 API
     @PostMapping("/user/signup")
@@ -80,7 +80,7 @@ public class UserController {
     public ImageInfoDto userImage(
             @RequestParam(value = "imgFile", required = false) MultipartFile imgFile
     ) throws IOException {
-        ImageInfoDto imageInfoDto = s3UploadService.uploadFile(imgFile, FolderName.PROFILE.name());
+        ImageInfoDto imageInfoDto = s3Service.uploadFile(imgFile, FolderName.PROFILE.name());
         return imageInfoDto;
     }
 

@@ -22,7 +22,7 @@ public class UserService {
 
     private final BCryptPasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
-    private final S3UploadService s3UploadService;
+    private final S3Service s3Service;
 
     // 회원가입
     public HashMap<String, Boolean> addUser(SignupRequestDto requestDto) {
@@ -151,9 +151,9 @@ public class UserService {
         String profileName = foundUser.getProfileImgName();
         if (imgFile != null){
             if (foundUser.getProfileImgName() != null){
-                s3UploadService.deleteFile(foundUser.getProfileImgName());
+                s3Service.deleteFile(foundUser.getProfileImgName());
             }
-            ImageInfoDto imageInfoDto = s3UploadService.uploadFile(imgFile, FolderName.PROFILE.name());
+            ImageInfoDto imageInfoDto = s3Service.uploadFile(imgFile, FolderName.PROFILE.name());
             profile = imageInfoDto.getUrl();
             profileName = imageInfoDto.getName();
         }

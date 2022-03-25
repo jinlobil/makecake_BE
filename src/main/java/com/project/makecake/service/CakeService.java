@@ -28,12 +28,11 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class CakeService {
-    private final UserRepository userRepository;
     private final CakeRepository cakeRepository;
     private final CakeLikeRepository cakeLikeRepository;
     //임시
     private final StoreRepository storeRepository;
-    private final S3UploadService s3UploadService;
+    private final S3Service s3Service;
 
 
     //홈탭 케이크 불러오기
@@ -206,7 +205,7 @@ public class CakeService {
 
         if(imgFileList != null){
             for(MultipartFile imgFile : imgFileList){
-                ImageInfoDto imgInfo = s3UploadService.uploadFile(imgFile, FolderName.Cake.name());
+                ImageInfoDto imgInfo = s3Service.uploadFile(imgFile, FolderName.Cake.name());
                 Cake cake = Cake.builder()
                         .url(imgInfo.getUrl())
                         .store(foundStore)
