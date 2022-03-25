@@ -51,10 +51,10 @@ public class UserService {
                 .profileImgName(null)
                 .role(role)
                 .build();
-        User saveUser = userRepository.save(user);
+        User savedUser = userRepository.save(user);
 
         // 회원가입 확인
-        Optional<User> foundUser = userRepository.findById(saveUser.getUserId());
+        Optional<User> foundUser = userRepository.findById(savedUser.getUserId());
         HashMap<String, Boolean> responseDto = new HashMap<>();
         responseDto.put("signup", foundUser.isPresent());
         return responseDto;
