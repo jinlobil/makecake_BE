@@ -1,9 +1,6 @@
 package com.project.makecake.service;
 
-import com.project.makecake.dto.ImageInfoDto;
-import com.project.makecake.dto.LoginCheckResponseDto;
-import com.project.makecake.dto.MypageResponseDto;
-import com.project.makecake.dto.SignupRequestDto;
+import com.project.makecake.dto.*;
 import com.project.makecake.enums.FolderName;
 import com.project.makecake.enums.UserRoleEnum;
 import com.project.makecake.model.User;
@@ -145,41 +142,36 @@ public class UserService {
         return responseDto;
     }
 
-    // 프로필이미지 수정
-    public MypageResponseDto editProfile(MultipartFile imgFile, UserDetailsImpl userDetails) throws IOException {
+    // 프로필수정
+    public MypageResponseDto editProfile(MultipartFile imgFile, String editNickname, UserDetailsImpl userDetails) throws IOException {
         User foundUser = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
                 () -> new IllegalArgumentException("유저가 존재하지 않습니다.")
         );
-        // 기본 이미지일때는 profileImgName이 null이므로 null이 아닐때 s3에서 해당 이미지를 삭제한다.
-        if (foundUser.getProfileImgName() != null){
-            s3UploadService.deleteFile(foundUser.getProfileImgName());
+        String profile = foundUser.getProfileImgUrl();
+        String profileName = foundUser.getProfileImgName();
+        if (imgFile != null){
+            if (foundUser.getProfileImgName() != null){
+                s3UploadService.deleteFile(foundUser.getProfileImgName());
+            }
+            ImageInfoDto imageInfoDto = s3UploadService.uploadFile(imgFile, FolderName.PROFILE.name());
+            profile = imageInfoDto.getUrl();
+            profileName = imageInfoDto.getName();
         }
-
-        ImageInfoDto imageInfoDto = s3UploadService.uploadFile(imgFile, FolderName.PROFILE.name());
-
-        foundUser.setProfileImgName(imageInfoDto.getName());
-        foundUser.setProfileImgUrl(imageInfoDto.getUrl());
-        User saveUser = userRepository.save(foundUser);
-        MypageResponseDto responseDto = MypageResponseDto.builder()
-                .nickname(saveUser.getNickname())
-                .profileImg(saveUser.getProfileImgUrl())
-                .build();
-        return responseDto;
-    }
-
-    // 닉네임 수정
-    public MypageResponseDto editNickname(SignupRequestDto signupRequestDto, UserDetailsImpl userDetails) {
-        User foundUser = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
-                () -> new IllegalArgumentException("유저가 존재하지 않습니다.")
-        );
-        if (foundUser.getNickname().equals(signupRequestDto.getNickname())){
-            throw new IllegalArgumentException("중복된 닉네임이 존재합니다.");
+        String nickname = foundUser.getNickname();
+        if (!nickname.equals(editNickname)){
+            Optional<User> checkNickname = userRepository.findByNickname(editNickname);
+            if (checkNickname.isPresent()){
+                throw new IllegalArgumentException("중복된 닉네임이 존재합니다.");
+            }
+            nickname = editNickname;
         }
-        foundUser.setNickname(signupRequestDto.getNickname());
-        User saveUser = userRepository.save(foundUser);
+        foundUser.setNickname(nickname);
+        foundUser.setProfileImgUrl(profile);
+        foundUser.setProfileImgName(profileName);
+        User savedUser = userRepository.save(foundUser);
         MypageResponseDto responseDto = MypageResponseDto.builder()
-                .nickname(saveUser.getNickname())
-                .profileImg(saveUser.getProfileImgUrl())
+                .nickname(savedUser.getNickname())
+                .profileImg(savedUser.getProfileImgUrl())
                 .build();
         return responseDto;
     }

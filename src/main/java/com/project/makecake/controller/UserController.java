@@ -1,10 +1,7 @@
 package com.project.makecake.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.project.makecake.dto.ImageInfoDto;
-import com.project.makecake.dto.LoginCheckResponseDto;
-import com.project.makecake.dto.MypageResponseDto;
-import com.project.makecake.dto.SignupRequestDto;
+import com.project.makecake.dto.*;
 import com.project.makecake.enums.FolderName;
 import com.project.makecake.security.UserDetailsImpl;
 import com.project.makecake.service.*;
@@ -64,9 +61,10 @@ public class UserController {
     @PutMapping("/user/editProfile")
     public MypageResponseDto editProfile(
             @RequestParam(value = "imgFile", required = false) MultipartFile imgFile,
+            @RequestParam String nickname,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) throws IOException {
-        return userService.editProfile(imgFile, userDetails);
+        return userService.editProfile(imgFile, nickname, userDetails);
     }
 
     // 닉네임 수정 API
