@@ -76,8 +76,9 @@ public class UserOrdersService {
         String formFilled = "";
         for(String input : requestDto.getUserInput()){
             formFilled += input + "<br>";
+            System.out.println(formFilled);
         }
-        System.out.println(formFilled);
+        System.out.println("완료 " + formFilled);
 
         OrderForm orderForm = orderFormRepository.findById(orderFormId)
                 .orElseThrow(()-> new NullPointerException("주문서가 존재하지 않습니다."));
