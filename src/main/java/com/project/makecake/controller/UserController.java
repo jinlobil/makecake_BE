@@ -57,7 +57,7 @@ public class UserController {
         return userService.checkLogin(userDetails);
     }
 
-    // 프로필이미지 수정 API
+    // 프로필 수정 API
     @PutMapping("/user/editProfile")
     public MypageResponseDto editProfile(
             @RequestParam(value = "imgFile", required = false) MultipartFile imgFile,
