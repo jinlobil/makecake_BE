@@ -10,13 +10,16 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor // 자동 생성 롬복을 이걸로 해놓는 이유는 왜??
-public class OrderForm {
+public class OrderForm extends Timestamped{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long orderFormId;
 
     @Column
     private String form;
+
+    @Column
+    private String name;
 
     @Column
     private String instruction;
@@ -32,6 +35,7 @@ public class OrderForm {
     // 2. getByStoreId() -> null 에러 처리를 여기에...???
     public OrderForm(OrderFormRequestDto requestDto, Store store){
         this.form = requestDto.getForm();
+        this.name = requestDto.getName();
         this.instruction = requestDto.getInstruction();
         this.store = store;
     }

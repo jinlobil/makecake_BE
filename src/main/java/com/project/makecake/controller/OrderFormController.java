@@ -1,10 +1,14 @@
 package com.project.makecake.controller;
 
+import com.project.makecake.dto.OrderFormDetailResponseDto;
+import com.project.makecake.dto.OrderFormReadyResponseDto;
 import com.project.makecake.dto.OrderFormRequestDto;
 import com.project.makecake.dto.backoffice.OrderFormPeekResponseDto;
 import com.project.makecake.service.backoffice.OrderFormService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,10 +28,25 @@ public class OrderFormController {
     }
 
 
-
     // (백오피스) 주문서 양식 삭제 API
     @DeleteMapping("/back-office/order-forms/{orderFormId}")
     public String deleteOrderForm(@PathVariable long orderFormId){
         return orderFormService.deleteOrderForm(orderFormId);
     }
+
+    // (주문하기) 주문 가능 매장 리스트 조회 API
+    @GetMapping("/orders/stores")
+    public List<OrderFormReadyResponseDto> getOrderFormList(){
+        return orderFormService.getOrderFormList();
+    }
+
+    // (주문하기) 케이크 주문서 작성 페이지 조회 API
+    @GetMapping("/orders/{orderFormId}")
+    public OrderFormDetailResponseDto getOrderFormDetails(
+            @PathVariable Long orderFormId
+    ) {
+        return orderFormService.getOrderFormDetails(orderFormId);
+    }
+
+
 }
