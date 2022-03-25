@@ -72,17 +72,20 @@ public class S3Service {
 
     // 파일 다운로드하기
     public ResponseEntity<byte[]> downloadFile(String storedFileName) throws IOException {
+
+        // S3에서 해당 파일 가져와서 byte 배열로 변경
         S3Object o = amazonS3Client.getObject(bucket, storedFileName);
         S3ObjectInputStream objectInputStream = o.getObjectContent();
         byte[] bytes = IOUtils.toByteArray(objectInputStream);
 
-        // String fileName = URLEncoder.encode(storedFileName, "UTF-8").replaceAll("\\+", "%20");
+        // response의 헤더 설정
         String fileName = "makecake-" + UUID.randomUUID();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.IMAGE_JPEG);
         httpHeaders.setContentLength(bytes.length);
         httpHeaders.setContentDispositionFormData("attachment", fileName);
 
+        // 바디에 이미지 바이트파일 담고, 헤더에 위에서 설정한 헤더를 담고, 200코드로 response 전송
         return new ResponseEntity<>(bytes, httpHeaders, HttpStatus.OK);
 
     }

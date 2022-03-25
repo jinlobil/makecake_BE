@@ -180,6 +180,7 @@ public class UserOrdersService {
 
     }
 
+    // 주문서의 도안 전송 메소드
     public ResponseEntity<byte[]> getDesignAtOrders(long userOrdersId) throws IOException {
 
         UserOrders foundUserOrders = userOrdersRepository.findById(userOrdersId)

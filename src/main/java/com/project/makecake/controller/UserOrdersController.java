@@ -36,11 +36,7 @@ public class UserOrdersController {
         return userOrdersService.getUserOrdersDetails(userOrdersId, userDetails);
     }
 
-//    @PostMapping("/orders/design")
-//    public ResponseEntity<byte[]> getDesignAtOrders(@RequestBody FileNameDto fileNameDto) throws IOException {
-//        return s3UploadService.downloadFile(fileNameDto.getFileName());
-//    }
-
+    // 주문서의 도안 전송 API
     @GetMapping("/orders/{userOrdersId}/design")
     public ResponseEntity<byte[]> getDesignAtOrders(@PathVariable long userOrdersId) throws IOException {
         return userOrdersService.getDesignAtOrders(userOrdersId);
