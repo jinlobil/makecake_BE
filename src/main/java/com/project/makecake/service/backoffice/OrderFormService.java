@@ -1,15 +1,10 @@
 package com.project.makecake.service.backoffice;
 
-import com.project.makecake.dto.OrderFormRequestDto;
-import com.project.makecake.dto.backoffice.CakeMenuRowDto;
-import com.project.makecake.dto.backoffice.CakeOptionRowDto;
+import com.project.makecake.dto.*;
 import com.project.makecake.dto.backoffice.OrderFormPeekResponseDto;
-import com.project.makecake.model.OrderForm;
-import com.project.makecake.model.Store;
-import com.project.makecake.repository.OrderFormRepository;
-import com.project.makecake.repository.StoreRepository;
+import com.project.makecake.model.*;
+import com.project.makecake.repository.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -23,7 +18,11 @@ import java.util.List;
 public class OrderFormService {
     private final StoreRepository storeRepository;
     private final OrderFormRepository orderFormRepository;
+    private final CakeMenuRepository cakeMenuRepository;
+    private final StoreOptionRepository storeOptionRepository;
 
+
+    // (백오피스) 주문서 등록 메소드
     @Transactional
     public String addOrderForm(OrderFormRequestDto requestDto) {
         Store store = storeRepository.findById(requestDto.getStoreId())
@@ -39,6 +38,7 @@ public class OrderFormService {
         return "주문서 등록 완료";
     }
 
+    // (백오피스) 주문서 삭제 메소드
     @Transactional
     public String deleteOrderForm(long orderFormId) {
         OrderForm orderForm = orderFormRepository.findById(orderFormId)
@@ -49,6 +49,7 @@ public class OrderFormService {
         return "주문서 삭제 완료";
     }
 
+    // (백오피스) 주문서 등록 전 데이터 미리보기 메소드
     public OrderFormPeekResponseDto peekOrderForm(OrderFormRequestDto requestDto) {
         long storeId = requestDto.getStoreId();
 
@@ -69,6 +70,7 @@ public class OrderFormService {
         // 주문 전 필독사항
         List<String> peekInstructionList = new ArrayList<>();
         String stringInstruction = requestDto.getInstruction();
+
         List<String> rawInstructionList = Arrays.asList(stringInstruction.trim().split("\\*"));
         for(String rawInstruction : rawInstructionList) {
             if(!rawInstruction.trim().equals("")){
@@ -79,10 +81,103 @@ public class OrderFormService {
         OrderFormPeekResponseDto responseDto = OrderFormPeekResponseDto.builder()
                 .storeId(storeId)
                 .storeName(storeName)
+                .name(requestDto.getName())
                 .peekFormList(peekFormList)
                 .peekInstructionList(peekInstructionList)
                 .build();
 
        return responseDto;
+    }
+
+    // (주문하기) 주문 가능 매장 리스트 조회 메소드
+    public List<OrderFormReadyResponseDto> getOrderFormList() {
+        List<OrderFormReadyResponseDto> responseDtoList = new ArrayList<>();
+        List<OrderForm> foundOrderFormList = orderFormRepository.findAll();
+        for(OrderForm orderForm : foundOrderFormList){
+            OrderFormReadyResponseDto responseDto = OrderFormReadyResponseDto.builder()
+                    .orderForm(orderForm)
+                    .build();
+            responseDtoList.add(responseDto);
+        }
+        return responseDtoList;
+    }
+
+
+    // (주문하기) 케이크 주문서 작성 페이지 조회 API
+    public OrderFormDetailResponseDto getOrderFormDetails(Long orderFormId) {
+
+        OrderForm orderForm = orderFormRepository.findById(orderFormId)
+                .orElseThrow(()-> new NullPointerException("주문서가 존재하지 않습니다."));
+
+
+        // 주문서 양식
+        List<String> formList = new ArrayList<>();
+        String form = orderForm.getForm();
+        List<String> rawFormList = Arrays.asList(form.split(":"));
+
+        for(String rawForm : rawFormList){
+            formList.add(rawForm.trim());
+        }
+
+        // 주문 전 필독사항
+        List<String> instructionList = new ArrayList<>();
+        String instruction = orderForm.getInstruction();
+
+        List<String> rawInstructionList = Arrays.asList(instruction.trim().split("\\*"));
+        for(String rawInstruction : rawInstructionList) {
+            if(!rawInstruction.trim().equals("")){
+                instructionList.add(rawInstruction.trim());
+            }
+        }
+
+        //moreDetails
+
+        //cakeMenuList
+        List<StoreMoreCakeMenuDto> cakeMenuList = new ArrayList<>();
+        List<CakeMenu> foundMenuList = cakeMenuRepository.findAllByStore_StoreId(orderForm.getStore().getStoreId());
+        for(CakeMenu menu : foundMenuList){
+            StoreMoreCakeMenuDto menuDto = StoreMoreCakeMenuDto.builder()
+                    .cakeMenu(menu)
+                    .build();
+            cakeMenuList.add(menuDto);
+        }
+
+        //cakeTasteList
+        List<StoreMoreCakeTasteDto> cakeTasteList = new ArrayList<>();
+        List<StoreMoreCakeOptionDto> cakeOptionList = new ArrayList<>();
+        List<StoreOption> foundOptionList = storeOptionRepository.findAllByStore_StoreId(orderForm.getStore().getStoreId());
+        for(StoreOption storeOption : foundOptionList){
+
+            if(storeOption.getMainCat().equals("맛")) {
+                StoreMoreCakeTasteDto tasteDto = StoreMoreCakeTasteDto.builder()
+                        .storeOption(storeOption)
+                        .build();
+
+                cakeTasteList.add(tasteDto);
+            } else {
+                StoreMoreCakeOptionDto optionDto = StoreMoreCakeOptionDto.builder()
+                        .storeOption(storeOption)
+                        .build();
+
+                cakeOptionList.add(optionDto);
+            }
+
+        }
+
+        StoreMoreDetailsDto moreDetails = StoreMoreDetailsDto.builder()
+                .cakeMenuList(cakeMenuList)
+                .cakeTasteList(cakeTasteList)
+                .cakeOptionList(cakeOptionList)
+                .build();
+
+
+        OrderFormDetailResponseDto responseDto = OrderFormDetailResponseDto.builder()
+                .orderForm(orderForm)
+                .formList(formList)
+                .instructionList(instructionList)
+                .moreDetails(moreDetails)
+                .build();
+
+        return responseDto;
     }
 }

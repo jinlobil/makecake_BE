@@ -9,13 +9,15 @@ import java.util.List;
 public class OrderFormPeekResponseDto {
     private long storeId;
     private String storeName;
+    private String name;
     private List<String> peekFormList;
     private List<String> peekInstructionList;
 
     @Builder
-    public OrderFormPeekResponseDto(long storeId, String storeName, List<String> peekFormList, List<String> peekInstructionList){
+    public OrderFormPeekResponseDto(long storeId, String storeName, String name, List<String> peekFormList, List<String> peekInstructionList){
         this.storeId = storeId;
         this.storeName = storeName;
+        this.name = name;
         this.peekFormList = peekFormList;
         this.peekInstructionList = peekInstructionList;
     }

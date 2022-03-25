@@ -3,7 +3,10 @@ package com.project.makecake.controller;
 import com.project.makecake.dto.*;
 import com.project.makecake.security.UserDetailsImpl;
 import com.project.makecake.service.MypageService;
+import com.project.makecake.service.UserOrdersService;
+import com.project.makecake.service.backoffice.OrderFormService;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.criterion.Order;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +20,7 @@ import java.util.List;
 public class MypageController {
 
     private final MypageService mypageService;
+    private final UserOrdersService userOrdersService;
 
     // 나의 프로필 조회 API
     @GetMapping("/mypage")
@@ -86,5 +90,15 @@ public class MypageController {
             @RequestParam int page
     ) {
         return mypageService.getMyLikeCakeList(userDetails, page);
+    }
+
+    // 주문하기 도안 조회 API
+    @GetMapping("/designs/mine/orders")
+    public List<MyOrderListResponseDto> getMyOrderList(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @RequestParam String option,
+            @RequestParam int page
+    ) {
+        return userOrdersService.getMyOrderList(userDetails, option, page);
     }
 }
