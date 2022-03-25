@@ -51,10 +51,10 @@ public class UserService {
                 .profileImgName(null)
                 .role(role)
                 .build();
-        User saveUser = userRepository.save(user);
+        User savedUser = userRepository.save(user);
 
         // 회원가입 확인
-        Optional<User> foundUser = userRepository.findById(saveUser.getUserId());
+        Optional<User> foundUser = userRepository.findById(savedUser.getUserId());
         HashMap<String, Boolean> responseDto = new HashMap<>();
         responseDto.put("signup", foundUser.isPresent());
         return responseDto;
@@ -159,6 +159,7 @@ public class UserService {
         }
         String nickname = foundUser.getNickname();
         if (!nickname.equals(editNickname)){
+            // 닉네임 중복체크
             Optional<User> checkNickname = userRepository.findByNickname(editNickname);
             if (checkNickname.isPresent()){
                 throw new IllegalArgumentException("중복된 닉네임이 존재합니다.");
