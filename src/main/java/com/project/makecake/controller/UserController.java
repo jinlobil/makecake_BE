@@ -67,15 +67,6 @@ public class UserController {
         return userService.editProfile(imgFile, nickname, userDetails);
     }
 
-    // 닉네임 수정 API
-    @PutMapping("/user/editNickname")
-    public MypageResponseDto editNickname(
-            @RequestBody SignupRequestDto signupRequestDto,
-            @AuthenticationPrincipal UserDetailsImpl userDetails
-    ) {
-        return userService.editNickname(signupRequestDto, userDetails);
-    }
-
     // 회원탈퇴 API
     @PutMapping("/user/resign")
     public MypageResponseDto resignUser(
