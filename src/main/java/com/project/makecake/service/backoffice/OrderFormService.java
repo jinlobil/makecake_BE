@@ -131,10 +131,22 @@ public class OrderFormService {
         }
 
         //moreDetails
+        StoreMoreDetailsDto moreDetails = getMoreDetails(orderForm.getStore().getStoreId());
 
+        OrderFormDetailResponseDto responseDto = OrderFormDetailResponseDto.builder()
+                .orderForm(orderForm)
+                .formList(formList)
+                .instructionList(instructionList)
+                .moreDetails(moreDetails)
+                .build();
+
+        return responseDto;
+    }
+
+    public StoreMoreDetailsDto getMoreDetails(long storeId){
         //cakeMenuList
         List<StoreMoreCakeMenuDto> cakeMenuList = new ArrayList<>();
-        List<CakeMenu> foundMenuList = cakeMenuRepository.findAllByStore_StoreId(orderForm.getStore().getStoreId());
+        List<CakeMenu> foundMenuList = cakeMenuRepository.findAllByStore_StoreId(storeId);
         for(CakeMenu menu : foundMenuList){
             StoreMoreCakeMenuDto menuDto = StoreMoreCakeMenuDto.builder()
                     .cakeMenu(menu)
@@ -145,7 +157,7 @@ public class OrderFormService {
         //cakeTasteList
         List<StoreMoreCakeTasteDto> cakeTasteList = new ArrayList<>();
         List<StoreMoreCakeOptionDto> cakeOptionList = new ArrayList<>();
-        List<StoreOption> foundOptionList = storeOptionRepository.findAllByStore_StoreId(orderForm.getStore().getStoreId());
+        List<StoreOption> foundOptionList = storeOptionRepository.findAllByStore_StoreId(storeId);
         for(StoreOption storeOption : foundOptionList){
 
             if(storeOption.getMainCat().equals("맛")) {
@@ -170,14 +182,6 @@ public class OrderFormService {
                 .cakeOptionList(cakeOptionList)
                 .build();
 
-
-        OrderFormDetailResponseDto responseDto = OrderFormDetailResponseDto.builder()
-                .orderForm(orderForm)
-                .formList(formList)
-                .instructionList(instructionList)
-                .moreDetails(moreDetails)
-                .build();
-
-        return responseDto;
+        return moreDetails;
     }
 }

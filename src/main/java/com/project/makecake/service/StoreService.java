@@ -6,6 +6,7 @@ import com.project.makecake.dto.*;
 import com.project.makecake.model.*;
 import com.project.makecake.repository.*;
 import com.project.makecake.security.UserDetailsImpl;
+import com.project.makecake.service.backoffice.OrderFormService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -37,6 +38,7 @@ public class StoreService {
     private final OpenTimeRepository openTimeRepository;
     private final CakeMenuRepository cakeMenuRepository;
     private final OpenApiService openApiService;
+    private final OrderFormService orderFormService;
 
     // (홈탭) 인기 매장 리스트 조회 메소드
     public List<HomeStoreDto> getStoreListAtHome() {
@@ -91,7 +93,7 @@ public class StoreService {
         // openTimeToday
         OpenTimeResponseDto openTimeToday = getOpenTime(storeId);
 
-        // urls
+        // urlList
         List<StoreDetailUrlDto> urlList = getUrlList(storeId);
 
         // myLike
@@ -103,13 +105,15 @@ public class StoreService {
             }
         }
 
-        //menus
-        List<StoreDetailMenuDto> menus = new ArrayList<>();
+        //menuList
+        List<StoreDetailMenuDto> menuList = new ArrayList<>();
         List<CakeMenu> foundMenuList = cakeMenuRepository.findAllByStore_StoreId(storeId);
         for(CakeMenu menu : foundMenuList){
             StoreDetailMenuDto menuDto = new StoreDetailMenuDto(menu);
-            menus.add(menuDto);
+            menuList.add(menuDto);
         }
+
+        StoreMoreDetailsDto moreDetails = orderFormService.getMoreDetails(storeId);
 
         //cakeImgList 최근 9개
         List<StoreDetailCakeResponseDto> cakeImgList = new ArrayList<>();
@@ -127,7 +131,17 @@ public class StoreService {
             cakeImgList.add(cakeDto);
         }
 
-        return new StoreDetailResponseDto(store, openTimeToday, urlList, myLike, store.getLikeCnt(), menus, cakeImgList);
+        StoreDetailResponseDto responseDto = StoreDetailResponseDto.builder()
+                .store(store)
+                .openTimeToday(openTimeToday)
+                .urlList(urlList)
+                .myLike(myLike)
+                .likeCnt(store.getLikeCnt())
+                .menuList(menuList)
+                .moreDetails(moreDetails)
+                .cakeImgList(cakeImgList)
+                .build();
+        return responseDto;
     }
 
     // (매장 상세) 케이크 조회 메소드
