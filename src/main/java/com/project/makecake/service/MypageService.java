@@ -58,7 +58,6 @@ public class MypageService {
                 () -> new IllegalArgumentException("존재하지 않는 사용자입니다.")
         );
 
-
         List<MyDesignResponseDto> responseDtoList = new ArrayList<>();
         if (option.equals("nonpost")){
             Pageable pageable = PageRequest.of(page, 18);

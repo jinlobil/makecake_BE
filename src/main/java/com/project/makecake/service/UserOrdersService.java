@@ -46,7 +46,7 @@ public class UserOrdersService {
         List<MyOrderListResponseDto> responseDtoList = new ArrayList<>();
         if (option.equals("notOrdered")){
             Pageable pageable = PageRequest.of(page, 18);
-            Page<Design> foundDesignList = designRepository.findByUserAndPostOrderByCreatedAtDesc(foundUser, false, pageable);
+            Page<Design> foundDesignList = designRepository.findByUserAndOrdersOrderByCreatedAtDesc(foundUser, false, pageable);
             for (Design design : foundDesignList){
                 MyOrderListResponseDto responseDto = MyOrderListResponseDto.builder()
                         .designId(design.getDesignId())

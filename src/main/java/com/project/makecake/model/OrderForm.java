@@ -28,6 +28,11 @@ public class OrderForm extends Timestamped{
     @JoinColumn(name="STORE_ID")
     private Store store;
 
+    @ManyToOne
+    @JoinColumn(name="USER_ID")
+    private User user;
+
+
     // 생성자
     @Builder
     // 궁금 (여기서 orderFormRepository.getByStoreId(requestDto.getStoreId()) 해서 넣으면 안 되나?
