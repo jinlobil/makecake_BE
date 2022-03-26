@@ -72,6 +72,7 @@ public class PostService {
             throw new IllegalArgumentException("다른 사람의 도안은 삭제할 수 없습니다.");
         }
 
+        s3Service.deleteFile(foundDesign.getImgName());
         designRepository.deleteById(designId);
     }
 
