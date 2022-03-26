@@ -189,7 +189,10 @@ public class StoreService {
                 reviewImgList.add(rawReviewImg.getImgUrl());
             }
 
-            ReviewResponseDto responseDto = new ReviewResponseDto(review, reviewImgList);
+            ReviewResponseDto responseDto = ReviewResponseDto.builder()
+                    .review(review)
+                    .reviewImgList(reviewImgList)
+                    .build();
 
             responseDtoList.add(responseDto);
         }
@@ -240,16 +243,7 @@ public class StoreService {
         List<SearchResponseDto> responseDtoList = new ArrayList<>();
 
         for(Store store : foundStoreList){
-            String addressSimple = "";
-
-            //"서울 OO구 OO동"
-            if(!store.getFullAddress().equals(null)){
-                String[] arr = store.getFullAddress().split(" ");
-                addressSimple = arr[0].substring(0,2) + " "  + arr[1] + " " + arr[2];
-            }
-
-            SearchResponseDto responseDto = new SearchResponseDto(store, addressSimple);
-            responseDtoList.add(responseDto);
+            responseDtoList.add(StoreDetailsAtSearch(store));
         }
         return responseDtoList;
     }
@@ -367,5 +361,29 @@ public class StoreService {
             }
             return new OpenTimeResponseDto("오늘은 휴일입니다");
         }
+    }
+
+    public SearchResponseDto getStoreDetailsAtSearch(Long storeId) {
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(()-> new IllegalArgumentException("매장 ID가 존재하지 않습니다."));
+        return StoreDetailsAtSearch(store);
+    }
+
+    // 내부 메소드
+    public SearchResponseDto StoreDetailsAtSearch(Store store){
+        String addressSimple = "";
+
+        //"서울 OO구 OO동"
+        if(!store.getFullAddress().equals(null)){
+            String[] arr = store.getFullAddress().split(" ");
+            addressSimple = arr[0].substring(0,2) + " "  + arr[1] + " " + arr[2];
+        }
+
+        SearchResponseDto responseDto = SearchResponseDto.builder()
+                .store(store)
+                .addressSimple(addressSimple)
+                .build();
+
+        return responseDto;
     }
 }

@@ -43,6 +43,11 @@ public class StoreController {
         return storeService.getStoreList(requestDto);
     }
 
+    @GetMapping("/api/search/{storeId}")
+    public SearchResponseDto getStoreDetailsAtSearch(@PathVariable Long storeId){
+        return storeService.getStoreDetailsAtSearch(storeId);
+    }
+
 
     // 매장 상세페이지 조회 API
     @GetMapping("/api/stores/{storeId}")

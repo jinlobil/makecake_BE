@@ -15,10 +15,10 @@ public class CakeOptionRowDto {
     private String moreInfo;
 
     public CakeOptionRowDto(String mainCat, String subCat, String priceState, String addedPrice, String moreInfo){
-        this.mainCat = mainCat;
-        this.subCat = subCat;
-        this.priceState = priceState;
-        this.addedPrice = addedPrice;
-        this.moreInfo = moreInfo;
+        this.mainCat = mainCat.trim();
+        this.subCat = subCat.trim();
+        this.priceState = priceState.trim();
+        this.addedPrice = addedPrice.trim();
+        this.moreInfo = moreInfo.trim();
     }
 }

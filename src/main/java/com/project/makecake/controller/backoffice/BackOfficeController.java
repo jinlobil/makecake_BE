@@ -25,9 +25,6 @@ public class BackOfficeController {
         return backOfficeService.addMenuAndOption(backOfficeService.peekMenuAndOption(requestDto));
     }
 
-
-
-
     @PostMapping("/api/backOffice/store/searchId")
     public BoSearchStoreIdResponseDto boSearchStoreId(@RequestBody BoSearchStoreIdRequestDto requestDto){
         return backOfficeService.boSearchStoreId(requestDto);

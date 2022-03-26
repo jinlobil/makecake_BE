@@ -1,6 +1,7 @@
 package com.project.makecake.dto;
 
 import com.project.makecake.model.Store;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,6 +20,7 @@ public class SearchResponseDto {
     private int likeCnt;
     private int reviewCnt;
 
+    @Builder
     public SearchResponseDto(Store store, String addressSimple){
         this.storeId = store.getStoreId();
         this.name = store.getName();

@@ -176,6 +176,11 @@ public class UserOrdersService {
             throw new IllegalArgumentException("해당 주문서는 삭제 권한이 없습니다.");
         }
 
+        Design design = designRepository.findById(userOrders.getDesign().getDesignId())
+                        .orElseThrow(()-> new IllegalArgumentException("삭제할 주문서의 도안이 존재하지 않습니다."));
+
+        design.editOrderState(false);
+
         userOrdersRepository.delete(userOrders);
     }
     // 주문서의 도안 전송 메소드

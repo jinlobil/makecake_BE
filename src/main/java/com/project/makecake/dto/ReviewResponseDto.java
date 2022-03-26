@@ -1,6 +1,7 @@
 package com.project.makecake.dto;
 
 import com.project.makecake.model.Review;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.util.List;
@@ -9,16 +10,16 @@ import java.util.List;
 
 public class ReviewResponseDto {
     private Long reviewId;
-    private String writerNickname;
-    private String createdDate;
-    private String content;
-    private List<String> reviewImages;
+    private String writerImg, writerNickname, createdDate,content;
+    private List<String> reviewImgList;
 
-    public ReviewResponseDto(Review review, List<String> reviewImages){
+    @Builder
+    public ReviewResponseDto(Review review, List<String> reviewImgList){
         this.reviewId = review.getReviewId();
+        this.writerImg = review.getUser().getProfileImgUrl();
         this.writerNickname = review.getUser().getNickname();
         this.createdDate = review.getCreatedAt();
         this.content = review.getContent();
-        this.reviewImages = reviewImages;
+        this.reviewImgList = reviewImgList;
     }
 }
