@@ -40,4 +40,4 @@ out/
 application-secret.properties
 
 ### github action ###
-.github
+#.github
