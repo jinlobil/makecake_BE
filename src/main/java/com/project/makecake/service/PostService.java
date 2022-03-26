@@ -249,13 +249,13 @@ public class PostService {
                 .orElseThrow(()->new IllegalArgumentException("게시글이 존재하지 않습니다."));
 
         // 게시글 좋아요 찾기
-        Optional<PostLike> foundPostLike = postLikeRepository.findByUserAndPost(user,foundPost);
+        boolean existsPostLike = postLikeRepository.existsByUserAndPost(user,foundPost);
 
         // myLike가 true이면 새로운 postLike 저장
         if (requestDto.isMyLike()) {
 
             // 이미 좋아요를 누른 게시글이면 exception
-            if (foundPostLike.isPresent()) {
+            if (existsPostLike) {
                 throw new IllegalArgumentException("이미 좋아요를 누른 게시글입니다.");
             }
 
@@ -277,7 +277,7 @@ public class PostService {
         } else {
 
             // 좋아요를 누르지 않은 게시글이면 exception
-            if (!foundPostLike.isPresent()) {
+            if (!existsPostLike) {
                 throw new IllegalArgumentException("좋아요를 누르지 않은 게시글입니다.");
             }
 
