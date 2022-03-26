@@ -38,3 +38,6 @@ out/
 
 ### application-secret ###
 application-secret.properties
+
+### github action ###
+.github
