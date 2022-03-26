@@ -230,6 +230,7 @@ public class MypageService {
                     .cakeId(cakeLike.getCake().getCakeId())
                     .img(cakeLike.getCake().getUrl())
                     .storeName(cakeLike.getCake().getStore().getName())
+                    .storeId(cakeLike.getCake().getStore().getStoreId())
                     .likeCnt(cakeLike.getCake().getLikeCnt())
                     .myLike(true)
                     .build();
