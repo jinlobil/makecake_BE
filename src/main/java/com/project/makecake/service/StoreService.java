@@ -199,22 +199,13 @@ public class StoreService {
     // 매장 검색 결과 반환 메소드
     public List<SearchResponseDto> getStoreList(SearchRequestDto requestDto) throws IOException {
         String searchType = requestDto.getSearchType();
-        String sortType = requestDto.getSortType();
         String searchText = requestDto.getSearchText();
         List<Store> foundStoreList = new ArrayList<>();
 
         if (searchType.equals("store")) {
-            if (sortType != "review") {
-                foundStoreList = storeRepository.findAllByNameStartingWithOrderByLikeCntDesc(searchText);
-            } else {
-                foundStoreList = storeRepository.findAllByNameStartingWithOrderByReviewCntDesc(searchText);
-            }
+                foundStoreList = storeRepository.findAllByNameContainingOrderByLikeCntDesc(searchText);
         } else if (searchType.equals("address")) {
-            if (sortType != "review") {
                 foundStoreList = storeRepository.findByFullAddressContainingOrderByLikeCntDesc(searchText);
-            } else {
-                foundStoreList = storeRepository.findByFullAddressContainingOrderByReviewCntDesc(searchText);
-            }
         } else { //플레이스로 검색하기
             float minX = 0;
             float maxX = 0;
@@ -242,11 +233,7 @@ public class StoreService {
             minX = foundBoundaryList.get(2);
             maxX = foundBoundaryList.get(3);
 
-            if (sortType != "review") {
-                foundStoreList = storeRepository.findByXBetweenAndYBetweenOrderByLikeCntDesc(minX, maxX, minY, maxY);
-            } else {
-                foundStoreList = storeRepository.findByXBetweenAndYBetweenOrderByLikeCntDesc(minX, maxX, minY, maxY);
-            }
+            foundStoreList = storeRepository.findByXBetweenAndYBetweenOrderByLikeCntDesc(minX, maxX, minY, maxY);
         }
 
         // Dto에 담아 반환

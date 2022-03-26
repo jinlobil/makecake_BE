@@ -146,7 +146,7 @@ public class UserOrdersService {
 
         // copyText
         for(int i=0; i<formList.size(); i++){
-            copyText += i+"번째 : " + formList.get(i) + " : " + userInputList.get(i)+"\n";
+            copyText += formList.get(i) + " : " + userInputList.get(i)+"\n";
         }
 
         //storeUrl
@@ -171,7 +171,8 @@ public class UserOrdersService {
         UserOrders userOrders = userOrdersRepository.findById(userOrdersId)
                 .orElseThrow(()-> new IllegalArgumentException("작성하신 주문서를 불러올 수 없습니다."));
 
-        if (!user.equals(userOrders.getUser())){
+
+        if (!user.getUserId().equals(userOrders.getUser().getUserId())){
             throw new IllegalArgumentException("해당 주문서는 삭제 권한이 없습니다.");
         }
 
