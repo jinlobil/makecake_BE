@@ -150,15 +150,11 @@ public class NotiService {
 
         User user = userDetails.getUser();
 
-        // 체크하지 않은 PersonalNoti 찾기
-        Optional<PersonalNoti> foundPersonalNoti = personalNotiRepository.findByRecieveUserAndChecked(user,false);
+        // 체크하지 않은 PersonalNoti 존재 여부
+        boolean existsNewNoti = personalNotiRepository.existsByRecieveUserAndChecked(user,false);
 
-        // 반환 DTO 생성
-        if (foundPersonalNoti.isPresent()) {
-            return new NewNotiResponseDto(false);
-        } else {
-            return new NewNotiResponseDto(true);
-        }
+        return new NewNotiResponseDto(!existsNewNoti);
+
     }
 
     // 알림 조회 메소드
