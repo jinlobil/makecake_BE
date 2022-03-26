@@ -133,13 +133,13 @@ public class CakeService {
                 .orElseThrow(()->new IllegalArgumentException("케이크가 존재하지 않습니다."));
 
         // 케이크 좋아요 찾기
-        Optional<CakeLike> foundCakeLike = cakeLikeRepository.findByUserAndCake(user,foundCake);
+        boolean existsCakeLike = cakeLikeRepository.existsByUserAndCake(user,foundCake);
 
         // myLike가 true이면 새로운 cakeLike 저장
         if (requestDto.isMyLike()) {
 
             // 이미 좋아요를 누른 케이크이면 exception
-            if (foundCakeLike.isPresent()) {
+            if (existsCakeLike) {
                 throw new IllegalArgumentException("이미 좋아요를 누른 케이크입니다.");
             }
 
@@ -153,7 +153,7 @@ public class CakeService {
         } else {
 
             // 좋아요를 누르지 않은 케이크이면 exception
-            if (!foundCakeLike.isPresent()) {
+            if (!existsCakeLike) {
                 throw new IllegalArgumentException("좋아요를 누르지 않은 케이크입니다.");
             }
 
