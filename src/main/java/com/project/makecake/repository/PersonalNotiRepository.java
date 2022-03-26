@@ -14,4 +14,6 @@ public interface PersonalNotiRepository extends JpaRepository<com.project.makeca
     List<PersonalNoti> findTop30ByRecieveUserOrderByCreatedAtDesc(User user);
 
     List<PersonalNoti> findAllByRecieveUserAndChecked(User user, boolean b);
+
+    boolean existsByRecieveUserAndChecked(User user, boolean b);
 }
