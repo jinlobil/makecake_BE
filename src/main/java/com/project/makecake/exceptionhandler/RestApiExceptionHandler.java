@@ -5,6 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.net.SocketException;
+
 // Global 예외처리
 @RestControllerAdvice
 public class RestApiExceptionHandler {
@@ -19,4 +21,11 @@ public class RestApiExceptionHandler {
                 HttpStatus.BAD_REQUEST
         );
     }
+
+    // IllegalArgumentException 예외처리
+    @ExceptionHandler(value = {SocketException.class})
+    public void handleSocketException(SocketException ex) {
+        System.out.println("broken pipe가 발생했다!!!!!!!!!!!! 안돼!!!!!!!!!!!");
+    }
+
 }
