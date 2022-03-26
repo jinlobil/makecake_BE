@@ -12,9 +12,11 @@ function find_idle_profile()
 #    else
 #        CURRENT_PROFILE=$(curl -s http://localhost/profile)
 #    fi
-    CURRENT_PROFILE=$(curl -s http://localhost/profile)
+    CURRENT_PROFILE=$(curl -s https://devssk.shop/profile)
 
-    if [ "${CURRENT_PROFILE}" == real1 ]
+    echo "> CURRENT_PROFILE : ${CURRENT_PROFILE}"
+
+    if [ ${CURRENT_PROFILE} == real1 ]
     then
       IDLE_PROFILE=real2
     else
