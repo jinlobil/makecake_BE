@@ -7,10 +7,9 @@
 
 name: Java CI with Gradle
 
+# 머지가 완료되었을때만 CI작동(merge commit이 일어났을때)
 on:
   push:
-    branches: [ master ]
-  pull_request:
     branches: [ master ]
 
 jobs:
