@@ -116,7 +116,7 @@ public class ReviewService {
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(()->new IllegalArgumentException("존재하지 않는 리뷰입니다."));
 
-        if(!review.getUser().equals(userDetails.getUser())){
+        if(!review.getUser().getUserId().equals(userDetails.getUser().getUserId())){
             throw new IllegalArgumentException("다른 회원이 작성한 리뷰는 수정할 수 없습니다.");
         }
 
