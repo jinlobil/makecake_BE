@@ -30,10 +30,17 @@ public class UserOrdersController {
     // (주문하기) 사용자가 작성한 주문서 상세 보기
     @GetMapping("/orders/{userOrdersId}")
     public UserOrdersDetailResponseDto getUserOrdersDetails(
-            @PathVariable long userOrdersId,
+            @PathVariable Long userOrdersId
+    ) {
+        return userOrdersService.getUserOrdersDetails(userOrdersId);
+    }
+
+    @DeleteMapping("/orders/{userOrdersId}")
+    public void deleteUserOrders(
+            @PathVariable Long userOrdersId,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        return userOrdersService.getUserOrdersDetails(userOrdersId, userDetails);
+        userOrdersService.deleteUserOrders(userOrdersId, userDetails);
     }
 
     // 주문서의 도안 전송 API
@@ -41,5 +48,4 @@ public class UserOrdersController {
     public ResponseEntity<byte[]> getDesignAtOrders(@PathVariable long userOrdersId) throws IOException {
         return userOrdersService.getDesignAtOrders(userOrdersId);
     }
-
 }

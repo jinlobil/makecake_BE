@@ -3,14 +3,8 @@ package com.project.makecake.service;
 import com.project.makecake.dto.MyOrderListResponseDto;
 import com.project.makecake.dto.UserOrderRequestDto;
 import com.project.makecake.dto.UserOrdersDetailResponseDto;
-import com.project.makecake.model.Design;
-import com.project.makecake.model.OrderForm;
-import com.project.makecake.model.User;
-import com.project.makecake.model.UserOrders;
-import com.project.makecake.repository.DesignRepository;
-import com.project.makecake.repository.OrderFormRepository;
-import com.project.makecake.repository.UserOrdersRepository;
-import com.project.makecake.repository.UserRepository;
+import com.project.makecake.model.*;
+import com.project.makecake.repository.*;
 import com.project.makecake.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -35,6 +29,7 @@ public class UserOrdersService {
     private final DesignRepository designRepository;
     private final UserOrdersRepository userOrdersRepository;
     private final OrderFormRepository orderFormRepository;
+    private final StoreUrlRepository storeUrlRepository;
     private final S3Service s3Service;
 
 
@@ -108,9 +103,7 @@ public class UserOrdersService {
         return responseDto;
     }
 
-
-
-    public UserOrdersDetailResponseDto getUserOrdersDetails(long userOrdersId, UserDetailsImpl userDetails) {
+    public UserOrdersDetailResponseDto getUserOrdersDetails(long userOrdersId) {
         UserOrders userOrders = userOrdersRepository.findById(userOrdersId)
                 .orElseThrow(()-> new NullPointerException("작성하신 주문이 존재하지 않습니다."));
 
@@ -149,10 +142,15 @@ public class UserOrdersService {
 
         System.out.println(userInputList.toString());
 
+        String copyText = "";
+
         // copyText
+        for(int i=0; i<formList.size(); i++){
+            copyText += i+"번째 : " + formList.get(i) + " : " + userInputList.get(i)+"\n";
+        }
 
-
-
+        //storeUrl
+        StoreUrl foundStoreUrl = storeUrlRepository.findByTypeAndStore_StoreId("normal", orderForm.getStore().getStoreId());
 
 
         UserOrdersDetailResponseDto responseDto = UserOrdersDetailResponseDto.builder()
@@ -160,26 +158,25 @@ public class UserOrdersService {
                 .formList(formList)
                 .instructionList(instructionList)
                 .userInput(userInputList)
-
-
-
+                .copyText(copyText)
+                .storeUrl(foundStoreUrl.getUrl())
                 .build();
-        /*
-            @Builder
-    public UserOrdersDetailResponseDto (UserOrders userOrders, List<String> formList, List<String>instructionList, List<String>userInput, String copyText, String storeUrl) {
-        this.name = userOrders.getOrderForm().getName();
-        this.img = userOrders.getDesign().getImgUrl();
-        this.formList = formList;
-        this.instructionList = instructionList;
-        this.userInput = userInput;
-        this.copyText = copyText;
-        this.storeUrl = storeUrl;
-         */
 
         return responseDto;
-
     }
 
+    public void deleteUserOrders(Long userOrdersId, UserDetailsImpl userDetails) {
+        User user = userDetails.getUser();
+
+        UserOrders userOrders = userOrdersRepository.findById(userOrdersId)
+                .orElseThrow(()-> new IllegalArgumentException("작성하신 주문서를 불러올 수 없습니다."));
+
+        if (!user.equals(userOrders.getUser())){
+            throw new IllegalArgumentException("해당 주문서는 삭제 권한이 없습니다.");
+        }
+
+        userOrdersRepository.delete(userOrders);
+    }
     // 주문서의 도안 전송 메소드
     public ResponseEntity<byte[]> getDesignAtOrders(long userOrdersId) throws IOException {
 

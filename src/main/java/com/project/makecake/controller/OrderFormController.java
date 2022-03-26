@@ -41,7 +41,7 @@ public class OrderFormController {
     }
 
     // (주문하기) 케이크 주문서 작성 페이지 조회 API
-    @GetMapping("/orders/{orderFormId}")
+    @GetMapping("/order-forms/{orderFormId}")
     public OrderFormDetailResponseDto getOrderFormDetails(
             @PathVariable Long orderFormId
     ) {
