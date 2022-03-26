@@ -28,11 +28,11 @@ public class PostService {
     private final PostRepository postRepository;
     private final DesignRepository designRepository;
     private final S3Service s3Service;
-    private final StoreRepository storeRepository;
     private final PostLikeRepository postLikeRepository;
     private final CommentRepository commentRepository;
     private final NotiRepository notiRepository;
     private final PersonalNotiRepository personalNotiRepository;
+    private final UserOrdersRepository userOrdersRepository;
 
     // 도안 저장 메소드
     @Transactional
@@ -72,6 +72,7 @@ public class PostService {
             throw new IllegalArgumentException("다른 사람의 도안은 삭제할 수 없습니다.");
         }
 
+        userOrdersRepository.deleteByDesign(foundDesign);
         s3Service.deleteFile(foundDesign.getImgName());
         designRepository.deleteById(designId);
     }
