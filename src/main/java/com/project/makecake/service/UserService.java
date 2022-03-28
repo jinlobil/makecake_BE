@@ -3,6 +3,8 @@ package com.project.makecake.service;
 import com.project.makecake.dto.*;
 import com.project.makecake.enums.FolderName;
 import com.project.makecake.enums.UserRoleEnum;
+import com.project.makecake.exceptionhandler.CustomException;
+import com.project.makecake.exceptionhandler.ErrorCode;
 import com.project.makecake.model.User;
 import com.project.makecake.repository.UserRepository;
 import com.project.makecake.security.UserDetailsImpl;
@@ -65,18 +67,18 @@ public class UserService {
         // username 중복체크
         Optional<User> checkUsername = userRepository.findByUsername(requestDto.getUsername());
         if (checkUsername.isPresent()) {
-            throw new IllegalArgumentException("중복된 아이디가 존재합니다.");
+            throw new CustomException(ErrorCode.EMAIL_DUPLICATE);
         }
 
         // nickname 중복체크
         Optional<User> checkNickname = userRepository.findByNickname(requestDto.getNickname());
         if (checkNickname.isPresent()) {
-            throw new IllegalArgumentException("중복된 닉네임이 존재합니다.");
+            throw new CustomException(ErrorCode.NICKNAME_DUPLICATE);
         }
 
         // 패스워드 일치 확인
         if (!requestDto.getPassword().equals(requestDto.getPasswordCheck())) {
-            throw new IllegalArgumentException("패스워드가 일치하지 않습니다.");
+            throw new CustomException(ErrorCode.PASSWORD_NOT_MATCH);
         }
     }
 
@@ -101,7 +103,7 @@ public class UserService {
     // 로그인체크
     public LoginCheckResponseDto checkLogin(UserDetailsImpl userDetails) {
         User foundUser = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
-                () -> new IllegalArgumentException("유저가 존재하지 않습니다.")
+                () -> new CustomException(ErrorCode.USER_NOT_FOUND)
         );
         LoginCheckResponseDto responseDto = LoginCheckResponseDto.builder()
                         .userId(foundUser.getUserId())
@@ -145,7 +147,7 @@ public class UserService {
     // 프로필수정
     public MypageResponseDto editProfile(MultipartFile imgFile, String editNickname, UserDetailsImpl userDetails) throws IOException {
         User foundUser = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
-                () -> new IllegalArgumentException("유저가 존재하지 않습니다.")
+                () -> new CustomException(ErrorCode.USER_NOT_FOUND)
         );
         String profile = foundUser.getProfileImgUrl();
         String profileName = foundUser.getProfileImgName();
@@ -162,7 +164,7 @@ public class UserService {
             // 닉네임 중복체크
             Optional<User> checkNickname = userRepository.findByNickname(editNickname);
             if (checkNickname.isPresent()){
-                throw new IllegalArgumentException("중복된 닉네임이 존재합니다.");
+                throw new CustomException(ErrorCode.NICKNAME_DUPLICATE);
             }
             nickname = editNickname;
         }

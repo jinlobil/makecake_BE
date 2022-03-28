@@ -1,6 +1,5 @@
 package com.project.makecake.exceptionhandler;
 
-import com.amazonaws.http.DefaultErrorResponseHandler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
