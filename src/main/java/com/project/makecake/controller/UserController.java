@@ -114,8 +114,4 @@ public class UserController {
         googleLoginService.googleLogin(code, response);
     }
 
-    @GetMapping("/test")
-    public String test() {
-        throw new CustomException(ErrorCode.STORE_NOT_FOUND);
-    }
 }
