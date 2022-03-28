@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface CakeRepository extends JpaRepository<Cake, Long> {
     List<Cake> findAllByStore(Store store);
-    List<Cake> findTop5ByOrderByLikeCnt();
+    List<Cake> findTop5ByOrderByLikeCntDesc();
     List<Cake> findTop9ByStoreOrderByCreatedAtDesc(Store store);
     Page<Cake> findAllByStore_StoreId(long storeId, Pageable pageable);
 
