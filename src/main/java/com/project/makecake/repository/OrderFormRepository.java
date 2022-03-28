@@ -8,5 +8,4 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface OrderFormRepository extends JpaRepository<OrderForm, Long> {
-    Page<OrderForm> findByUserOrderByCreatedAtDesc(User foundUser, Pageable pageable);
 }

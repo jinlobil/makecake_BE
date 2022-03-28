@@ -28,10 +28,6 @@ public class OrderForm extends Timestamped{
     @JoinColumn(name="STORE_ID")
     private Store store;
 
-    @ManyToOne
-    @JoinColumn(name="USER_ID")
-    private User user;
-
 
     // 생성자
     @Builder

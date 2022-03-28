@@ -41,7 +41,7 @@ public class BackOfficeService {
 
         for(int j=0; j < rawMenuList.size()/5; j++){
             List<String> rawRow = rawMenuList.subList(j*5, (j+1)*5);
-            CakeMenuRowDto menuRow = new CakeMenuRowDto(rawRow.get(0).trim(), rawRow.get(1).trim(), rawRow.get(2).trim(), rawRow.get(3).trim(), rawRow.get(4));
+            CakeMenuRowDto menuRow = new CakeMenuRowDto(rawRow.get(0).trim(), rawRow.get(1).trim(), rawRow.get(2).trim(), rawRow.get(3).trim(), rawRow.get(4).trim());
             peekMenuList.add(menuRow);
         }
 
@@ -83,6 +83,17 @@ public class BackOfficeService {
 
         return "데이터가 저장되었습니다.";
     }
+
+    // 케이크 메뉴 삭제
+    public void deleteCakeMenu(long storeId){
+        cakeMenuRepository.deleteAllByStore_StoreId(storeId);
+    }
+
+    // 케이크 옵션 삭제
+    public void deleteCakeOption(long storeId){
+        storeOptionRepository.deleteAllByStore_StoreId(storeId);
+    }
+
 
     //매장 이름으로 매장 id 검색하기
     public BoSearchStoreIdResponseDto boSearchStoreId(BoSearchStoreIdRequestDto requestDto) {

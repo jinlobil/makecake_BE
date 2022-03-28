@@ -1,7 +1,9 @@
 package com.project.makecake.model;
 
+import com.project.makecake.dto.PostRequestDto;
 import com.project.makecake.dto.backoffice.CakeMenuRowDto;
 import com.project.makecake.enums.CakePriceState;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -43,5 +45,16 @@ public class CakeMenu extends Timestamped{
         this.moreInfo = menuRowDto.getMoreInfo();
         this.priceState = priceState;
         this.store = store;
+    }
+
+
+    // (백오피스) 수정 메소드
+    @Builder
+    public void edit(CakeMenuRowDto menuRowDto, CakePriceState priceState) {
+        this.type = menuRowDto.getType();
+        this.size = menuRowDto.getSize();
+        this.price = menuRowDto.getPrice();
+        this.priceState = priceState;
+        this.moreInfo = menuRowDto.getMoreInfo();
     }
 }

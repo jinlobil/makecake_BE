@@ -216,7 +216,7 @@ public class StoreService {
             float maxY = 0;
 
             // 네이버 지도 검색 api url
-            String urlString = "https://map.naver.com/v5/api/search?caller=pcweb&query=" + URLEncoder.encode(searchText, "UTF-8") + "&type=all&searchCoord=127.0234346;37.4979517&page=1&displayCount=20&isPlaceRecommendationReplace=true&lang=ko";
+            String urlString = "https://map.naver.com/v5/api/search?caller=pcweb&query=" + URLEncoder.encode("서울" + searchText, "UTF-8") + "&type=all&searchCoord=127.0234346;37.4979517&page=1&displayCount=20&isPlaceRecommendationReplace=true&lang=ko";
             JsonElement element = openApiService.getOpenApiResult(urlString);
 
             JsonArray rawJsonArray = element.getAsJsonObject().get("result").getAsJsonObject().get("place").getAsJsonObject().get("boundary").getAsJsonArray();
@@ -231,10 +231,10 @@ public class StoreService {
 
             Collections.sort(foundBoundaryList);
 
-            minY = foundBoundaryList.get(0);
-            maxY = foundBoundaryList.get(1);
-            minX = foundBoundaryList.get(2);
-            maxX = foundBoundaryList.get(3);
+            minY = foundBoundaryList.get(0) - 0.01f;
+            maxY = foundBoundaryList.get(1) + 0.01f;
+            minX = foundBoundaryList.get(2)- 0.01f;
+            maxX = foundBoundaryList.get(3) + 0.01f;
 
             foundStoreList = storeRepository.findByXBetweenAndYBetweenOrderByLikeCntDesc(minX, maxX, minY, maxY);
         }

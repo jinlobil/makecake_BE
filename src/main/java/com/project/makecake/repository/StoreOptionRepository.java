@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface StoreOptionRepository extends JpaRepository<StoreOption, Long> {
     List<StoreOption> findAllByStore_StoreId(long storeId);
+    void deleteAllByStore_StoreId(long storeId);
 }
