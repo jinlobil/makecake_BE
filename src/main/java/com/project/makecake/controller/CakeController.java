@@ -25,9 +25,10 @@ public class CakeController {
     @GetMapping("/api/cakes")
     public List<CakeResponseDto> getCakeList(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @RequestParam int page
+            @RequestParam int page,
+            @RequestParam String sortType
     ) {
-        return cakeService.getCakeList(userDetails, page);
+        return cakeService.getCakeList(userDetails, page, sortType);
     }
 
     // 케이크 사진 상세 조회 API

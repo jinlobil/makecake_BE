@@ -5,6 +5,7 @@ import com.project.makecake.model.Store;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
@@ -16,6 +17,8 @@ public interface CakeRepository extends JpaRepository<Cake, Long> {
 
     void deleteAllByStore_StoreId(Long storeId);
 
+    @Query(value = "SELECT * FROM cake ORDER BY RAND() LIMIT 18", nativeQuery = true)
+    List<Cake> findByRandom();
 
 
 
