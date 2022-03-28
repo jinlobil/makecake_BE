@@ -6,6 +6,8 @@ import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.util.IOUtils;
 import com.project.makecake.dto.ImageInfoDto;
+import com.project.makecake.exceptionhandler.CustomException;
+import com.project.makecake.exceptionhandler.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tika.Tika;
@@ -124,7 +126,7 @@ public class S3Service {
 
         // MIME타입이 이미지가 아니면 exception 발생
         if (!mimeType.startsWith("image/")) {
-            throw new IllegalArgumentException("업로드하려는 파일이 이미지 파일이 아닙니다.");
+            throw new CustomException(ErrorCode.NOT_IMAGEFILE);
         }
     }
 }

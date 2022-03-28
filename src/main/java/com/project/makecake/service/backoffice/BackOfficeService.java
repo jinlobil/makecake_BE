@@ -2,6 +2,8 @@ package com.project.makecake.service.backoffice;
 
 import com.project.makecake.dto.backoffice.*;
 import com.project.makecake.enums.CakePriceState;
+import com.project.makecake.exceptionhandler.CustomException;
+import com.project.makecake.exceptionhandler.ErrorCode;
 import com.project.makecake.model.CakeMenu;
 import com.project.makecake.model.Store;
 import com.project.makecake.model.StoreOption;
@@ -31,7 +33,7 @@ public class BackOfficeService {
 
         //매장 이름
         Store store = storeRepository.findById(storeId)
-                .orElseThrow(()->new IllegalArgumentException("매장 id가 DB에 없습니다."));
+                .orElseThrow(()->new CustomException(ErrorCode.STORE_NOT_FOUND));
         String storeName = store.getName();
 
         //케이크

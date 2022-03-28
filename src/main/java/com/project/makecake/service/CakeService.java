@@ -2,6 +2,8 @@ package com.project.makecake.service;
 
 import com.project.makecake.dto.*;
 import com.project.makecake.enums.FolderName;
+import com.project.makecake.exceptionhandler.CustomException;
+import com.project.makecake.exceptionhandler.ErrorCode;
 import com.project.makecake.model.Cake;
 import com.project.makecake.model.CakeLike;
 import com.project.makecake.model.Store;
@@ -102,7 +104,7 @@ public class CakeService {
 
         // 케이크 찾아오기
         Cake foundCake = cakeRepository.findById(cakeId)
-                .orElseThrow(()->new IllegalArgumentException("케이크를 찾을 수 없습니다."));
+                .orElseThrow(()->new CustomException(ErrorCode.CAKE_NOT_FOUND));
 
         // myLike 디폴트는 false
         boolean myLike = false;
@@ -130,7 +132,7 @@ public class CakeService {
 
         // 케이크 찾기
         Cake foundCake = cakeRepository.findById(cakeId)
-                .orElseThrow(()->new IllegalArgumentException("케이크가 존재하지 않습니다."));
+                .orElseThrow(()->new CustomException(ErrorCode.CAKE_NOT_FOUND));
 
         // 케이크 좋아요 찾기
         boolean existsCakeLike = cakeLikeRepository.existsByUserAndCake(user,foundCake);
@@ -140,7 +142,7 @@ public class CakeService {
 
             // 이미 좋아요를 누른 케이크이면 exception
             if (existsCakeLike) {
-                throw new IllegalArgumentException("이미 좋아요를 누른 케이크입니다.");
+                throw new CustomException(ErrorCode.LIKE_ALREADY_EXIST);
             }
 
             CakeLike cakeLike = CakeLike.builder()
@@ -154,7 +156,7 @@ public class CakeService {
 
             // 좋아요를 누르지 않은 케이크이면 exception
             if (!existsCakeLike) {
-                throw new IllegalArgumentException("좋아요를 누르지 않은 케이크입니다.");
+                throw new CustomException(ErrorCode.LIKE_NOT_EXIST);
             }
 
             cakeLikeRepository.deleteByUserAndCake(user, foundCake);
@@ -174,7 +176,7 @@ public class CakeService {
     public List<Cake> GetCakeListAtBackoffice(long storeId) {
 
         Store foundStore = storeRepository.findById(storeId)
-                .orElseThrow(()->new IllegalArgumentException("존재하지 않는 가게입니다."));
+                .orElseThrow(()->new CustomException(ErrorCode.STORE_NOT_FOUND));
 
         List<Cake> foundCakeList = cakeRepository.findAllByStore(foundStore);
         return foundCakeList;
@@ -185,7 +187,7 @@ public class CakeService {
     public long deleteCake(long cakeId) {
 
         Cake foundCake = cakeRepository.findById(cakeId)
-                .orElseThrow(()->new IllegalArgumentException("존재하지 않는 케이크입니다."));
+                .orElseThrow(()->new CustomException(ErrorCode.CAKE_NOT_FOUND));
 
         // 좋아요 삭제
         cakeLikeRepository.deleteAllByCake(foundCake);
@@ -201,7 +203,7 @@ public class CakeService {
     public void addCakeList(long storeId, List<MultipartFile> imgFileList) throws IOException {
 
         Store foundStore = storeRepository.findById(storeId)
-                .orElseThrow(()->new IllegalArgumentException("존재하지 않는 가게입니다."));
+                .orElseThrow(()->new CustomException(ErrorCode.STORE_NOT_FOUND));
 
         if(imgFileList != null){
             for(MultipartFile imgFile : imgFileList){

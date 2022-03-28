@@ -3,6 +3,8 @@ package com.project.makecake.service;
 import com.project.makecake.dto.CommentRequestDto;
 import com.project.makecake.dto.CommentResponseDto;
 import com.project.makecake.enums.NotiType;
+import com.project.makecake.exceptionhandler.CustomException;
+import com.project.makecake.exceptionhandler.ErrorCode;
 import com.project.makecake.model.*;
 import com.project.makecake.repository.CommentRepository;
 import com.project.makecake.repository.NotiRepository;
@@ -34,7 +36,7 @@ public class CommentService {
 
         // 게시글 찾기
         Post foundPost = postRepository.findById(postId)
-                .orElseThrow(()->new IllegalArgumentException("존재하지 않는 게시글입니다."));
+                .orElseThrow(()->new CustomException(ErrorCode.POST_NOT_FOUND));
 
         // 게시글에 달린 댓글 리스트 찾기 (5개씩)
         Sort sort = Sort.by(Sort.Direction.DESC,"commentId");
@@ -59,7 +61,11 @@ public class CommentService {
 
         // 게시글 찾기
         Post foundPost = postRepository.findById(postId)
-                .orElseThrow(()->new IllegalArgumentException("존재하지 않는 게시글입니다."));
+                .orElseThrow(()->new CustomException(ErrorCode.POST_NOT_FOUND));
+        System.out.println(requestDto.getContent().isEmpty());
+        if (requestDto.getContent() == null) {
+            throw new CustomException(ErrorCode.COMMENT_CONTENT_NULL);
+        }
 
         // 댓글 저장
         Comment comment = Comment.builder()
@@ -89,11 +95,11 @@ public class CommentService {
 
         // 댓글 찾기
         Comment foundComment = commentRepository.findById(commentId)
-                .orElseThrow(()->new IllegalArgumentException("존재하지 않는 댓글입니다."));
+                .orElseThrow(()->new CustomException(ErrorCode.COMMENT_NOT_FOUND));
 
         // 동일 유저인지 확인
         if (!user.getUserId().equals(foundComment.getUser().getUserId())) {
-            throw new IllegalArgumentException("다른 사람의 댓글은 수정할 수 없습니다.");
+            throw new CustomException(ErrorCode.NOT_COMMENT_OWNER);
         }
 
         foundComment.editContent(requestDto.getContent());
@@ -107,11 +113,11 @@ public class CommentService {
 
         // 댓글 찾기
         Comment foundComment = commentRepository.findById(commentId)
-                .orElseThrow(()->new IllegalArgumentException("존재하지 않는 댓글입니다."));
+                .orElseThrow(()->new CustomException(ErrorCode.COMMENT_NOT_FOUND));
 
         // 동일 유저인지 확인
         if (!user.getUserId().equals(foundComment.getUser().getUserId())) {
-            throw new IllegalArgumentException("다른 사람의 댓글은 삭제할 수 없습니다.");
+            throw new CustomException(ErrorCode.NOT_COMMENT_OWNER);
         }
 
         // 도안 게시글 댓글수 감소

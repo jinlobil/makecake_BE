@@ -50,7 +50,6 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         System.out.println("토큰 유효시간 : " + expireDate + " 현재시간 : " + now);
         // 유효시간이 현재시간보다 이전이면 다시 필터를 타게함
         if (expireDate.before(now)) {
-            System.out.println("유효시간이 지난 토큰입니다.");
             chain.doFilter(request,response);
             return;
         }

@@ -2,6 +2,8 @@ package com.project.makecake.service.backoffice;
 
 import com.project.makecake.dto.*;
 import com.project.makecake.dto.backoffice.OrderFormPeekResponseDto;
+import com.project.makecake.exceptionhandler.CustomException;
+import com.project.makecake.exceptionhandler.ErrorCode;
 import com.project.makecake.model.*;
 import com.project.makecake.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +28,7 @@ public class OrderFormService {
     @Transactional
     public String addOrderForm(OrderFormRequestDto requestDto) {
         Store store = storeRepository.findById(requestDto.getStoreId())
-                .orElseThrow(()-> new NullPointerException("등록하려는 매장이 존재하지 않습니다."));
+                .orElseThrow(()-> new CustomException(ErrorCode.STORE_NOT_FOUND));
 
         OrderForm orderForm = OrderForm.builder()
                 .requestDto(requestDto)
@@ -42,7 +44,7 @@ public class OrderFormService {
     @Transactional
     public String deleteOrderForm(long orderFormId) {
         OrderForm orderForm = orderFormRepository.findById(orderFormId)
-                .orElseThrow(()-> new NullPointerException("삭제하려는 주문서가 존재하지 않습니다."));
+                .orElseThrow(()-> new CustomException(ErrorCode.ORDER_NOT_FOUND));
 
         orderFormRepository.delete(orderForm);
 
@@ -55,7 +57,7 @@ public class OrderFormService {
 
         // 매장명
         Store store = storeRepository.findById(storeId)
-                .orElseThrow(()->new IllegalArgumentException("매장 id가 DB에 없습니다."));
+                .orElseThrow(()->new CustomException(ErrorCode.STORE_NOT_FOUND));
         String storeName = store.getName();
 
         // 주문서 양식
@@ -107,7 +109,7 @@ public class OrderFormService {
     public OrderFormDetailResponseDto getOrderFormDetails(Long orderFormId) {
 
         OrderForm orderForm = orderFormRepository.findById(orderFormId)
-                .orElseThrow(()-> new NullPointerException("주문서가 존재하지 않습니다."));
+                .orElseThrow(()-> new CustomException(ErrorCode.ORDER_NOT_FOUND));
 
 
         // 주문서 양식

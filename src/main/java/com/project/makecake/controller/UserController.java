@@ -3,6 +3,8 @@ package com.project.makecake.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.project.makecake.dto.*;
 import com.project.makecake.enums.FolderName;
+import com.project.makecake.exceptionhandler.CustomException;
+import com.project.makecake.exceptionhandler.ErrorCode;
 import com.project.makecake.security.UserDetailsImpl;
 import com.project.makecake.service.*;
 import lombok.RequiredArgsConstructor;
@@ -110,5 +112,10 @@ public class UserController {
             HttpServletResponse response
     ) throws JsonProcessingException {
         googleLoginService.googleLogin(code, response);
+    }
+
+    @GetMapping("/test")
+    public String test() {
+        throw new CustomException(ErrorCode.STORE_NOT_FOUND);
     }
 }
