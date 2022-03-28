@@ -39,7 +39,7 @@ public class CakeService {
     @Transactional
     public List<HomeCakeDto> getCakeListAtHome() {
         List<HomeCakeDto> homeCakeDtoList = new ArrayList<>();
-        List<Cake> rawCakeList = cakeRepository.findTop5ByOrderByLikeCnt();
+        List<Cake> rawCakeList = cakeRepository.findTop5ByOrderByLikeCntDesc();
 
         for(Cake eachCake : rawCakeList){
             Long cakeId = eachCake.getCakeId();
