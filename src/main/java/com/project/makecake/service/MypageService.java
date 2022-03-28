@@ -176,7 +176,7 @@ public class MypageService {
         return responseDtoList;
     }
 
-    // 내가 남긴 후기 조회 메소드
+    // 내가 남긴 후기 조회 메소드..
     public List<MyReviewResponseDto> getMyReviewList(UserDetailsImpl userDetails, int page) {
         if (userDetails == null) {
             throw new CustomException(ErrorCode.UNAUTHORIZED_MAMBER);
