@@ -132,7 +132,7 @@ public class MypageService {
         User foundUser = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 사용자입니다.")
         );
-        Pageable pageable = PageRequest.of(page, 5);
+        Pageable pageable = PageRequest.of(page, 8);
         Page<Comment> foundCommentList = commentRepository.findByUserOrderByCreatedAtDesc(foundUser, pageable);
         List<MyCommentResponseDto> responseDtoList = new ArrayList<>();
         for (Comment comment : foundCommentList){
