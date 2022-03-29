@@ -133,6 +133,8 @@ public class CommentService {
     // 댓글 알림 발송 메소드
     public void addCommentNoti(Post foundPost, User createUser) {
 
+        String redirectUrl = "https://make-cake.com/post/" + foundPost.getPostId();
+
         // 알림 찾기
         Noti foundNoti = notiRepository.findByType(NotiType.COMMENT);
 
@@ -141,7 +143,7 @@ public class CommentService {
                 .recieveUser(foundPost.getUser())
                 .createUser(createUser)
                 .noti(foundNoti)
-                .redirectUrl("https://ko.dict.naver.com/#/entry/koko/b91939f752b6463a86d4dd5a57ff17c5")
+                .redirectUrl(redirectUrl)
                 .build();
 
         // 저장
