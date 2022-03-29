@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 public class ReviewResponseTempDto {
     private Long reviewId;
+    private Long storeId;
     private String writerNickname;
     private String createdDate;
     private String content;
@@ -15,6 +16,7 @@ public class ReviewResponseTempDto {
 
     public ReviewResponseTempDto(Review review, String reviewImage){
         this.reviewId = review.getReviewId();
+        this.storeId = review.getStore().getStoreId();
         this.writerNickname = review.getUser().getNickname();
         this.createdDate = review.getCreatedAt();
         this.content = review.getContent();

@@ -55,7 +55,7 @@ public class CakeService {
     }
 
     // 케이크 사진 리스트 조회 메소드
-    public List<CakeResponseDto> getCakeList(UserDetailsImpl userDetails, int page) {
+    public List<CakeResponseDto> getCakeList(UserDetailsImpl userDetails, int page, String sortType) {
 
         // 비로그인 유저는 null 처리
         User user = null;
@@ -63,11 +63,7 @@ public class CakeService {
             user = userDetails.getUser();
         }
 
-        // 18개씩 페이징
-        Sort sort = Sort.by(new Sort.Order(Sort.Direction.DESC,"likeCnt"), new Sort.Order(Sort.Direction.DESC,"cakeId"));
-        Pageable pageable = PageRequest.of(page,18,sort);
-        Page<Cake> foundCakeList = cakeRepository.findAll(pageable);
-
+        List<Cake> foundCakeList = findCakeListBySortType(page, sortType);
 
         // 좋아요 반영해서 반환 DTO에 담기
         List<CakeResponseDto> responseDtoList = new ArrayList<>();
@@ -215,5 +211,25 @@ public class CakeService {
                 cakeRepository.save(cake);
             }
         }
+    }
+
+    // 케이크 리스트 찾기 메소드
+    public List<Cake> findCakeListBySortType(int page, String sortType) {
+
+        List<Cake> foundCakeList = new ArrayList<>();
+
+        if (sortType.equals("likeCnt")) {
+            Sort sort = Sort.by(new Sort.Order(Sort.Direction.DESC,"likeCnt"), new Sort.Order(Sort.Direction.DESC,"cakeId"));
+            Pageable pageable = PageRequest.of(page,18,sort);
+            Page<Cake> foundCakePage = cakeRepository.findAll(pageable);
+
+            for (Cake cake : foundCakePage) {
+                foundCakeList.add(cake);
+            }
+        } else {
+            foundCakeList = cakeRepository.findByRandom();
+        }
+
+        return foundCakeList;
     }
 }
