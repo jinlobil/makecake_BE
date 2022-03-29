@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 public class Interceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        log.info("url : {}", request.getRequestURI());
+        log.info("request api url : {}", request.getRequestURI());
         return HandlerInterceptor.super.preHandle(request, response, handler);
     }
 
