@@ -147,12 +147,16 @@ public class StoreService {
     }
 
     // (매장 상세) 케이크 조회 메소드
-    public List<StoreDetailCakeResponseDto> getCakeListAtStore(Long storeId, UserDetailsImpl userDetails, int page) {
+    public List<StoreDetailCakeResponseDto> getCakeListAtStore(long storeId, UserDetailsImpl userDetails/*, int page*/) {
 
-        //일단 15개씩 페이징
+        List<Cake> foundCakeList = cakeRepository.findAllByStore_StoreId(storeId);
+        /*
         Sort sort = Sort.by(new Sort.Order(Sort.Direction.DESC, "createdAt"), new Sort.Order(Sort.Direction.DESC,"cakeId"));
         Pageable pageable = PageRequest.of(page, 15, sort);
         Page<Cake> foundCakeList = cakeRepository.findAllByStore_StoreId(storeId, pageable);
+
+         */
+
 
         List<StoreDetailCakeResponseDto> responseDtoList = new ArrayList<>();
 

@@ -220,7 +220,7 @@ public class CakeService {
 
         if (sortType.equals("likeCnt")) {
             Sort sort = Sort.by(new Sort.Order(Sort.Direction.DESC,"likeCnt"), new Sort.Order(Sort.Direction.DESC,"cakeId"));
-            Pageable pageable = PageRequest.of(page,18,sort);
+            Pageable pageable = PageRequest.of(page,54,sort);
             Page<Cake> foundCakePage = cakeRepository.findAll(pageable);
 
             for (Cake cake : foundCakePage) {

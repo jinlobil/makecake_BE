@@ -62,10 +62,10 @@ public class StoreController {
     @GetMapping("/api/stores/cakes")
     public List<StoreDetailCakeResponseDto> getCakeListAtStore(
             @RequestParam long storeId,
-            @RequestParam int page,
+            /*@RequestParam int page,*/
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        return  storeService.getCakeListAtStore(storeId, userDetails, page);
+        return  storeService.getCakeListAtStore(storeId, userDetails/*, page*/);
     }
 
 

@@ -35,7 +35,7 @@ public class PostController {
         postService.removeDesign(userDetails, designId);
     }
 
-    // 도안 게시글 리스트 조회 API (18개씩)
+    // 도안 게시글 리스트 조회 API (54개씩)
     @GetMapping("/api/designs")
     public List<PostSimpleResponseDto> getPostList(
             @AuthenticationPrincipal UserDetailsImpl userDetails,

@@ -21,7 +21,7 @@ public class CakeController {
 
     private final CakeService cakeService;
 
-    // 케이크 사진 리스트 조회 API (18개씩)
+    // 케이크 사진 리스트 조회 API (54개씩)
     @GetMapping("/api/cakes")
     public List<CakeResponseDto> getCakeList(
             @AuthenticationPrincipal UserDetailsImpl userDetails,

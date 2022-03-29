@@ -79,7 +79,7 @@ public class PostService {
         designRepository.deleteById(designId);
     }
 
-    // 도안 게시글 리스트 조회 메소드 (18개씩)
+    // 도안 게시글 리스트 조회 메소드 (54개씩)
     public List<PostSimpleResponseDto> getPostList(UserDetailsImpl userDetails, int page, String sortType) {
 
         // 비로그인 유저는 null 처리
@@ -92,11 +92,11 @@ public class PostService {
         Page<Post> foundPostList;
         if (sortType==null || sortType.equals("createdDate")) {
             Sort sort = Sort.by(Sort.Direction.DESC,"postId");
-            Pageable pageable = PageRequest.of(page,18,sort);
+            Pageable pageable = PageRequest.of(page,54,sort);
             foundPostList = postRepository.findAll(pageable);
         } else {
             Sort sort = Sort.by(new Sort.Order(Sort.Direction.DESC,sortType), new Sort.Order(Sort.Direction.DESC,"postId"));
-            Pageable pageable = PageRequest.of(page,18,sort);
+            Pageable pageable = PageRequest.of(page,54,sort);
             foundPostList = postRepository.findAll(pageable);
         }
 
