@@ -62,7 +62,7 @@ public class MypageService {
 
         List<MyDesignResponseDto> responseDtoList = new ArrayList<>();
         if (option.equals("nonpost")){
-            Pageable pageable = PageRequest.of(page, 18);
+            Pageable pageable = PageRequest.of(page, 54);
             Page<Design> foundDesignList = designRepository.findByUserAndPostOrderByCreatedAtDesc(foundUser, false, pageable);
             for (Design design : foundDesignList){
                 MyDesignResponseDto responseDto = MyDesignResponseDto.builder()
@@ -72,7 +72,7 @@ public class MypageService {
                 responseDtoList.add(responseDto);
             }
         } else if (option.equals("post")){
-            Pageable pageable = PageRequest.of(page, 18);
+            Pageable pageable = PageRequest.of(page, 54);
             Page<Post> foundPostList = postRepository.findByUserOrderByCreatedAtDesc(foundUser, pageable);
             for (Post post : foundPostList){
                 MyDesignResponseDto responseDto = MyDesignResponseDto.builder()
@@ -134,7 +134,7 @@ public class MypageService {
         User foundUser = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
                 () -> new CustomException(ErrorCode.USER_NOT_FOUND)
         );
-        Pageable pageable = PageRequest.of(page, 8);
+        Pageable pageable = PageRequest.of(page, 15);
         Page<Comment> foundCommentList = commentRepository.findByUserOrderByCreatedAtDesc(foundUser, pageable);
         List<MyCommentResponseDto> responseDtoList = new ArrayList<>();
         for (Comment comment : foundCommentList){
@@ -158,7 +158,7 @@ public class MypageService {
         User foundUser = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
                 () -> new CustomException(ErrorCode.USER_NOT_FOUND)
         );
-        Pageable pageable = PageRequest.of(page, 8);
+        Pageable pageable = PageRequest.of(page, 20);
         Page<StoreLike> foundStoreLikeList = storeLikeRepository.findByUserOrderByCreatedAtDesc(foundUser, pageable);
         List<MyReactStoreResponseDto> responseDtoList = new ArrayList<>();
         for (StoreLike storeLike : foundStoreLikeList){
@@ -184,7 +184,7 @@ public class MypageService {
         User foundUser = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
                 () -> new CustomException(ErrorCode.USER_NOT_FOUND)
         );
-        Pageable pageable = PageRequest.of(page, 5);
+        Pageable pageable = PageRequest.of(page, 15);
         Page<Review> foundReviewList = reviewRepository.findByUserOrderByCreatedAtDesc(foundUser, pageable);
         List<MyReviewResponseDto> responseDtoList = new ArrayList<>();
         for (Review review : foundReviewList){
@@ -224,7 +224,7 @@ public class MypageService {
         User foundUser = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
                 () -> new CustomException(ErrorCode.USER_NOT_FOUND)
         );
-        Pageable pageable = PageRequest.of(page, 8);
+        Pageable pageable = PageRequest.of(page, 20);
         Page<CakeLike> foundCakeList = cakeLikeRepository.findByUserOrderByCreatedAtDesc(foundUser, pageable);
         List<MyReactCakeResponseDto> responseDtoList = new ArrayList<>();
         for (CakeLike cakeLike : foundCakeList) {
