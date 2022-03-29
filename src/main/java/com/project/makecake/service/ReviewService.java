@@ -102,9 +102,16 @@ public class ReviewService {
     // 매장 후기 삭제 메소드
     @Transactional
     public void deleteReview(long reviewId){
-        Store store = reviewRepository.getById(reviewId).getStore();
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(()->new IllegalArgumentException("존재하지 않는 리뷰입니다."));
 
-        reviewImgRepository.deleteAllByReview_ReviewId(reviewId);
+        Store store = review.getStore();
+
+        ReviewImg foundReviewImg = reviewImgRepository.findByReview(review);
+        if(!foundReviewImg.equals(null)){
+            s3Service.deleteFile(foundReviewImg.getImgName());
+            reviewImgRepository.deleteAllByReview_ReviewId(reviewId);
+        }
         reviewRepository.deleteById(reviewId);
 
         boolean bool = false;
