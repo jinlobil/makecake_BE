@@ -73,7 +73,7 @@ public class KakaoLoginService {
         // 새로운 코드
         body.add("client_id", kakaoClientId);
 //        body.add("client_secret", kakaoClientSecret);
-        body.add("redirect_uri", "http://localhost:3000/user/kakao/callback");
+        body.add("redirect_uri", "https://make-cake.com/user/kakao/callback");
         body.add("code", code);
 
         // POST 요청 보내기

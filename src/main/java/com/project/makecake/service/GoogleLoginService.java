@@ -71,7 +71,7 @@ public class GoogleLoginService {
         body.add("client_id" , googleClientId);
         body.add("client_secret", googleClientSecret);
         body.add("code", code);
-        body.add("redirect_uri", "http://localhost:8080/user/google/callback");
+        body.add("redirect_uri", "https://make-cake.com/user/google/callback");
         body.add("grant_type", "authorization_code");
 
         // POST 요청 보내기
