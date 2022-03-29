@@ -3,6 +3,8 @@ package com.project.makecake.service;
 import com.project.makecake.dto.MyOrderListResponseDto;
 import com.project.makecake.dto.UserOrderRequestDto;
 import com.project.makecake.dto.UserOrdersDetailResponseDto;
+import com.project.makecake.exceptionhandler.CustomException;
+import com.project.makecake.exceptionhandler.ErrorCode;
 import com.project.makecake.model.*;
 import com.project.makecake.repository.*;
 import com.project.makecake.security.UserDetailsImpl;
@@ -36,11 +38,11 @@ public class UserOrdersService {
     // (마이페이지 > 케이크 주문) 주문 안 된/된 도안 리스트 조회 메소드
     public List<MyOrderListResponseDto> getMyOrderList(UserDetailsImpl userDetails, String option, int page) {
         if (userDetails == null) {
-            throw new IllegalArgumentException("로그인을 해주세요.");
+            throw new CustomException(ErrorCode.UNAUTHORIZED_MAMBER);
         }
 
         User foundUser = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 사용자입니다.")
+                () -> new CustomException(ErrorCode.USER_NOT_FOUND)
         );
 
         List<MyOrderListResponseDto> responseDtoList = new ArrayList<>();
@@ -81,10 +83,10 @@ public class UserOrdersService {
         System.out.println("완료 " + formFilled);
 
         OrderForm orderForm = orderFormRepository.findById(orderFormId)
-                .orElseThrow(()-> new NullPointerException("주문서가 존재하지 않습니다."));
+                .orElseThrow(()-> new CustomException(ErrorCode.ORDERFORM_NOT_FOUND));
 
         Design foundDesign = designRepository.findById(requestDto.getDesignId())
-                .orElseThrow(()-> new NullPointerException("도안이 존재하지 않습니다."));
+                .orElseThrow(()-> new CustomException(ErrorCode.DESIGN_NOT_FOUND));
 
         UserOrders userOrders = UserOrders.builder()
                 .user(userDetails.getUser())
@@ -105,7 +107,7 @@ public class UserOrdersService {
 
     public UserOrdersDetailResponseDto getUserOrdersDetails(long userOrdersId) {
         UserOrders userOrders = userOrdersRepository.findById(userOrdersId)
-                .orElseThrow(()-> new NullPointerException("작성하신 주문이 존재하지 않습니다."));
+                .orElseThrow(()-> new CustomException(ErrorCode.ORDER_NOT_FOUND));
 
         OrderForm orderForm = userOrders.getOrderForm();
 
@@ -169,15 +171,15 @@ public class UserOrdersService {
         User user = userDetails.getUser();
 
         UserOrders userOrders = userOrdersRepository.findById(userOrdersId)
-                .orElseThrow(()-> new IllegalArgumentException("작성하신 주문서를 불러올 수 없습니다."));
+                .orElseThrow(()-> new CustomException(ErrorCode.ORDER_NOT_FOUND));
 
 
         if (!user.getUserId().equals(userOrders.getUser().getUserId())){
-            throw new IllegalArgumentException("해당 주문서는 삭제 권한이 없습니다.");
+            throw new CustomException(ErrorCode.NOT_ORDER_OWNER);
         }
 
         Design design = designRepository.findById(userOrders.getDesign().getDesignId())
-                        .orElseThrow(()-> new IllegalArgumentException("삭제할 주문서의 도안이 존재하지 않습니다."));
+                        .orElseThrow(()-> new CustomException(ErrorCode.DESIGN_NOT_FOUND));
 
         design.editOrderState(false);
 
@@ -187,7 +189,7 @@ public class UserOrdersService {
     public ResponseEntity<byte[]> getDesignAtOrders(long userOrdersId) throws IOException {
 
         UserOrders foundUserOrders = userOrdersRepository.findById(userOrdersId)
-                .orElseThrow(()-> new IllegalArgumentException("주문서가 존재하지 않습니다."));
+                .orElseThrow(()-> new CustomException(ErrorCode.ORDER_NOT_FOUND));
 
         String foundFileName = foundUserOrders.getDesign().getImgName();
 

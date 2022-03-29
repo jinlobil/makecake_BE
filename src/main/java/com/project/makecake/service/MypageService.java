@@ -1,6 +1,8 @@
 package com.project.makecake.service;
 
 import com.project.makecake.dto.*;
+import com.project.makecake.exceptionhandler.CustomException;
+import com.project.makecake.exceptionhandler.ErrorCode;
 import com.project.makecake.model.*;
 import com.project.makecake.repository.*;
 import com.project.makecake.security.UserDetailsImpl;
@@ -31,11 +33,11 @@ public class MypageService {
     // 마이프로필 조회 메소드
     public MypageResponseDto getMyProfile(UserDetailsImpl userDetails) {
         if (userDetails == null) {
-            throw new IllegalArgumentException("로그인을 해주세요.");
+            throw new CustomException(ErrorCode.UNAUTHORIZED_MAMBER);
         }
 
         User foundUser = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
-                () -> new IllegalArgumentException("유저가 존재하지 않습니다.")
+                () -> new CustomException(ErrorCode.USER_NOT_FOUND)
         );
         String email = foundUser.getUsername();
         if (foundUser.getProviderEmail() != null){
@@ -52,10 +54,10 @@ public class MypageService {
     // 내가 그린 도안 조회 메소드
     public List<MyDesignResponseDto> getMyDesignList(UserDetailsImpl userDetails, String option, int page) {
         if (userDetails == null) {
-            throw new IllegalArgumentException("로그인을 해주세요.");
+            throw new CustomException(ErrorCode.UNAUTHORIZED_MAMBER);
         }
         User foundUser = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 사용자입니다.")
+                () -> new CustomException(ErrorCode.USER_NOT_FOUND)
         );
 
         List<MyDesignResponseDto> responseDtoList = new ArrayList<>();
@@ -87,12 +89,12 @@ public class MypageService {
     // 내가 게시 안 한 도안 상세 조회 메소드
     public DesignResponseDto getDesignDetails(Long designId, UserDetailsImpl userDetails) {
         if (userDetails == null) {
-            throw new IllegalArgumentException("로그인을 해주세요.");
+            throw new CustomException(ErrorCode.UNAUTHORIZED_MAMBER);
         }
 
         // 도안 찾기
         Design foundDesign = designRepository.findById(designId)
-                .orElseThrow(()->new IllegalArgumentException("존재하지 않는 도안입니다."));
+                .orElseThrow(()->new CustomException(ErrorCode.DESIGN_NOT_FOUND));
 
         DesignResponseDto responseDto = new DesignResponseDto(foundDesign);
 
@@ -102,10 +104,10 @@ public class MypageService {
     // 내가 좋아요 한 게시글 조회 메소드
     public List<MyReactPostResponceDto> getMyLikePostList(UserDetailsImpl userDetails, int page) {
         if (userDetails == null) {
-            throw new IllegalArgumentException("로그인을 해주세요.");
+            throw new CustomException(ErrorCode.UNAUTHORIZED_MAMBER);
         }
         User foundUser = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
-                () -> new IllegalArgumentException("유저가 존재하지 않습니다.")
+                () -> new CustomException(ErrorCode.USER_NOT_FOUND)
         );
         Pageable pageable = PageRequest.of(page, 5);
         Page<PostLike> foundPostList = postLikeRepository.findByUserOrderByCreatedAtDesc(foundUser, pageable);
@@ -127,12 +129,12 @@ public class MypageService {
     // 내가 남긴 댓글 조회 메소드
     public List<MyCommentResponseDto> getMyCommentList(UserDetailsImpl userDetails, int page) {
         if (userDetails == null) {
-            throw new IllegalArgumentException("로그인을 해주세요.");
+            throw new CustomException(ErrorCode.UNAUTHORIZED_MAMBER);
         }
         User foundUser = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 사용자입니다.")
+                () -> new CustomException(ErrorCode.USER_NOT_FOUND)
         );
-        Pageable pageable = PageRequest.of(page, 5);
+        Pageable pageable = PageRequest.of(page, 8);
         Page<Comment> foundCommentList = commentRepository.findByUserOrderByCreatedAtDesc(foundUser, pageable);
         List<MyCommentResponseDto> responseDtoList = new ArrayList<>();
         for (Comment comment : foundCommentList){
@@ -151,10 +153,10 @@ public class MypageService {
     // 내가 좋아요 한 매장 조회 메소드
     public List<MyReactStoreResponseDto> getMyLikeStoreList(UserDetailsImpl userDetails, int page) {
         if (userDetails == null) {
-            throw new IllegalArgumentException("로그인을 해주세요.");
+            throw new CustomException(ErrorCode.UNAUTHORIZED_MAMBER);
         }
         User foundUser = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 사용자입니다.")
+                () -> new CustomException(ErrorCode.USER_NOT_FOUND)
         );
         Pageable pageable = PageRequest.of(page, 8);
         Page<StoreLike> foundStoreLikeList = storeLikeRepository.findByUserOrderByCreatedAtDesc(foundUser, pageable);
@@ -174,13 +176,13 @@ public class MypageService {
         return responseDtoList;
     }
 
-    // 내가 남긴 후기 조회 메소드
+    // 내가 남긴 후기 조회 메소드..
     public List<MyReviewResponseDto> getMyReviewList(UserDetailsImpl userDetails, int page) {
         if (userDetails == null) {
-            throw new IllegalArgumentException("로그인을 해주세요.");
+            throw new CustomException(ErrorCode.UNAUTHORIZED_MAMBER);
         }
         User foundUser = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 사용자입니다.")
+                () -> new CustomException(ErrorCode.USER_NOT_FOUND)
         );
         Pageable pageable = PageRequest.of(page, 5);
         Page<Review> foundReviewList = reviewRepository.findByUserOrderByCreatedAtDesc(foundUser, pageable);
@@ -217,10 +219,10 @@ public class MypageService {
     // 내가 좋아요 한 케이크 조회 메소드
     public List<MyReactCakeResponseDto> getMyLikeCakeList(UserDetailsImpl userDetails, int page) {
         if (userDetails == null) {
-            throw new IllegalArgumentException("로그인을 해주세요.");
+            throw new CustomException(ErrorCode.UNAUTHORIZED_MAMBER);
         }
         User foundUser = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 사용자입니다.")
+                () -> new CustomException(ErrorCode.USER_NOT_FOUND)
         );
         Pageable pageable = PageRequest.of(page, 8);
         Page<CakeLike> foundCakeList = cakeLikeRepository.findByUserOrderByCreatedAtDesc(foundUser, pageable);

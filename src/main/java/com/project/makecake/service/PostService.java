@@ -3,6 +3,8 @@ package com.project.makecake.service;
 import com.project.makecake.dto.*;
 import com.project.makecake.enums.FolderName;
 import com.project.makecake.enums.NotiType;
+import com.project.makecake.exceptionhandler.CustomException;
+import com.project.makecake.exceptionhandler.ErrorCode;
 import com.project.makecake.model.*;
 import com.project.makecake.repository.*;
 import com.project.makecake.security.UserDetailsImpl;
@@ -60,7 +62,7 @@ public class PostService {
 
         // 도안 찾기
         Design foundDesign = designRepository.findById(designId)
-                .orElseThrow(()->new IllegalArgumentException("존재하지 않는 도안입니다."));
+                .orElseThrow(()->new CustomException(ErrorCode.DESIGN_NOT_FOUND));
 
         // 게시되지 않은 도안인지 확인
         if (foundDesign.isPost()) {
@@ -69,7 +71,7 @@ public class PostService {
 
         // 동일 유저인지 확인
         if (!foundDesign.getUser().getUserId().equals(userDetails.getUser().getUserId())) {
-            throw new IllegalArgumentException("다른 사람의 도안은 삭제할 수 없습니다.");
+            throw new CustomException(ErrorCode.NOT_DESIGN_OWNER);
         }
 
         userOrdersRepository.deleteByDesign(foundDesign);
@@ -133,7 +135,7 @@ public class PostService {
 
         // 게시글 찾기
         Post foundPost = postRepository.findById(postId)
-                .orElseThrow(()->new IllegalArgumentException("게시글이 존재하지 않습니다."));
+                .orElseThrow(()->new CustomException(ErrorCode.POST_NOT_FOUND));
 
         // 조회수 추가
         foundPost.addViewCnt();
@@ -167,7 +169,7 @@ public class PostService {
 
         // 도안 찾기
         Design foundDesign = designRepository.findById(designId)
-                .orElseThrow(()->new IllegalArgumentException("존재하지 않는 도안입니다."));
+                .orElseThrow(()->new CustomException(ErrorCode.DESIGN_NOT_FOUND));
 
         // 이미 게시글이 작성된 도안인지 확인 (도안 하나당 게시글 하나만 작성 가능)
         if (foundDesign.isPost()) {
@@ -199,11 +201,11 @@ public class PostService {
 
         // 게시글 찾기
         Post foundPost = postRepository.findById(postId)
-                .orElseThrow(()->new IllegalArgumentException("존재하지 않는 게시글입니다."));
+                .orElseThrow(()->new CustomException(ErrorCode.POST_NOT_FOUND));
 
         // 동일 유저인지 확인
         if (!foundPost.getUser().getUserId().equals(user.getUserId())) {
-            throw new IllegalArgumentException("다른 사람이 쓴 게시글은 수정할 수 없습니다.");
+            throw new CustomException(ErrorCode.NOT_POST_OWNER);
         }
 
         // 게시글 수정
@@ -219,11 +221,11 @@ public class PostService {
 
         // 게시글 찾기
         Post foundPost = postRepository.findById(postId)
-                .orElseThrow(()->new IllegalArgumentException("존재하지 않는 게시글입니다."));
+                .orElseThrow(()->new CustomException(ErrorCode.POST_NOT_FOUND));
 
         // 동일 유저인지 확인
         if (!foundPost.getUser().getUserId().equals(user.getUserId())) {
-            throw new IllegalArgumentException("다른 사람의 게시글은 삭제할 수 없습니다.");
+            throw new CustomException(ErrorCode.NOT_POST_OWNER);
         }
 
         // 도안과 관계 끊고 도안 post를 false로 바꾸기
@@ -248,7 +250,7 @@ public class PostService {
 
         // 게시글 찾기
         Post foundPost = postRepository.findById(postId)
-                .orElseThrow(()->new IllegalArgumentException("게시글이 존재하지 않습니다."));
+                .orElseThrow(()->new CustomException(ErrorCode.POST_NOT_FOUND));
 
         // 게시글 좋아요 찾기
         boolean existsPostLike = postLikeRepository.existsByUserAndPost(user,foundPost);
@@ -258,7 +260,7 @@ public class PostService {
 
             // 이미 좋아요를 누른 게시글이면 exception
             if (existsPostLike) {
-                throw new IllegalArgumentException("이미 좋아요를 누른 게시글입니다.");
+                throw new CustomException(ErrorCode.LIKE_ALREADY_EXIST);
             }
 
             PostLike postLike = PostLike.builder()
@@ -280,7 +282,7 @@ public class PostService {
 
             // 좋아요를 누르지 않은 게시글이면 exception
             if (!existsPostLike) {
-                throw new IllegalArgumentException("좋아요를 누르지 않은 게시글입니다.");
+                throw new CustomException(ErrorCode.LIKE_NOT_EXIST);
             }
 
             postLikeRepository.deleteByUserAndPost(user,foundPost);

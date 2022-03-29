@@ -2,6 +2,8 @@ package com.project.makecake.service;
 
 import com.project.makecake.dto.*;
 import com.project.makecake.enums.FolderName;
+import com.project.makecake.exceptionhandler.CustomException;
+import com.project.makecake.exceptionhandler.ErrorCode;
 import com.project.makecake.model.Cake;
 import com.project.makecake.model.CakeLike;
 import com.project.makecake.model.Store;
@@ -53,7 +55,7 @@ public class CakeService {
     }
 
     // 케이크 사진 리스트 조회 메소드
-    public List<CakeResponseDto> getCakeList(UserDetailsImpl userDetails, int page) {
+    public List<CakeResponseDto> getCakeList(UserDetailsImpl userDetails, int page, String sortType) {
 
         // 비로그인 유저는 null 처리
         User user = null;
@@ -61,11 +63,7 @@ public class CakeService {
             user = userDetails.getUser();
         }
 
-        // 18개씩 페이징
-        Sort sort = Sort.by(new Sort.Order(Sort.Direction.DESC,"likeCnt"), new Sort.Order(Sort.Direction.DESC,"cakeId"));
-        Pageable pageable = PageRequest.of(page,18,sort);
-        Page<Cake> foundCakeList = cakeRepository.findAll(pageable);
-
+        List<Cake> foundCakeList = findCakeListBySortType(page, sortType);
 
         // 좋아요 반영해서 반환 DTO에 담기
         List<CakeResponseDto> responseDtoList = new ArrayList<>();
@@ -102,7 +100,7 @@ public class CakeService {
 
         // 케이크 찾아오기
         Cake foundCake = cakeRepository.findById(cakeId)
-                .orElseThrow(()->new IllegalArgumentException("케이크를 찾을 수 없습니다."));
+                .orElseThrow(()->new CustomException(ErrorCode.CAKE_NOT_FOUND));
 
         // myLike 디폴트는 false
         boolean myLike = false;
@@ -130,7 +128,7 @@ public class CakeService {
 
         // 케이크 찾기
         Cake foundCake = cakeRepository.findById(cakeId)
-                .orElseThrow(()->new IllegalArgumentException("케이크가 존재하지 않습니다."));
+                .orElseThrow(()->new CustomException(ErrorCode.CAKE_NOT_FOUND));
 
         // 케이크 좋아요 찾기
         boolean existsCakeLike = cakeLikeRepository.existsByUserAndCake(user,foundCake);
@@ -140,7 +138,7 @@ public class CakeService {
 
             // 이미 좋아요를 누른 케이크이면 exception
             if (existsCakeLike) {
-                throw new IllegalArgumentException("이미 좋아요를 누른 케이크입니다.");
+                throw new CustomException(ErrorCode.LIKE_ALREADY_EXIST);
             }
 
             CakeLike cakeLike = CakeLike.builder()
@@ -154,7 +152,7 @@ public class CakeService {
 
             // 좋아요를 누르지 않은 케이크이면 exception
             if (!existsCakeLike) {
-                throw new IllegalArgumentException("좋아요를 누르지 않은 케이크입니다.");
+                throw new CustomException(ErrorCode.LIKE_NOT_EXIST);
             }
 
             cakeLikeRepository.deleteByUserAndCake(user, foundCake);
@@ -174,7 +172,7 @@ public class CakeService {
     public List<Cake> GetCakeListAtBackoffice(long storeId) {
 
         Store foundStore = storeRepository.findById(storeId)
-                .orElseThrow(()->new IllegalArgumentException("존재하지 않는 가게입니다."));
+                .orElseThrow(()->new CustomException(ErrorCode.STORE_NOT_FOUND));
 
         List<Cake> foundCakeList = cakeRepository.findAllByStore(foundStore);
         return foundCakeList;
@@ -185,7 +183,7 @@ public class CakeService {
     public long deleteCake(long cakeId) {
 
         Cake foundCake = cakeRepository.findById(cakeId)
-                .orElseThrow(()->new IllegalArgumentException("존재하지 않는 케이크입니다."));
+                .orElseThrow(()->new CustomException(ErrorCode.CAKE_NOT_FOUND));
 
         // 좋아요 삭제
         cakeLikeRepository.deleteAllByCake(foundCake);
@@ -201,7 +199,7 @@ public class CakeService {
     public void addCakeList(long storeId, List<MultipartFile> imgFileList) throws IOException {
 
         Store foundStore = storeRepository.findById(storeId)
-                .orElseThrow(()->new IllegalArgumentException("존재하지 않는 가게입니다."));
+                .orElseThrow(()->new CustomException(ErrorCode.STORE_NOT_FOUND));
 
         if(imgFileList != null){
             for(MultipartFile imgFile : imgFileList){
@@ -213,5 +211,25 @@ public class CakeService {
                 cakeRepository.save(cake);
             }
         }
+    }
+
+    // 케이크 리스트 찾기 메소드
+    public List<Cake> findCakeListBySortType(int page, String sortType) {
+
+        List<Cake> foundCakeList = new ArrayList<>();
+
+        if (sortType.equals("likeCnt")) {
+            Sort sort = Sort.by(new Sort.Order(Sort.Direction.DESC,"likeCnt"), new Sort.Order(Sort.Direction.DESC,"cakeId"));
+            Pageable pageable = PageRequest.of(page,18,sort);
+            Page<Cake> foundCakePage = cakeRepository.findAll(pageable);
+
+            for (Cake cake : foundCakePage) {
+                foundCakeList.add(cake);
+            }
+        } else {
+            foundCakeList = cakeRepository.findByRandom();
+        }
+
+        return foundCakeList;
     }
 }

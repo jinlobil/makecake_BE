@@ -3,6 +3,8 @@ package com.project.makecake.service;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.project.makecake.dto.*;
+import com.project.makecake.exceptionhandler.CustomException;
+import com.project.makecake.exceptionhandler.ErrorCode;
 import com.project.makecake.model.*;
 import com.project.makecake.repository.*;
 import com.project.makecake.security.UserDetailsImpl;
@@ -65,7 +67,7 @@ public class StoreService {
 
         //true 추가(좋아요 누르기), false 삭제(좋아요 취소)
         Store store = storeRepository.findById(storeId)
-                .orElseThrow(()-> new IllegalArgumentException("존재하지 않는 매장입니다."));
+                .orElseThrow(()-> new CustomException(ErrorCode.STORE_NOT_FOUND));
 
         if (myLike) {
             StoreLike storeLike = new StoreLike();
@@ -88,7 +90,7 @@ public class StoreService {
 
         // store
         Store store = storeRepository.findById(storeId)
-                .orElseThrow(()-> new IllegalArgumentException("매장 정보가 없습니다."));
+                .orElseThrow(()-> new CustomException(ErrorCode.STORE_NOT_FOUND));
 
         // openTimeToday
         OpenTimeResponseDto openTimeToday = getOpenTime(storeId);
@@ -365,7 +367,7 @@ public class StoreService {
 
     public SearchResponseDto getStoreDetailsAtSearch(Long storeId) {
         Store store = storeRepository.findById(storeId)
-                .orElseThrow(()-> new IllegalArgumentException("매장 ID가 존재하지 않습니다."));
+                .orElseThrow(()-> new CustomException(ErrorCode.STORE_NOT_FOUND));
         return StoreDetailsAtSearch(store);
     }
 

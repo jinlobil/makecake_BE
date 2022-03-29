@@ -4,6 +4,8 @@ import com.project.makecake.dto.HomeReviewDto;
 import com.project.makecake.dto.ImageInfoDto;
 import com.project.makecake.dto.ReviewResponseTempDto;
 import com.project.makecake.enums.FolderName;
+import com.project.makecake.exceptionhandler.CustomException;
+import com.project.makecake.exceptionhandler.ErrorCode;
 import com.project.makecake.model.Review;
 import com.project.makecake.model.ReviewImg;
 import com.project.makecake.model.Store;
@@ -66,7 +68,7 @@ public class ReviewService {
         User user = userDetails.getUser();
 
         Store store = storeRepository.findById(storeId)
-                .orElseThrow(()->new IllegalArgumentException("존재하지 않는 매장입니다."));
+                .orElseThrow(()->new CustomException(ErrorCode.STORE_NOT_FOUND));
 
         // 리뷰 본문 저장
         Review review = Review.builder()
@@ -121,10 +123,10 @@ public class ReviewService {
     @Transactional
     public void editReview(long reviewId, String content, List<MultipartFile> imgFileList, List<String> imgUrlList, UserDetailsImpl userDetails) throws IOException {
         Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(()->new IllegalArgumentException("존재하지 않는 리뷰입니다."));
+                .orElseThrow(()->new CustomException(ErrorCode.REVIEW_NOT_FOUND));
 
         if(!review.getUser().getUserId().equals(userDetails.getUser().getUserId())){
-            throw new IllegalArgumentException("다른 회원이 작성한 리뷰는 수정할 수 없습니다.");
+            throw new CustomException(ErrorCode.NOT_REVIEW_OWNER);
         }
 
         //imgUrlList (imgUrlList에서 없는 url을 삭제)
@@ -173,7 +175,7 @@ public class ReviewService {
     // 매장 후기 상세 조회 메소드
     public ReviewResponseTempDto getReviewDetails(long reviewId) {
         Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 리뷰입니다."));
+                .orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
 
         List<ReviewImg> foundReviewImgList = reviewImgRepository.findAllByReview_ReviewId(reviewId);
 

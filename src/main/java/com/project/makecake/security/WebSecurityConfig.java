@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -32,10 +33,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     // static 폴더 내부 정적자원들은 보안 필터를 적용하지 않음
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
-    }
+//    @Override
+//    public void configure(WebSecurity web) throws Exception {
+//        web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
+//    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -56,19 +57,25 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 // PreFlight 요청 인증 X
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-//                // 로그인 요청 인증 X
-//                .antMatchers(HttpMethod.POST, "/login").permitAll()
-//                // 회원가입, 중복체크 등 인증 X
-//                .antMatchers(HttpMethod.POST, "/user/**").permitAll()
-//                // 로그인 체크 인증 X
-//                .antMatchers(HttpMethod.GET, "/user/**").permitAll()
-//                // /api로 된 POST 요청 인증 X
-//                .antMatchers(HttpMethod.POST, "/api/**").permitAll()
-//                // /api로 된 GET 요청 인증 X
-//                .antMatchers(HttpMethod.GET,"/api/**").permitAll()
-//                // 그 외 요청 모두 인증
-//                .anyRequest().authenticated()
-                .anyRequest().permitAll()
+                // 로그인 요청 인증 X
+                .antMatchers(HttpMethod.POST, "/login").permitAll()
+                // 회원가입, 중복체크 등 인증 X
+                .antMatchers(HttpMethod.POST, "/user/**").permitAll()
+                // 로그인 체크 인증 X
+                .antMatchers(HttpMethod.GET, "/user/**").permitAll()
+                // /api로 된 POST 요청 인증 X
+                .antMatchers(HttpMethod.POST, "/api/**").permitAll()
+                // /api로 된 GET 요청 인증 X
+                .antMatchers(HttpMethod.GET,"/api/**").permitAll()
+                // nginx profile 요청 인증 X
+                .antMatchers(HttpMethod.GET, "/profile").permitAll()
+                // 그 외 요청 모두 인증
+                .anyRequest().authenticated()
+                // 시큐리티 예외처리
+//                .and()
+//                .exceptionHandling()
+//                .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
+//                .anyRequest().permitAll()
                 .and().cors();
 
     }
