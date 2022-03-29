@@ -62,8 +62,8 @@ public class CommentService {
         // 게시글 찾기
         Post foundPost = postRepository.findById(postId)
                 .orElseThrow(()->new CustomException(ErrorCode.POST_NOT_FOUND));
-        System.out.println(requestDto.getContent().isEmpty());
-        if (requestDto.getContent() == null) {
+
+        if (requestDto.getContent() == null || requestDto.getContent().equals("")) {
             throw new CustomException(ErrorCode.COMMENT_CONTENT_NULL);
         }
 

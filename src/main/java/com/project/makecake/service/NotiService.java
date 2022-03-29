@@ -3,6 +3,8 @@ package com.project.makecake.service;
 import com.project.makecake.dto.*;
 import com.project.makecake.enums.NotiType;
 import com.project.makecake.enums.UserRoleEnum;
+import com.project.makecake.exceptionhandler.CustomException;
+import com.project.makecake.exceptionhandler.ErrorCode;
 import com.project.makecake.model.FixNoti;
 import com.project.makecake.model.Noti;
 import com.project.makecake.model.PersonalNoti;
@@ -42,12 +44,12 @@ public class NotiService {
         try {
             type = NotiType.valueOf(requestDto.getType().toUpperCase());
         } catch (Exception e) {
-            throw new IllegalArgumentException("잘못된 알림 타입입니다.");
+            throw new CustomException(ErrorCode.BAD_NOTITYPE);
         }
 
         // LIKE, COMMENT 알림은 새로 생성 불가
         if(!type.isAdminManage()) {
-            throw new IllegalArgumentException("추가할 수 없는 알림타입입니다.");
+            throw new CustomException(ErrorCode.NOT_ADD_NOTITYPE);
         }
 
         // 알림 생성
@@ -62,16 +64,16 @@ public class NotiService {
 
         // mainContent 값이 있는지 확인
         if (requestDto.getMainContent()==null || requestDto.getMainContent().equals("")) {
-            throw new IllegalArgumentException("mainContent가 작성되지 않았습니다.");
+            throw new CustomException(ErrorCode.NOTI_MAIN_CONTENT_NULL);
         }
 
         // 알림 찾기
         Noti foundNoti = notiRepository.findById(notiId)
-                .orElseThrow(()->new IllegalArgumentException("존재하지 않는 알림입니다."));
+                .orElseThrow(()->new CustomException(ErrorCode.NOTI_NOT_FOUND));
 
         // 메세지에 {닉네임}이 포함되어야 하는 알림 타입은 {닉네임}이 있는지 확인
         if (foundNoti.getType().isNeedMessageEdit() && !requestDto.getMainContent().contains("{닉네임}")) {
-            throw new IllegalArgumentException("내용에 {닉네임}이 포함되지 않았습니다.");
+            throw new CustomException(ErrorCode.NOTI_NICKNAME_NULL);
         }
 
         // 알림 내용 수정
@@ -84,11 +86,11 @@ public class NotiService {
 
         // 알림 찾기
         Noti foundNoti = notiRepository.findById(notiId)
-                .orElseThrow(()->new IllegalArgumentException("존재하지 않는 알림입니다."));
+                .orElseThrow(()->new CustomException(ErrorCode.NOTI_NOT_FOUND));
 
         // 알림 타입 확인
         if(!foundNoti.getType().isAdminManage()) {
-            throw new IllegalArgumentException("고정할 수 없는 알림타입입니다.");
+            throw new CustomException(ErrorCode.NOT_FIX_NOTITYPE);
         }
 
         // 고정 알림 생성
@@ -106,7 +108,7 @@ public class NotiService {
 
         // 알림 찾기
         FixNoti foundFixNoti = fixNotiRepository.findById(fixNotiId)
-                .orElseThrow(()->new IllegalArgumentException("존재하지 않는 고정알림입니다."));
+                .orElseThrow(()->new CustomException(ErrorCode.FIXNOTI_NOT_FOUND));
 
         // 고정 알림 내림
         foundFixNoti.editReveal();
@@ -118,11 +120,11 @@ public class NotiService {
 
         // 알림 찾기
         Noti foundNoti = notiRepository.findById(notiId)
-                .orElseThrow(()->new IllegalArgumentException("존재하지 않는 알림입니다."));
+                .orElseThrow(()->new CustomException(ErrorCode.NOTI_NOT_FOUND));
 
         // 알림 타입 확인
         if(!foundNoti.getType().isAdminManage()) {
-            throw new IllegalArgumentException("관리자가 발송할 수 없는 알림타입입니다.");
+            throw new CustomException(ErrorCode.NOT_SEND_NOTITYPE);
         }
 
         // 모든 유저 찾기
