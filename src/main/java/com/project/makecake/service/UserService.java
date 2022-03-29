@@ -39,7 +39,7 @@ public class UserService {
         String password = passwordEncoder.encode(requestDto.getPassword());
 
         // 기본 프로필 이미지
-        String profileImgUrl = "https://makecake.s3.ap-northeast-2.amazonaws.com/PROFILE/18d2090b-1b98-4c34-b92b-a9f50d03bd53makecake_default.png";
+        String profileImgUrl = "https://makecake.s3.ap-northeast-2.amazonaws.com/PROFILE/ef771589-abc6-4ddd-951c-73cc2420aa2fKakaoTalk_20220329_214148108.png";
 
         // 권한 : USER
         UserRoleEnum role = UserRoleEnum.USER;
