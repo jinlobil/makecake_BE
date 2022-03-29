@@ -11,6 +11,7 @@ import com.project.makecake.repository.UserRepository;
 import com.project.makecake.security.JwtProperties;
 import com.project.makecake.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -29,6 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.UUID;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class GoogleLoginService {
@@ -141,7 +143,7 @@ public class GoogleLoginService {
     private UserDetailsImpl securityLogin(User findUser) {
         // userDetails 생성
         UserDetailsImpl userDetails = new UserDetailsImpl(findUser);
-        System.out.println("google 로그인 완료 : " + userDetails.getUser().getUsername());
+        log.info("google 로그인 완료 : " + userDetails.getUser().getUsername());
         // UsernamePasswordAuthenticationToken 발급
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         // 강제로 시큐리티 세션에 접근하여 authentication 객체를 저장
@@ -160,7 +162,7 @@ public class GoogleLoginService {
                 .withClaim("username", userDetails.getUser().getUsername())
                 // HMAC256 복호화
                 .sign(Algorithm.HMAC256(JwtProperties.secretKey));
-        System.out.println("jwtToken : " + jwtToken);
+        log.info("jwtToken : " + jwtToken);
         response3.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + jwtToken);
     }
 }
