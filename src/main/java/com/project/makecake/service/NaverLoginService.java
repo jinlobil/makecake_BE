@@ -115,7 +115,7 @@ public class NaverLoginService {
         String username = provider + "_" + providerId;
         String nickname = provider + "_" + providerId;
         String password = passwordEncoder.encode(UUID.randomUUID().toString());
-        String profileImgUrl = "https://makecake.s3.ap-northeast-2.amazonaws.com/PROFILE/18d2090b-1b98-4c34-b92b-a9f50d03bd53makecake_default.png";
+        String profileImgUrl = "https://makecake.s3.ap-northeast-2.amazonaws.com/PROFILE/ef771589-abc6-4ddd-951c-73cc2420aa2fKakaoTalk_20220329_214148108.png";
         UserRoleEnum role = UserRoleEnum.USER;
 
         // DB에서 username으로 가져오기 없으면 회원가입
