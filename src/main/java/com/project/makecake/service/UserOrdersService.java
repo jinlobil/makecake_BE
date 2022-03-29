@@ -47,7 +47,7 @@ public class UserOrdersService {
 
         List<MyOrderListResponseDto> responseDtoList = new ArrayList<>();
         if (option.equals("notOrdered")){
-            Pageable pageable = PageRequest.of(page, 18);
+            Pageable pageable = PageRequest.of(page, 54);
             Page<Design> foundDesignList = designRepository.findByUserAndOrdersOrderByCreatedAtDesc(foundUser, false, pageable);
             for (Design design : foundDesignList){
                 MyOrderListResponseDto responseDto = MyOrderListResponseDto.builder()
@@ -57,7 +57,7 @@ public class UserOrdersService {
                 responseDtoList.add(responseDto);
             }
         } else if (option.equals("ordered")){
-            Pageable pageable = PageRequest.of(page, 18);
+            Pageable pageable = PageRequest.of(page, 54);
             Page<UserOrders> foundUserOrdersList = userOrdersRepository.findByUserOrderByCreatedAtDesc(foundUser, pageable);
             for (UserOrders userOrders : foundUserOrdersList){
                 MyOrderListResponseDto responseDto = MyOrderListResponseDto.builder()
