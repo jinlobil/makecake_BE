@@ -189,9 +189,9 @@ public class OrderFormService {
 
     public List<OrderReadyStoreResponseDto> getOrderReadyStoreList() {
         List<OrderReadyStoreResponseDto> responseDtoList = new ArrayList<>();
-        List<OrderForm> foundOrderFormList = orderFormRepository.findAll();
-        for(OrderForm orderForm : foundOrderFormList){
-            Store store = orderForm.getStore();
+        List<Store> foundStoreList = orderFormRepository.findDistinctStore();
+        for(Store store : foundStoreList){
+//            Store store = orderForm.getStore();
             String addressSimple = "";
 
             //"서울 OO구 OO동"
@@ -201,7 +201,7 @@ public class OrderFormService {
             }
 
             OrderReadyStoreResponseDto responseDto = OrderReadyStoreResponseDto.builder()
-                    .orderForm(orderForm)
+                    .store(store)
                     .simpleAddress(addressSimple)
                     .build();
             responseDtoList.add(responseDto);
