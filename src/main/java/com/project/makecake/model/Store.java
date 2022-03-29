@@ -12,7 +12,7 @@ import javax.persistence.*;
 @DynamicUpdate
 public class Store extends Timestamped{
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long storeId;
 
     @Column
