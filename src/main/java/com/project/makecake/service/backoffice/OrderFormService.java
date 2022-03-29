@@ -186,4 +186,26 @@ public class OrderFormService {
 
         return moreDetails;
     }
+
+    public List<OrderReadyStoreResponseDto> getOrderReadyStoreList() {
+        List<OrderReadyStoreResponseDto> responseDtoList = new ArrayList<>();
+        List<OrderForm> foundOrderFormList = orderFormRepository.findAll();
+        for(OrderForm orderForm : foundOrderFormList){
+            Store store = orderForm.getStore();
+            String addressSimple = "";
+
+            //"서울 OO구 OO동"
+            if(!store.getFullAddress().equals(null)){
+                String[] arr = store.getFullAddress().split(" ");
+                addressSimple = arr[0].substring(0,2) + " "  + arr[1] + " " + arr[2];
+            }
+
+            OrderReadyStoreResponseDto responseDto = OrderReadyStoreResponseDto.builder()
+                    .orderForm(orderForm)
+                    .simpleAddress(addressSimple)
+                    .build();
+            responseDtoList.add(responseDto);
+        }
+        return responseDtoList;
+    }
 }
