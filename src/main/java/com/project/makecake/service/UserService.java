@@ -109,7 +109,6 @@ public class UserService {
                         .userId(foundUser.getUserId())
                         .nickname(foundUser.getNickname())
                         .build();
-        System.out.println(responseDto);
         return responseDto;
     }
 

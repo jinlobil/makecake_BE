@@ -11,6 +11,7 @@ import com.project.makecake.repository.UserRepository;
 import com.project.makecake.security.JwtProperties;
 import com.project.makecake.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -29,6 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.UUID;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class KakaoLoginService {
@@ -145,7 +147,7 @@ public class KakaoLoginService {
     private UserDetailsImpl securityLogin(User foundUser) {
         // userDetails 생성
         UserDetailsImpl userDetails = new UserDetailsImpl(foundUser);
-        System.out.println("kakao 로그인 완료 : " + userDetails.getUser().getUsername());
+        log.info("kakao 로그인 완료 : " + userDetails.getUser().getUsername());
         // UsernamePasswordAuthenticationToken 발급
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         // 강제로 시큐리티 세션에 접근하여 authentication 객체를 저장
@@ -164,7 +166,7 @@ public class KakaoLoginService {
                 .withClaim("username", userDetails.getUser().getUsername())
                 // HMAC256 복호화
                 .sign(Algorithm.HMAC256(JwtProperties.secretKey));
-        System.out.println("jwtToken : " + jwtToken);
+        log.info("jwtToken : " + jwtToken);
         response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + jwtToken);
     }
 }
