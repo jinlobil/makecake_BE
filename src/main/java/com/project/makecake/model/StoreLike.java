@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Setter
 public class StoreLike  extends Timestamped{
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long storeLikeId;
 
     @ManyToOne

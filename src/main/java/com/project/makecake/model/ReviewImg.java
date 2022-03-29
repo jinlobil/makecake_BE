@@ -12,7 +12,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class ReviewImg extends Timestamped{
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reviewImgId;
 
     @Column(nullable = false)

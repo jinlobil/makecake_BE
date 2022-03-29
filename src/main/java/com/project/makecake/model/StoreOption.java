@@ -12,7 +12,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class StoreOption extends Timestamped{
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long storeOptionId;
 
     @Column
