@@ -300,6 +300,8 @@ public class PostService {
     // 좋아요 알림 발송 메소드
     public void addLikeNoti(Post foundPost, User createUser) {
 
+        String redirectUrl = "https://make-cake.com/post/" + foundPost.getPostId();
+
         // 알림 찾기
         Noti foundNoti = notiRepository.findByType(NotiType.LIKE);
 
@@ -308,7 +310,7 @@ public class PostService {
                 .recieveUser(foundPost.getUser())
                 .createUser(createUser)
                 .noti(foundNoti)
-                .redirectUrl("https://ko.dict.naver.com/#/entry/koko/6cbf564655854b4d8225477320c63e7a")
+                .redirectUrl(redirectUrl)
                 .build();
 
         // 저장
