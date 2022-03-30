@@ -1,6 +1,6 @@
 package com.project.makecake.model;
 
-import com.project.makecake.dto.PostRequestDto;
+import com.project.makecake.dto.post.PostRequestDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +12,7 @@ import javax.persistence.*;
 @Entity
 public class Post extends Timestamped{
 
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long postId;
 

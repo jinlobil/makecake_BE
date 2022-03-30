@@ -1,7 +1,7 @@
 package com.project.makecake.service;
 
-import com.project.makecake.dto.CommentRequestDto;
-import com.project.makecake.dto.CommentResponseDto;
+import com.project.makecake.dto.comment.CommentRequestDto;
+import com.project.makecake.dto.comment.CommentResponseDto;
 import com.project.makecake.enums.NotiType;
 import com.project.makecake.exceptionhandler.CustomException;
 import com.project.makecake.exceptionhandler.ErrorCode;
@@ -59,6 +59,10 @@ public class CommentService {
 
         User user = userDetails.getUser();
 
+        // 댓글 내용 길이 체크(100)
+        if (requestDto.getContent().length() > 100) {
+            throw new CustomException(ErrorCode.CONTENT_LENGTH_WRONG);
+        }
         // 게시글 찾기
         Post foundPost = postRepository.findById(postId)
                 .orElseThrow(()->new CustomException(ErrorCode.POST_NOT_FOUND));

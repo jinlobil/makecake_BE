@@ -15,17 +15,17 @@ import javax.persistence.*;
 @Entity
 public class User  extends Timestamped{
 
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long userId;
 
     @Column(nullable = false, unique = true)
     private String username;
 
-    @Column
+    @Column(nullable = false)
     private String nickname;
 
-    @Column(nullable = false)
+    @Column
     private String password;
 
     @Column

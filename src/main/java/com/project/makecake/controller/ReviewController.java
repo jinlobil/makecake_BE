@@ -1,6 +1,6 @@
 package com.project.makecake.controller;
 
-import com.project.makecake.dto.ReviewResponseTempDto;
+import com.project.makecake.dto.review.ReviewResponseTempDto;
 import com.project.makecake.security.UserDetailsImpl;
 import com.project.makecake.service.ReviewService;
 import lombok.RequiredArgsConstructor;

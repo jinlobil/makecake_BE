@@ -16,6 +16,9 @@ public enum ErrorCode {
     NOTI_NICKNAME_NULL(HttpStatus.BAD_REQUEST, "알림에 nickname이 없습니다."),
     TITLE_LENGTH_WRONG(HttpStatus.BAD_REQUEST, "title의 글자수 제한을 넘었습니다."),
     CONTENT_LENGTH_WRONG(HttpStatus.BAD_REQUEST, "content의 글자수 제한을 넘었습니다."),
+    USERNAME_WRONG(HttpStatus.BAD_REQUEST, "username이 email의 형식이 아닙니다."),
+    NICKNAME_LENGTH_WRONG(HttpStatus.BAD_REQUEST, "nickname이 2글자보다 적거나 8글자보다 많습니다."),
+    PASSWORD_WRONG(HttpStatus.BAD_REQUEST, "password는 10~20글자이고, 영문,숫자,특수문자가 들어가야 합니다."),
     NOT_IMAGEFILE(HttpStatus.BAD_REQUEST, "이미지 파일이 아닙니다."),
     PASSWORD_NOT_MATCH(HttpStatus.BAD_REQUEST, "패스워드가 일치하지 않습니다."),
     BAD_NOTITYPE(HttpStatus.BAD_REQUEST, "잘못된 알림 타입입니다."),
@@ -47,6 +50,7 @@ public enum ErrorCode {
     // 409
     EMAIL_DUPLICATE(HttpStatus.CONFLICT, "중복된 이메일이 존재합니다."),
     NICKNAME_DUPLICATE(HttpStatus.CONFLICT, "중복된 닉네임이 존재합니다."),
+    DESIGN_ALREADY_POST(HttpStatus.CONFLICT, "이미 게시된 도안입니다."),
     LIKE_ALREADY_EXIST(HttpStatus.CONFLICT, "이미 좋아요를 눌렀습니다."),
     LIKE_NOT_EXIST(HttpStatus.CONFLICT, "이미 좋아요 취소를 눌렀습니다.");
 

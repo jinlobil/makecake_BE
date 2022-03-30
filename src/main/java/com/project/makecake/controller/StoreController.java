@@ -1,6 +1,11 @@
 package com.project.makecake.controller;
 
-import com.project.makecake.dto.*;
+import com.project.makecake.dto.home.*;
+import com.project.makecake.dto.like.LikeRequestDto;
+import com.project.makecake.dto.like.LikeResponseDto;
+import com.project.makecake.dto.review.ReviewResponseDto;
+import com.project.makecake.dto.store.StoreDetailCakeResponseDto;
+import com.project.makecake.dto.store.StoreDetailResponseDto;
 import com.project.makecake.security.UserDetailsImpl;
 import com.project.makecake.service.CakeService;
 import com.project.makecake.service.ReviewService;
@@ -78,10 +83,7 @@ public class StoreController {
         return  storeService.getReviewListAtStore(storeId, page);
     }
 
-    @DeleteMapping("/backOffice/stores/{storeId}")
-    public void deleteStore(@PathVariable Long storeId){
-        storeService.deleteStore(storeId);
-    }
+
 
 
     // 매장 좋아요 API

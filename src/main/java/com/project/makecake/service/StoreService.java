@@ -2,7 +2,12 @@ package com.project.makecake.service;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.project.makecake.dto.*;
+import com.project.makecake.dto.home.HomeStoreDto;
+import com.project.makecake.dto.home.SearchRequestDto;
+import com.project.makecake.dto.home.SearchResponseDto;
+import com.project.makecake.dto.like.LikeResponseDto;
+import com.project.makecake.dto.review.ReviewResponseDto;
+import com.project.makecake.dto.store.*;
 import com.project.makecake.exceptionhandler.CustomException;
 import com.project.makecake.exceptionhandler.ErrorCode;
 import com.project.makecake.model.*;
@@ -32,7 +37,6 @@ public class StoreService {
     private final StoreRepository storeRepository;
     private final StoreLikeRepository storeLikeRepository;
     private final StoreUrlRepository storeUrlRepository;
-    private final MenuRepository menuRepository;
     private final ReviewRepository reviewRepository;
     private final ReviewImgRepository reviewImgRepository;
     private final CakeRepository cakeRepository;
@@ -254,15 +258,6 @@ public class StoreService {
         return responseDtoList;
     }
 
-    // **미완 매장 삭제 메소드
-    @Transactional
-    public void deleteStore(Long storeId) {
-        menuRepository.deleteAllByStore_StoreId(storeId);
-        storeUrlRepository.deleteAllByStore_StoreId(storeId);
-        cakeRepository.deleteAllByStore_StoreId(storeId);
-        openTimeRepository.deleteAllByStore_StoreId(storeId);
-        storeRepository.deleteById(storeId);
-    }
 
     // (매장 상세 페이지 조회 메소드) 매장 홈페이지 url 2개 반환 메소드 (리팩토링 매우 필요)
     public List<StoreDetailUrlDto> getUrlList(long storeId){

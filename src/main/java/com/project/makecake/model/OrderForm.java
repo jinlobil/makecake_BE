@@ -1,6 +1,6 @@
 package com.project.makecake.model;
 
-import com.project.makecake.dto.OrderFormRequestDto;
+import com.project.makecake.dto.orders.OrderFormRequestDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

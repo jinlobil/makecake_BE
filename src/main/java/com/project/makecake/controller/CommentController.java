@@ -1,7 +1,7 @@
 package com.project.makecake.controller;
 
-import com.project.makecake.dto.CommentRequestDto;
-import com.project.makecake.dto.CommentResponseDto;
+import com.project.makecake.dto.comment.CommentRequestDto;
+import com.project.makecake.dto.comment.CommentResponseDto;
 import com.project.makecake.security.UserDetailsImpl;
 import com.project.makecake.service.CommentService;
 import lombok.RequiredArgsConstructor;
