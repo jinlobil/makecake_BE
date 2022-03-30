@@ -1,5 +1,6 @@
 package com.project.makecake.service.backoffice;
 
+import com.project.makecake.MakeCakeApplication;
 import com.project.makecake.dto.*;
 import com.project.makecake.dto.backoffice.OrderFormPeekResponseDto;
 import com.project.makecake.exceptionhandler.CustomException;
@@ -7,12 +8,12 @@ import com.project.makecake.exceptionhandler.ErrorCode;
 import com.project.makecake.model.*;
 import com.project.makecake.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.SpringApplication;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -94,7 +95,8 @@ public class OrderFormService {
     // (주문하기) 주문 가능 매장 리스트 조회 메소드
     public List<OrderFormReadyResponseDto> getOrderFormList() {
         List<OrderFormReadyResponseDto> responseDtoList = new ArrayList<>();
-        List<OrderForm> foundOrderFormList = orderFormRepository.findAll();
+        List<OrderForm> foundOrderFormList = orderFormRepository.findAllByOrderByNameAsc();
+        System.out.println(foundOrderFormList.size());
         for(OrderForm orderForm : foundOrderFormList){
             OrderFormReadyResponseDto responseDto = OrderFormReadyResponseDto.builder()
                     .orderForm(orderForm)
@@ -103,7 +105,6 @@ public class OrderFormService {
         }
         return responseDtoList;
     }
-
 
     // (주문하기) 케이크 주문서 작성 페이지 조회 API
     public OrderFormDetailResponseDto getOrderFormDetails(Long orderFormId) {
@@ -189,9 +190,9 @@ public class OrderFormService {
 
     public List<OrderReadyStoreResponseDto> getOrderReadyStoreList() {
         List<OrderReadyStoreResponseDto> responseDtoList = new ArrayList<>();
+
         List<Store> foundStoreList = orderFormRepository.findDistinctStore();
         for(Store store : foundStoreList){
-//            Store store = orderForm.getStore();
             String addressSimple = "";
 
             //"서울 OO구 OO동"
@@ -205,6 +206,11 @@ public class OrderFormService {
                     .simpleAddress(addressSimple)
                     .build();
             responseDtoList.add(responseDto);
+
+            // 간편 주소 가나다 순 정렬
+            Comparator<OrderReadyStoreResponseDto> compareByAddress = (OrderReadyStoreResponseDto r1, OrderReadyStoreResponseDto r2) -> r1.getSimpleAddress().compareTo( r2.getSimpleAddress() );
+            Collections.sort(responseDtoList, compareByAddress);
+
         }
         return responseDtoList;
     }
