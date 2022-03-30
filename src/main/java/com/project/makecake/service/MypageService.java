@@ -109,7 +109,7 @@ public class MypageService {
         User foundUser = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(
                 () -> new CustomException(ErrorCode.USER_NOT_FOUND)
         );
-        Pageable pageable = PageRequest.of(page, 5);
+        Pageable pageable = PageRequest.of(page, 8);
         Page<PostLike> foundPostList = postLikeRepository.findByUserOrderByCreatedAtDesc(foundUser, pageable);
         List<MyReactPostResponceDto> responseDtoList = new ArrayList<>();
         for (PostLike postLike : foundPostList){
