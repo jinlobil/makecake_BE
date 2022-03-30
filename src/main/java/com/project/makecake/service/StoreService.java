@@ -225,8 +225,14 @@ public class StoreService {
             float minY = 0;
             float maxY = 0;
 
+            String urlString = "";
             // 네이버 지도 검색 api url
-            String urlString = "https://map.naver.com/v5/api/search?caller=pcweb&query=" + URLEncoder.encode("서울" + searchText, "UTF-8") + "&type=all&searchCoord=127.0234346;37.4979517&page=1&displayCount=20&isPlaceRecommendationReplace=true&lang=ko";
+            if (searchText.startsWith("서울")){
+                urlString = "https://map.naver.com/v5/api/search?caller=pcweb&query=" + URLEncoder.encode(searchText, "UTF-8") + "&type=all&searchCoord=127.0234346;37.4979517&page=1&displayCount=20&isPlaceRecommendationReplace=true&lang=ko";
+            } else {
+                urlString = "https://map.naver.com/v5/api/search?caller=pcweb&query=" + URLEncoder.encode("서울" + searchText, "UTF-8") + "&type=all&searchCoord=127.0234346;37.4979517&page=1&displayCount=20&isPlaceRecommendationReplace=true&lang=ko";
+            }
+
             JsonElement element = openApiService.getOpenApiResult(urlString);
 
             JsonArray rawJsonArray = element.getAsJsonObject().get("result").getAsJsonObject().get("place").getAsJsonObject().get("boundary").getAsJsonArray();

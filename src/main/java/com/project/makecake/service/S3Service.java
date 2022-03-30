@@ -77,7 +77,7 @@ public class S3Service {
     }
 
     // 리사이즈 파일 저장 메소드
-    public ImageInfoDto uploadTumbnailFile(MultipartFile multipartFile, String dirName) throws IOException {
+    public ImageInfoDto uploadThumbnailFile(MultipartFile multipartFile, String dirName) throws IOException {
 
         // 0. 이미지 파일인지 체크
         isImage(multipartFile);
@@ -123,8 +123,11 @@ public class S3Service {
     // 원본 + 리사이즈 파일 동시 저장 메소드
     public void uploadBothFile(MultipartFile multipartFile, String dirName) throws IOException {
         uploadOriginalFile(multipartFile, dirName);
-        uploadTumbnailFile(multipartFile, dirName+"_RESIZE");
+        uploadThumbnailFile(multipartFile, dirName+"_RESIZE");
     }
+
+
+
 
     // 이미지 url로 파일 업로드하는 메소드
     public ImageInfoDto uploadThumbnailFileByUrl(String inputUrl, String dirName) throws IOException {
