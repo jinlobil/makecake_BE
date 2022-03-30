@@ -87,7 +87,7 @@ public class ReviewService {
         // 이미지 S3 업로드 및 DB 저장
         if(imgFileList != null){
             for(MultipartFile imgFile : imgFileList){
-                ImageInfoDto imageInfoDto = s3Service.uploadFile(imgFile, FolderName.REVIEW.name());
+                ImageInfoDto imageInfoDto = s3Service.uploadOriginalFile(imgFile, FolderName.REVIEW.name());
 
                 ReviewImg reviewImg = ReviewImg.builder()
                         .imgInfo(imageInfoDto)
@@ -163,7 +163,7 @@ public class ReviewService {
         // 새로운 이미지를 추가한 경우
         if(imgFileList != null){
             for(MultipartFile imgFile : imgFileList){
-                ImageInfoDto imageInfoDto = s3Service.uploadFile(imgFile, FolderName.REVIEW.name());
+                ImageInfoDto imageInfoDto = s3Service.uploadOriginalFile(imgFile, FolderName.REVIEW.name());
                 ReviewImg reviewImg = ReviewImg.builder()
                         .imgInfo(imageInfoDto)
                         .review(review)
