@@ -5,15 +5,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class HomeController {
-    @GetMapping("/back-office/register-by-table")
+    @GetMapping("/api/back-office/register-menu-option")
+    public String registerMenuOption() {return "index";}
+
+    @GetMapping("/api/back-office/register-by-table")
     public String registerByTable(){
         return "registerByTable";
     }
 
-    @GetMapping("/admincake")
+    @GetMapping("/api/admincake")
     public String admincake() { return "admincake"; }
 
-    @GetMapping("/back-office/add-order-form")
+    @GetMapping("/api/back-office/add-order-form")
     public String addOrderFormPage() { return "addOrderFormPage"; }
 
     @GetMapping("/api/back-office/register-menu-option")
