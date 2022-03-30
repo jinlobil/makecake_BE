@@ -11,7 +11,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class Review extends Timestamped{
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reviewId;
 
     @Column(nullable = false)

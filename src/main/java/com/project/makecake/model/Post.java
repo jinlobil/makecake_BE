@@ -12,7 +12,7 @@ import javax.persistence.*;
 @Entity
 public class Post extends Timestamped{
 
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long postId;
 
