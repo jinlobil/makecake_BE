@@ -1,6 +1,6 @@
 package com.project.makecake.controller.backoffice;
 
-import com.project.makecake.dto.UserInfoDto;
+import com.project.makecake.dto.user.UserInfoDto;
 import com.project.makecake.service.backoffice.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.annotation.Secured;

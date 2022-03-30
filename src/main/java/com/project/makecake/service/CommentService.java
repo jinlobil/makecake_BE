@@ -1,7 +1,7 @@
 package com.project.makecake.service;
 
-import com.project.makecake.dto.CommentRequestDto;
-import com.project.makecake.dto.CommentResponseDto;
+import com.project.makecake.dto.comment.CommentRequestDto;
+import com.project.makecake.dto.comment.CommentResponseDto;
 import com.project.makecake.enums.NotiType;
 import com.project.makecake.exceptionhandler.CustomException;
 import com.project.makecake.exceptionhandler.ErrorCode;

@@ -1,8 +1,8 @@
 package com.project.makecake.service;
 
-import com.project.makecake.dto.HomeReviewDto;
+import com.project.makecake.dto.home.HomeReviewDto;
 import com.project.makecake.dto.ImageInfoDto;
-import com.project.makecake.dto.ReviewResponseTempDto;
+import com.project.makecake.dto.review.ReviewResponseTempDto;
 import com.project.makecake.enums.FolderName;
 import com.project.makecake.exceptionhandler.CustomException;
 import com.project.makecake.exceptionhandler.ErrorCode;

@@ -1,8 +1,8 @@
 package com.project.makecake.controller;
 
-import com.project.makecake.dto.OrderFormDetailResponseDto;
-import com.project.makecake.dto.OrderFormReadyResponseDto;
-import com.project.makecake.dto.OrderFormRequestDto;
+import com.project.makecake.dto.orders.OrderFormDetailResponseDto;
+import com.project.makecake.dto.orders.OrderFormReadyResponseDto;
+import com.project.makecake.dto.orders.OrderFormRequestDto;
 import com.project.makecake.dto.backoffice.OrderFormPeekResponseDto;
 import com.project.makecake.service.backoffice.OrderFormService;
 import lombok.RequiredArgsConstructor;

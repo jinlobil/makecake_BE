@@ -28,6 +28,7 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -119,7 +120,21 @@ public class KakaoLoginService {
 //        }
         String provider = "kakao";
         String username = provider + "_" + providerId;
-        String nickname = provider + "_" + providerId;
+        String nickname = kakaoUserInfo.get("properties").get("nickname").asText();
+        Optional<User> nicknameCheck = userRepository.findByNickname(nickname);
+        if (nicknameCheck.isPresent()) {
+            String tempNickname = nickname;
+            int i = 1;
+            while (true){
+                nickname = tempNickname;
+                nickname = nickname + "_" + i;
+                Optional<User> nicknameCheck2 = userRepository.findByNickname(nickname);
+                if (!nicknameCheck2.isPresent()) {
+                    break;
+                }
+                i++;
+            }
+        }
         String password = passwordEncoder.encode(UUID.randomUUID().toString());
         String profileImgUrl = "https://makecake.s3.ap-northeast-2.amazonaws.com/PROFILE/ef771589-abc6-4ddd-951c-73cc2420aa2fKakaoTalk_20220329_214148108.png";
         UserRoleEnum role = UserRoleEnum.USER;

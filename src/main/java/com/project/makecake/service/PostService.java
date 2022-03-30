@@ -1,6 +1,11 @@
 package com.project.makecake.service;
 
 import com.project.makecake.dto.*;
+import com.project.makecake.dto.like.LikeRequestDto;
+import com.project.makecake.dto.like.LikeResponseDto;
+import com.project.makecake.dto.post.PostDetailResponseDto;
+import com.project.makecake.dto.post.PostRequestDto;
+import com.project.makecake.dto.post.PostSimpleResponseDto;
 import com.project.makecake.enums.FolderName;
 import com.project.makecake.enums.NotiType;
 import com.project.makecake.exceptionhandler.CustomException;

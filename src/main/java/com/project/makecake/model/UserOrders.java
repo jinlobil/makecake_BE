@@ -1,6 +1,5 @@
 package com.project.makecake.model;
 
-import com.project.makecake.dto.UserOrderRequestDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -2,7 +2,12 @@ package com.project.makecake.service;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.project.makecake.dto.*;
+import com.project.makecake.dto.home.HomeStoreDto;
+import com.project.makecake.dto.home.SearchRequestDto;
+import com.project.makecake.dto.home.SearchResponseDto;
+import com.project.makecake.dto.like.LikeResponseDto;
+import com.project.makecake.dto.review.ReviewResponseDto;
+import com.project.makecake.dto.store.*;
 import com.project.makecake.exceptionhandler.CustomException;
 import com.project.makecake.exceptionhandler.ErrorCode;
 import com.project.makecake.model.*;

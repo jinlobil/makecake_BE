@@ -1,7 +1,7 @@
 package com.project.makecake.model;
 
-import com.project.makecake.dto.NotiContentRequestDto;
-import com.project.makecake.dto.NotiRequestDto;
+import com.project.makecake.dto.noti.NotiContentRequestDto;
+import com.project.makecake.dto.noti.NotiRequestDto;
 import com.project.makecake.enums.NotiType;
 import lombok.Builder;
 import lombok.Getter;

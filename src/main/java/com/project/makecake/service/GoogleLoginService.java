@@ -5,6 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.makecake.MakeCakeApplication;
 import com.project.makecake.enums.UserRoleEnum;
 import com.project.makecake.model.User;
 import com.project.makecake.repository.UserRepository;
@@ -13,6 +14,7 @@ import com.project.makecake.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.SpringApplication;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -28,6 +30,7 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -45,7 +48,7 @@ public class GoogleLoginService {
     private final UserRepository userRepository;
 
     // 구글 로그인
-    public void googleLogin(String code, HttpServletResponse response3) throws JsonProcessingException {
+    public void googleLogin(String code, HttpServletResponse response) throws JsonProcessingException {
         // 인가코드로 엑세스토큰 가져오기
         String accessToken = getAccessToken(code);
 
@@ -59,7 +62,7 @@ public class GoogleLoginService {
         UserDetailsImpl userDetails = securityLogin(foundUser);
 
         // jwt 토큰 발급
-        jwtToken(response3, userDetails);
+        jwtToken(response, userDetails);
     }
 
     // 인가코드로 엑세스토큰 가져오기
@@ -97,25 +100,38 @@ public class GoogleLoginService {
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
         // POST 요청 보내기
-        HttpEntity<MultiValueMap<String, String>> googleUserInfo = new HttpEntity<>(headers);
-        RestTemplate restTemplate2 = new RestTemplate();
-        ResponseEntity<String> response2 = restTemplate2.exchange("https://openidconnect.googleapis.com/v1/userinfo", HttpMethod.POST, googleUserInfo, String.class);
+        HttpEntity<MultiValueMap<String, String>> googleUser = new HttpEntity<>(headers);
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> response = restTemplate.exchange("https://openidconnect.googleapis.com/v1/userinfo", HttpMethod.POST, googleUser, String.class);
 
         // response에서 유저정보 가져오기
-        String responseBody2 = response2.getBody();
-        ObjectMapper objectMapper2 = new ObjectMapper();
-        JsonNode responseInfo = objectMapper2.readTree(responseBody2);
-        return responseInfo;
+        String responseBody = response.getBody();
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode googleUserInfo = objectMapper.readTree(responseBody);
+        return googleUserInfo;
     }
 
     // 유저확인 & 회원가입
-    private User getUser(JsonNode responseInfo) {
+    private User getUser(JsonNode googleUserInfo) {
         // 유저정보 작성
-        String providerId = responseInfo.get("sub").asText();
-        String providerEmail = responseInfo.get("email").asText();
+        String providerId = googleUserInfo.get("sub").asText();
+        String providerEmail = googleUserInfo.get("email").asText();
         String provider = "google";
         String username = provider + "_" + providerId;
-        String nickname = provider + "_" + providerId;
+        String nickname = googleUserInfo.get("name").asText();
+        Optional<User> nicknameCheck = userRepository.findByNickname(nickname);
+        if (nicknameCheck.isPresent()) {
+            String tempNickname = nickname;
+            int i = 1;
+            while (true){
+                nickname = tempNickname + "_" + i;
+                Optional<User> nicknameCheck2 = userRepository.findByNickname(nickname);
+                if (!nicknameCheck2.isPresent()) {
+                    break;
+                }
+                i++;
+            }
+        }
         String password = passwordEncoder.encode(UUID.randomUUID().toString());
         String profileImgUrl = "https://makecake.s3.ap-northeast-2.amazonaws.com/PROFILE/ef771589-abc6-4ddd-951c-73cc2420aa2fKakaoTalk_20220329_214148108.png";
         UserRoleEnum role = UserRoleEnum.USER;
@@ -152,7 +168,7 @@ public class GoogleLoginService {
     }
 
     // jwt 토큰 발급
-    private void jwtToken(HttpServletResponse response3, UserDetailsImpl userDetails) {
+    private void jwtToken(HttpServletResponse response, UserDetailsImpl userDetails) {
         String jwtToken = JWT.create()
                 // 토큰이름
                 .withSubject("JwtToken : " + userDetails.getUser().getUsername())
@@ -163,6 +179,6 @@ public class GoogleLoginService {
                 // HMAC256 복호화
                 .sign(Algorithm.HMAC256(JwtProperties.secretKey));
         log.info("jwtToken : " + jwtToken);
-        response3.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + jwtToken);
+        response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + jwtToken);
     }
 }

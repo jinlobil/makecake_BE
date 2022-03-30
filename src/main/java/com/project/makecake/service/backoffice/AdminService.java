@@ -1,6 +1,6 @@
 package com.project.makecake.service.backoffice;
 
-import com.project.makecake.dto.UserInfoDto;
+import com.project.makecake.dto.user.UserInfoDto;
 import com.project.makecake.model.Cake;
 import com.project.makecake.model.User;
 import com.project.makecake.repository.CakeRepository;
