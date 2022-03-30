@@ -206,7 +206,7 @@ public class CakeService {
 
         if(imgFileList != null){
             for(MultipartFile imgFile : imgFileList){
-                ImageInfoDto imgInfo = s3Service.uploadFile(imgFile, FolderName.Cake.name());
+                ImageInfoDto imgInfo = s3Service.uploadOriginalFile(imgFile, FolderName.Cake.name());
                 Cake cake = Cake.builder()
                         .url(imgInfo.getUrl())
                         .store(foundStore)

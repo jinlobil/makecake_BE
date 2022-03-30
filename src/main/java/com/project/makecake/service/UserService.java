@@ -1,6 +1,5 @@
 package com.project.makecake.service;
 
-import com.project.makecake.MakeCakeApplication;
 import com.project.makecake.dto.*;
 import com.project.makecake.dto.mypage.MypageResponseDto;
 import com.project.makecake.dto.user.LoginCheckResponseDto;
@@ -13,7 +12,6 @@ import com.project.makecake.model.User;
 import com.project.makecake.repository.UserRepository;
 import com.project.makecake.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.SpringApplication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -181,7 +179,7 @@ public class UserService {
             if (foundUser.getProfileImgName() != null){
                 s3Service.deleteFile(foundUser.getProfileImgName());
             }
-            ImageInfoDto imageInfoDto = s3Service.uploadFile(imgFile, FolderName.PROFILE.name());
+            ImageInfoDto imageInfoDto = s3Service.uploadOriginalFile(imgFile, FolderName.PROFILE.name());
             profile = imageInfoDto.getUrl();
             profileName = imageInfoDto.getName();
         }
