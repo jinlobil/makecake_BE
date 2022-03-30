@@ -67,6 +67,11 @@ public class ReviewService {
     public void addReview(long storeId, String content, List<MultipartFile> imgFileList, UserDetailsImpl userDetails) throws IOException {
         User user = userDetails.getUser();
 
+        // 리뷰 내용 길이 체크(100)
+        if (content.length() > 100) {
+            throw new CustomException(ErrorCode.CONTENT_LENGTH_WRONG);
+        }
+
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(()->new CustomException(ErrorCode.STORE_NOT_FOUND));
 

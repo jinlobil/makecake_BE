@@ -178,7 +178,17 @@ public class PostService {
 
         // 이미 게시글이 작성된 도안인지 확인 (도안 하나당 게시글 하나만 작성 가능)
         if (foundDesign.isPost()) {
-            throw new IllegalArgumentException("이미 게시된 도안입니다.");
+            throw new CustomException(ErrorCode.DESIGN_ALREADY_POST);
+        }
+
+        // 게시글 제목 길이 체크(20)
+        if (requestDto.getTitle().length() > 20) {
+            throw new CustomException(ErrorCode.TITLE_LENGTH_WRONG);
+        }
+
+        // 게시글 내용 길이 체크(250)
+        if (requestDto.getContent().length() > 250) {
+            throw new CustomException(ErrorCode.CONTENT_LENGTH_WRONG);
         }
 
         // 도안 게시글 저장

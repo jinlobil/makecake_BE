@@ -1,5 +1,6 @@
 package com.project.makecake.service;
 
+import com.project.makecake.MakeCakeApplication;
 import com.project.makecake.dto.*;
 import com.project.makecake.dto.mypage.MypageResponseDto;
 import com.project.makecake.dto.user.LoginCheckResponseDto;
@@ -12,6 +13,7 @@ import com.project.makecake.model.User;
 import com.project.makecake.repository.UserRepository;
 import com.project.makecake.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.SpringApplication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +22,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @RequiredArgsConstructor
 @Service
@@ -67,16 +71,36 @@ public class UserService {
 
     // 유효성 검사
     private void validate(SignupRequestDto requestDto) {
+        // username 유효성체크 (email형식)
+        Pattern usernamePattern = Pattern.compile("^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$");
+        Matcher usernameMatcher = usernamePattern.matcher(requestDto.getUsername());
+        if (!usernameMatcher.matches()) {
+            throw new CustomException(ErrorCode.USERNAME_WRONG);
+        }
+
         // username 중복체크
         Optional<User> checkUsername = userRepository.findByUsername(requestDto.getUsername());
         if (checkUsername.isPresent()) {
             throw new CustomException(ErrorCode.EMAIL_DUPLICATE);
         }
 
+        // nickname 길이체크 (2~8)
+        String nickname = requestDto.getNickname();
+        if (nickname.length() < 2 || nickname.length() > 8) {
+            throw new CustomException(ErrorCode.NICKNAME_LENGTH_WRONG);
+        }
+
         // nickname 중복체크
         Optional<User> checkNickname = userRepository.findByNickname(requestDto.getNickname());
         if (checkNickname.isPresent()) {
             throw new CustomException(ErrorCode.NICKNAME_DUPLICATE);
+        }
+
+        // 패스워드 유효성체크 (영문, 숫자, 특수문자 1개씩 필수, 10~20)
+        Pattern passwordPattern = Pattern.compile("^.*(?=^.{10,20}$)(?=.*\\d)(?=.*[a-zA-Z])(?=.*[~`!@#$%/^&*()-+=])[A-Za-z\\d~`!@#$%/^&*()-+=]*$");
+        Matcher passwordMatcher = passwordPattern.matcher(requestDto.getPassword());
+        if (!passwordMatcher.matches()) {
+            throw new CustomException(ErrorCode.PASSWORD_WRONG);
         }
 
         // 패스워드 일치 확인
