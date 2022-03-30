@@ -35,7 +35,7 @@ public class OrderFormController {
     }
 
     // (주문하기) 주문 가능 매장 리스트 조회 API
-    @GetMapping("/orders/stores")
+    @GetMapping("/api/orders/stores")
     public List<OrderFormReadyResponseDto> getOrderFormList(){
         return orderFormService.getOrderFormList();
     }

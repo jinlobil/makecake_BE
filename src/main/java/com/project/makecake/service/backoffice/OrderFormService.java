@@ -1,5 +1,6 @@
 package com.project.makecake.service.backoffice;
 
+import com.project.makecake.dto.orders.OrderReadyStoreResponseDto;
 import com.project.makecake.dto.backoffice.OrderFormPeekResponseDto;
 import com.project.makecake.dto.orders.OrderFormDetailResponseDto;
 import com.project.makecake.dto.orders.OrderFormReadyResponseDto;
@@ -10,15 +11,19 @@ import com.project.makecake.dto.store.StoreMoreCakeTasteDto;
 import com.project.makecake.dto.store.StoreMoreDetailsDto;
 import com.project.makecake.exceptionhandler.CustomException;
 import com.project.makecake.exceptionhandler.ErrorCode;
-import com.project.makecake.model.*;
-import com.project.makecake.repository.*;
+import com.project.makecake.model.CakeMenu;
+import com.project.makecake.model.OrderForm;
+import com.project.makecake.model.Store;
+import com.project.makecake.model.StoreOption;
+import com.project.makecake.repository.CakeMenuRepository;
+import com.project.makecake.repository.OrderFormRepository;
+import com.project.makecake.repository.StoreOptionRepository;
+import com.project.makecake.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -100,7 +105,8 @@ public class OrderFormService {
     // (주문하기) 주문 가능 매장 리스트 조회 메소드
     public List<OrderFormReadyResponseDto> getOrderFormList() {
         List<OrderFormReadyResponseDto> responseDtoList = new ArrayList<>();
-        List<OrderForm> foundOrderFormList = orderFormRepository.findAll();
+        List<OrderForm> foundOrderFormList = orderFormRepository.findAllByOrderByNameAsc();
+        System.out.println(foundOrderFormList.size());
         for(OrderForm orderForm : foundOrderFormList){
             OrderFormReadyResponseDto responseDto = OrderFormReadyResponseDto.builder()
                     .orderForm(orderForm)
@@ -109,7 +115,6 @@ public class OrderFormService {
         }
         return responseDtoList;
     }
-
 
     // (주문하기) 케이크 주문서 작성 페이지 조회 API
     public OrderFormDetailResponseDto getOrderFormDetails(Long orderFormId) {
@@ -191,5 +196,32 @@ public class OrderFormService {
                 .build();
 
         return moreDetails;
+    }
+
+    public List<OrderReadyStoreResponseDto> getOrderReadyStoreList() {
+        List<OrderReadyStoreResponseDto> responseDtoList = new ArrayList<>();
+
+        List<Store> foundStoreList = orderFormRepository.findDistinctStore();
+        for(Store store : foundStoreList){
+            String addressSimple = "";
+
+            //"서울 OO구 OO동"
+            if(!store.getFullAddress().equals(null)){
+                String[] arr = store.getFullAddress().split(" ");
+                addressSimple = arr[0].substring(0,2) + " "  + arr[1] + " " + arr[2];
+            }
+
+            OrderReadyStoreResponseDto responseDto = OrderReadyStoreResponseDto.builder()
+                    .store(store)
+                    .simpleAddress(addressSimple)
+                    .build();
+            responseDtoList.add(responseDto);
+
+            // 간편 주소 가나다 순 정렬
+            Comparator<OrderReadyStoreResponseDto> compareByAddress = (OrderReadyStoreResponseDto r1, OrderReadyStoreResponseDto r2) -> r1.getSimpleAddress().compareTo( r2.getSimpleAddress() );
+            Collections.sort(responseDtoList, compareByAddress);
+
+        }
+        return responseDtoList;
     }
 }

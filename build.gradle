@@ -35,6 +35,9 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-security'
 
+    // https://mvnrepository.com/artifact/net.coobird/thumbnailator
+    implementation group: 'net.coobird', name: 'thumbnailator', version: '0.4.8'
+
     // JWT
     implementation 'com.auth0:java-jwt:3.13.0'
     implementation 'commons-codec:commons-codec:1.5'
