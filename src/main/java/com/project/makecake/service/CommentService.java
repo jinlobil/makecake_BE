@@ -59,6 +59,10 @@ public class CommentService {
 
         User user = userDetails.getUser();
 
+        // 댓글 내용 길이 체크(100)
+        if (requestDto.getContent().length() > 100) {
+            throw new CustomException(ErrorCode.CONTENT_LENGTH_WRONG);
+        }
         // 게시글 찾기
         Post foundPost = postRepository.findById(postId)
                 .orElseThrow(()->new CustomException(ErrorCode.POST_NOT_FOUND));
