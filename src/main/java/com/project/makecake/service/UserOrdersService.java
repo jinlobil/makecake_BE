@@ -1,8 +1,8 @@
 package com.project.makecake.service;
 
-import com.project.makecake.dto.MyOrderListResponseDto;
-import com.project.makecake.dto.UserOrderRequestDto;
-import com.project.makecake.dto.UserOrdersDetailResponseDto;
+import com.project.makecake.dto.mypage.MyOrderListResponseDto;
+import com.project.makecake.dto.orders.UserOrderRequestDto;
+import com.project.makecake.dto.orders.UserOrdersDetailResponseDto;
 import com.project.makecake.exceptionhandler.CustomException;
 import com.project.makecake.exceptionhandler.ErrorCode;
 import com.project.makecake.model.*;

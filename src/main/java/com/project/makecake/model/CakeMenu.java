@@ -1,6 +1,5 @@
 package com.project.makecake.model;
 
-import com.project.makecake.dto.PostRequestDto;
 import com.project.makecake.dto.backoffice.CakeMenuRowDto;
 import com.project.makecake.enums.CakePriceState;
 import lombok.Builder;

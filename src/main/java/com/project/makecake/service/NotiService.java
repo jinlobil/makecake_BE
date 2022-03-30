@@ -1,6 +1,10 @@
 package com.project.makecake.service;
 
 import com.project.makecake.dto.*;
+import com.project.makecake.dto.noti.NewNotiResponseDto;
+import com.project.makecake.dto.noti.NotiContentRequestDto;
+import com.project.makecake.dto.noti.NotiRequestDto;
+import com.project.makecake.dto.noti.NotiResponseDto;
 import com.project.makecake.enums.NotiType;
 import com.project.makecake.enums.UserRoleEnum;
 import com.project.makecake.exceptionhandler.CustomException;
@@ -23,7 +27,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service

@@ -1,9 +1,9 @@
 package com.project.makecake.controller;
 
-import com.project.makecake.dto.CakeIdRequestDto;
-import com.project.makecake.dto.CakeResponseDto;
-import com.project.makecake.dto.LikeRequestDto;
-import com.project.makecake.dto.LikeResponseDto;
+import com.project.makecake.dto.cake.CakeIdRequestDto;
+import com.project.makecake.dto.cake.CakeResponseDto;
+import com.project.makecake.dto.like.LikeRequestDto;
+import com.project.makecake.dto.like.LikeResponseDto;
 import com.project.makecake.model.Cake;
 import com.project.makecake.security.UserDetailsImpl;
 import com.project.makecake.service.CakeService;

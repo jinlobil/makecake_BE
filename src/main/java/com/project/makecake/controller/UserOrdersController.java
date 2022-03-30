@@ -1,7 +1,7 @@
 package com.project.makecake.controller;
 
-import com.project.makecake.dto.UserOrderRequestDto;
-import com.project.makecake.dto.UserOrdersDetailResponseDto;
+import com.project.makecake.dto.orders.UserOrderRequestDto;
+import com.project.makecake.dto.orders.UserOrdersDetailResponseDto;
 import com.project.makecake.security.UserDetailsImpl;
 import com.project.makecake.service.UserOrdersService;
 import lombok.RequiredArgsConstructor;

@@ -28,6 +28,7 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -98,8 +99,8 @@ public class NaverLoginService {
 
         // POST 요청 보내기
         HttpEntity<MultiValueMap<String, String>> naverUser = new HttpEntity<>(headers);
-        RestTemplate restTemplate2 = new RestTemplate();
-        ResponseEntity<String> response = restTemplate2.exchange("https://openapi.naver.com/v1/nid/me", HttpMethod.POST, naverUser, String.class);
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> response = restTemplate.exchange("https://openapi.naver.com/v1/nid/me", HttpMethod.POST, naverUser, String.class);
 
         // response에서 유저정보 가져오기
         String responseBody = response.getBody();
@@ -109,13 +110,27 @@ public class NaverLoginService {
     }
 
     // 유저확인 & 회원가입
-    private User getUser(JsonNode responseInfo) {
+    private User getUser(JsonNode naverUserInfo) {
         // 유저정보 작성
-        String providerId = responseInfo.get("response").get("id").asText();
-        String providerEmail = responseInfo.get("response").get("email").asText();
+        String providerId = naverUserInfo.get("response").get("id").asText();
+        String providerEmail = naverUserInfo.get("response").get("email").asText();
         String provider = "naver";
         String username = provider + "_" + providerId;
-        String nickname = provider + "_" + providerId;
+        String nickname = naverUserInfo.get("response").get("nickname").asText();
+        Optional<User> nicknameCheck = userRepository.findByNickname(nickname);
+        if (nicknameCheck.isPresent()) {
+            String tempNickname = nickname;
+            int i = 1;
+            while (true){
+                nickname = tempNickname;
+                nickname = nickname + "_" + i;
+                Optional<User> nicknameCheck2 = userRepository.findByNickname(nickname);
+                if (!nicknameCheck2.isPresent()) {
+                    break;
+                }
+                i++;
+            }
+        }
         String password = passwordEncoder.encode(UUID.randomUUID().toString());
         String profileImgUrl = "https://makecake.s3.ap-northeast-2.amazonaws.com/PROFILE/ef771589-abc6-4ddd-951c-73cc2420aa2fKakaoTalk_20220329_214148108.png";
         UserRoleEnum role = UserRoleEnum.USER;

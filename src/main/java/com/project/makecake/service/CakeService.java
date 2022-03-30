@@ -1,6 +1,10 @@
 package com.project.makecake.service;
 
 import com.project.makecake.dto.*;
+import com.project.makecake.dto.cake.CakeResponseDto;
+import com.project.makecake.dto.home.HomeCakeDto;
+import com.project.makecake.dto.like.LikeRequestDto;
+import com.project.makecake.dto.like.LikeResponseDto;
 import com.project.makecake.enums.FolderName;
 import com.project.makecake.exceptionhandler.CustomException;
 import com.project.makecake.exceptionhandler.ErrorCode;
@@ -11,7 +15,6 @@ import com.project.makecake.model.User;
 import com.project.makecake.repository.CakeLikeRepository;
 import com.project.makecake.repository.CakeRepository;
 import com.project.makecake.repository.StoreRepository;
-import com.project.makecake.repository.UserRepository;
 import com.project.makecake.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
