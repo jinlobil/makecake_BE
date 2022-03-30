@@ -83,10 +83,7 @@ public class StoreController {
         return  storeService.getReviewListAtStore(storeId, page);
     }
 
-    @DeleteMapping("/backOffice/stores/{storeId}")
-    public void deleteStore(@PathVariable Long storeId){
-        storeService.deleteStore(storeId);
-    }
+
 
 
     // 매장 좋아요 API

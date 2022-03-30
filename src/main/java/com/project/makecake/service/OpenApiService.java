@@ -3,8 +3,14 @@ package com.project.makecake.service;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import com.project.makecake.model.*;
-import com.project.makecake.repository.*;
+import com.project.makecake.model.Cake;
+import com.project.makecake.model.OpenTime;
+import com.project.makecake.model.Store;
+import com.project.makecake.model.StoreUrl;
+import com.project.makecake.repository.CakeRepository;
+import com.project.makecake.repository.OpenTimeRepository;
+import com.project.makecake.repository.StoreRepository;
+import com.project.makecake.repository.StoreUrlRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +25,6 @@ import java.net.URL;
 @RequiredArgsConstructor
 public class OpenApiService {
     private final CakeRepository cakeRepository;
-    private final MenuRepository menuRepository;
     private final StoreUrlRepository storeUrlRepository;
     private final StoreRepository storeRepository;
     private final OpenTimeRepository openTimeRepository;
@@ -123,23 +128,7 @@ public class OpenApiService {
         }
 
 
-        if(!element.getAsJsonObject().get("menus").isJsonNull()){
-            JsonArray menus = element.getAsJsonObject().get("menus").getAsJsonArray();
 
-            for(int i = 0; i < menus.size(); i++){
-                String names = menus.get(i).getAsJsonObject().get("name").getAsString();
-                String price = menus.get(i).getAsJsonObject().get("price").getAsString();
-                boolean change = menus.get(i).getAsJsonObject().get("change").getAsBoolean();
-
-                Menu menu = new Menu();
-                menu.setName(names);
-                menu.setPrice(price);
-                menu.setChanges(change);
-                menu.setStore(store);
-
-                menuRepository.save(menu);
-            }
-        }
 
 
         // 네이버 지도 검색 결과 중 업체 사진 가져오기
