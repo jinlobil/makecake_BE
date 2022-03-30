@@ -22,6 +22,7 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -112,9 +113,9 @@ public class ReviewService {
 
         Store store = review.getStore();
 
-        ReviewImg foundReviewImg = reviewImgRepository.findByReview(review);
-        if(!foundReviewImg.equals(null)){
-            s3Service.deleteFile(foundReviewImg.getImgName());
+        Optional<ReviewImg> foundReviewImg = reviewImgRepository.findByReview(review);
+        if(foundReviewImg.isPresent()){
+            s3Service.deleteFile(foundReviewImg.get().getImgName());
             reviewImgRepository.deleteAllByReview_ReviewId(reviewId);
         }
         reviewRepository.deleteById(reviewId);

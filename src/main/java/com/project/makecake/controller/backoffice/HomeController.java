@@ -19,6 +19,4 @@ public class HomeController {
     @GetMapping("/api/back-office/add-order-form")
     public String addOrderFormPage() { return "addOrderFormPage"; }
 
-    @GetMapping("/api/back-office/register-menu-option")
-    public String registerMenuOption() {return "index";}
 }

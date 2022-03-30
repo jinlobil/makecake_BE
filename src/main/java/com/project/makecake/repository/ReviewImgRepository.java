@@ -5,11 +5,12 @@ import com.project.makecake.model.ReviewImg;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ReviewImgRepository extends JpaRepository<ReviewImg, Long> {
     List<ReviewImg> findAllByReview_ReviewId(long reviewId);
     ReviewImg findTop1ByReview(Review review);
-    ReviewImg findByReview(Review review);
+    Optional<ReviewImg> findByReview(Review review);
     void deleteAllByReview_ReviewId(long reviewId);
     void deleteByImgUrl(String imgUrl);
     ReviewImg findByImgUrl(String imgUrl);
