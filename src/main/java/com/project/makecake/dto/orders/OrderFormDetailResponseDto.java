@@ -18,6 +18,7 @@ public class OrderFormDetailResponseDto {
     @Builder
     OrderFormDetailResponseDto (OrderForm orderForm, List<String> formList, List<String> instructionList, StoreMoreDetailsDto moreDetails){
         this.orderFormId = orderForm.getOrderFormId();
+        this.storeId = orderForm.getStore().getStoreId();
         this.name = orderForm.getName();
         this.formList = formList;
         this.instructionList = instructionList;
