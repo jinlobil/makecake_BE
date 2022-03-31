@@ -30,11 +30,11 @@ public class BackOfficeController {
         return backOfficeService.boSearchStoreId(requestDto);
     }
 
-//    @GetMapping("/api/backOffice/cake/thumbnail-img")
-//    public void addCakeThumbNailImg(
-//            @RequestParam int page
-//    ) throws IOException {
-//        backOfficeService.addCakeThumbNailImg(page);
-//    }
+    @GetMapping("/api/backOffice/cake/thumbnail-img")
+    public void addCakeThumbNailImg(
+            @RequestParam int page
+    ) throws IOException {
+        backOfficeService.addCakeThumbNailImg(page);
+    }
 
 }

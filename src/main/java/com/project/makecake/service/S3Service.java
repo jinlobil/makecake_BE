@@ -145,7 +145,7 @@ public class S3Service {
 
         BufferedImage resizedImage = Thumbnails.of(url.openStream())
                 .sourceRegion(Positions.CENTER, cropSize, cropSize)
-                .size(200,200)
+                .size(500,500)
                 .asBufferedImage();
 
         ByteArrayOutputStream os = new ByteArrayOutputStream();

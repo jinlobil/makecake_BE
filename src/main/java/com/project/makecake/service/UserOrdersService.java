@@ -1,5 +1,6 @@
 package com.project.makecake.service;
 
+import com.project.makecake.MakeCakeApplication;
 import com.project.makecake.dto.mypage.MyOrderListResponseDto;
 import com.project.makecake.dto.orders.UserOrderRequestDto;
 import com.project.makecake.dto.orders.UserOrdersDetailResponseDto;
@@ -9,6 +10,7 @@ import com.project.makecake.model.*;
 import com.project.makecake.repository.*;
 import com.project.makecake.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.SpringApplication;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -103,6 +105,7 @@ public class UserOrdersService {
         return responseDto;
     }
 
+    // 작성한 주문서 조회 메소드
     public UserOrdersDetailResponseDto getUserOrdersDetails(long userOrdersId) {
         UserOrders userOrders = userOrdersRepository.findById(userOrdersId)
                 .orElseThrow(()-> new CustomException(ErrorCode.ORDER_NOT_FOUND));
@@ -133,6 +136,10 @@ public class UserOrdersService {
         List<String> userInputList = new ArrayList<>();
         String userInput = userOrders.getFormFilled();
 
+        if(userInput.endsWith("<br><br>")){
+            userInput = userInput.substring(0, userInput.length()-8) + "<br> <br>";
+        }
+
         List<String> rawUserInputList = Arrays.asList(userInput.split("<br>"));
         for(String rawUserInput : rawUserInputList) {
             userInputList.add(rawUserInput.trim());
@@ -160,6 +167,7 @@ public class UserOrdersService {
 
         return responseDto;
     }
+
 
     public void deleteUserOrders(Long userOrdersId, UserDetailsImpl userDetails) {
         User user = userDetails.getUser();

@@ -122,11 +122,14 @@ public class BackOfficeService {
         return responseDto;
     }
 
-    /*@Transactional
+    @Transactional
     // 기존 케이크 이미지에 썸네일 이미지 url 추가 메소드
     public void addCakeThumbNailImg(int page) throws IOException {
         Pageable pageable = PageRequest.of(page,50);
         Page<Store> foundStoreList = storeRepository.findAll(pageable);
+
+        //1132,2230으 ㄴ오류
+        // 1642, 2230,2816
 
         for(Store store : foundStoreList){
             log.info("매장 아이디는 " + store.getStoreId());
@@ -136,7 +139,4 @@ public class BackOfficeService {
             }
         }
     }
-
-     */
-
 }
