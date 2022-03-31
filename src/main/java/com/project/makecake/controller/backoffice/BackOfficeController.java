@@ -6,9 +6,9 @@ import com.project.makecake.dto.backoffice.CakeMenuOptionPeekRequestDto;
 import com.project.makecake.dto.backoffice.CakeMenuOptionPeekResponseDto;
 import com.project.makecake.service.backoffice.BackOfficeService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,11 +30,13 @@ public class BackOfficeController {
         return backOfficeService.boSearchStoreId(requestDto);
     }
 
+    /*
     @GetMapping("/api/backOffice/cake/thumbnail-img")
     public void addCakeThumbNailImg(
             @RequestParam int page
     ) throws IOException {
         backOfficeService.addCakeThumbNailImg(page);
     }
+     */
 
 }

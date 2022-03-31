@@ -1,6 +1,5 @@
 package com.project.makecake.service;
 
-import com.project.makecake.MakeCakeApplication;
 import com.project.makecake.dto.mypage.MyOrderListResponseDto;
 import com.project.makecake.dto.orders.UserOrderRequestDto;
 import com.project.makecake.dto.orders.UserOrdersDetailResponseDto;
@@ -10,7 +9,6 @@ import com.project.makecake.model.*;
 import com.project.makecake.repository.*;
 import com.project.makecake.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.SpringApplication;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

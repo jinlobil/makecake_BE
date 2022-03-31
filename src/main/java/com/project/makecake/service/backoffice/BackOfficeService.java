@@ -122,6 +122,7 @@ public class BackOfficeService {
         return responseDto;
     }
 
+    /*
     @Transactional
     // 기존 케이크 이미지에 썸네일 이미지 url 추가 메소드
     public void addCakeThumbNailImg(int page) throws IOException {
@@ -139,4 +140,5 @@ public class BackOfficeService {
             }
         }
     }
+     */
 }
