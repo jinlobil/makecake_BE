@@ -53,7 +53,7 @@ public class CakeService {
 
             HomeCakeDto homeCakeDto = HomeCakeDto.builder()
                     .cakeId(cakeId)
-                    .thumbnailMainImg(thumbnailMainImg)
+                    .mainImg(thumbnailMainImg)
                     .likeCnt(likeCnt)
                     .build();
             homeCakeDtoList.add(homeCakeDto);

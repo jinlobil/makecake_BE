@@ -8,14 +8,14 @@ import lombok.Setter;
 @Getter
 public class StoreDetailCakeResponseDto {
     private Long cakeId;
-    private String thumbnailImg;
+    private String mainImg;
     private int likeCnt;
     private Boolean myLike;
 
     @Builder
     public StoreDetailCakeResponseDto(Cake cake, boolean myLike){
         this.cakeId = cake.getCakeId();
-        this.thumbnailImg = cake.getThumbnailUrl();
+        this.mainImg = cake.getThumbnailUrl();
         this.likeCnt = cake.getLikeCnt();
         this.myLike = myLike;
     }

@@ -61,7 +61,7 @@ public class StoreService {
             HomeStoreDto responseDto = HomeStoreDto.builder()
                     .storeId(storeId)
                     .name(name)
-                    .thumbnailMainImg(thumbnailMainImg)
+                    .mainImg(thumbnailMainImg)
                     .likeCnt(likeCnt)
                     .build();
 
