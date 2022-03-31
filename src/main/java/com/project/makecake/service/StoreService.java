@@ -55,10 +55,16 @@ public class StoreService {
         for (Store eachStore : foundStoreList) {
             Long storeId = eachStore.getStoreId();
             String name = eachStore.getName();
-            String mainImg = eachStore.getMainImg();
+            String thumbnailMainImg = eachStore.getThumbnailMainImg();
             int likeCnt = eachStore.getLikeCnt();
 
-            HomeStoreDto responseDto = new HomeStoreDto(storeId, name, mainImg, likeCnt);
+            HomeStoreDto responseDto = HomeStoreDto.builder()
+                    .storeId(storeId)
+                    .name(name)
+                    .thumbnailMainImg(thumbnailMainImg)
+                    .likeCnt(likeCnt)
+                    .build();
+
             responseDtoList.add(responseDto);
         }
         return responseDtoList;
@@ -133,7 +139,12 @@ public class StoreService {
                     myCakeLike = true;
                 }
             }
-            StoreDetailCakeResponseDto cakeDto = new StoreDetailCakeResponseDto(cake, myCakeLike);
+
+            StoreDetailCakeResponseDto cakeDto = StoreDetailCakeResponseDto
+                    .builder()
+                    .cake(cake)
+                    .myLike(myCakeLike)
+                    .build();
             cakeImgList.add(cakeDto);
         }
 
@@ -151,15 +162,9 @@ public class StoreService {
     }
 
     // (매장 상세) 케이크 조회 메소드
-    public List<StoreDetailCakeResponseDto> getCakeListAtStore(long storeId, UserDetailsImpl userDetails/*, int page*/) {
+    public List<StoreDetailCakeResponseDto> getCakeListAtStore(long storeId, UserDetailsImpl userDetails) {
 
         List<Cake> foundCakeList = cakeRepository.findAllByStore_StoreId(storeId);
-        /*
-        Sort sort = Sort.by(new Sort.Order(Sort.Direction.DESC, "createdAt"), new Sort.Order(Sort.Direction.DESC,"cakeId"));
-        Pageable pageable = PageRequest.of(page, 15, sort);
-        Page<Cake> foundCakeList = cakeRepository.findAllByStore_StoreId(storeId, pageable);
-
-         */
 
 
         List<StoreDetailCakeResponseDto> responseDtoList = new ArrayList<>();
@@ -174,7 +179,12 @@ public class StoreService {
                 }
             }
             //dto 값 담고, 리스트에 추가하기
-            StoreDetailCakeResponseDto cakeDto = new StoreDetailCakeResponseDto(cake, myCakeLike);
+            StoreDetailCakeResponseDto cakeDto = StoreDetailCakeResponseDto
+                    .builder()
+                    .cake(cake)
+                    .myLike(myCakeLike)
+                    .build();
+
             responseDtoList.add(cakeDto);
         }
         return responseDtoList;

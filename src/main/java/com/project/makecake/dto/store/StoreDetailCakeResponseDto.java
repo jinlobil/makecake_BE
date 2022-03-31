@@ -1,20 +1,21 @@
 package com.project.makecake.dto.store;
 
 import com.project.makecake.model.Cake;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-@Setter
 public class StoreDetailCakeResponseDto {
     private Long cakeId;
-    private String img;
+    private String thumbnailImg;
     private int likeCnt;
     private Boolean myLike;
 
+    @Builder
     public StoreDetailCakeResponseDto(Cake cake, boolean myLike){
         this.cakeId = cake.getCakeId();
-        this.img = cake.getUrl();
+        this.thumbnailImg = cake.getThumbnailUrl();
         this.likeCnt = cake.getLikeCnt();
         this.myLike = myLike;
     }

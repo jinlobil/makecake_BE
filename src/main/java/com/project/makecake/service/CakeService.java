@@ -48,10 +48,14 @@ public class CakeService {
 
         for(Cake eachCake : rawCakeList){
             Long cakeId = eachCake.getCakeId();
-            String mainImg = eachCake.getUrl();
+            String thumbnailMainImg = eachCake.getThumbnailUrl();
             int likeCnt = eachCake.getLikeCnt();
 
-            HomeCakeDto homeCakeDto = new HomeCakeDto(cakeId, mainImg, likeCnt);
+            HomeCakeDto homeCakeDto = HomeCakeDto.builder()
+                    .cakeId(cakeId)
+                    .thumbnailMainImg(thumbnailMainImg)
+                    .likeCnt(likeCnt)
+                    .build();
             homeCakeDtoList.add(homeCakeDto);
         }
         return homeCakeDtoList;

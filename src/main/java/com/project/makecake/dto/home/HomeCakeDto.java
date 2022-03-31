@@ -1,18 +1,19 @@
 package com.project.makecake.dto.home;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-@Setter
 public class HomeCakeDto {
     private Long cakeId;
-    private String mainImg;
+    private String thumbnailMainImg;
     private int likeCnt;
 
-    public HomeCakeDto(Long cakeId, String mainImg, int likeCnt){
+    @Builder
+    public HomeCakeDto(Long cakeId, String thumbnailMainImg, int likeCnt){
         this.cakeId = cakeId;
-        this.mainImg = mainImg;
+        this.thumbnailMainImg = thumbnailMainImg;
         this.likeCnt = likeCnt;
     }
 }
