@@ -17,7 +17,7 @@ public interface CakeRepository extends JpaRepository<Cake, Long> {
     List<Cake> findAllByStore_StoreId(long storeId);
     void deleteAllByStore_StoreId(Long storeId);
 
-    @Query(value = "SELECT * FROM cake ORDER BY RAND() LIMIT 18", nativeQuery = true)
+    @Query(value = "SELECT * FROM cake ORDER BY RAND() LIMIT 54", nativeQuery = true)
     List<Cake> findByRandom();
 
 
