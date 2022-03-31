@@ -29,7 +29,7 @@ public class SearchResponseDto {
         this.addressSimple = addressSimple;
         this.roadAddress = store.getRoadAddress();
         this.fullAddress = store.getFullAddress();
-        this.mainImg = store.getMainImg();
+        this.mainImg = store.getThumbnailMainImg();
         this.likeCnt = store.getLikeCnt();
         this.reviewCnt = store.getReviewCnt();
     }
