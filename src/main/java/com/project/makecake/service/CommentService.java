@@ -40,7 +40,7 @@ public class CommentService {
 
         // 게시글에 달린 댓글 리스트 찾기 (5개씩)
         Sort sort = Sort.by(Sort.Direction.DESC,"commentId");
-        Pageable pageable = PageRequest.of(page,5,sort);
+        Pageable pageable = PageRequest.of(page,15,sort);
         Page<Comment> foundCommentList = commentRepository.findAllByPost(foundPost, pageable);
 
         // 반환 DTO에 담기
