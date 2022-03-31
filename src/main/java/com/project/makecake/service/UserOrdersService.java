@@ -78,9 +78,7 @@ public class UserOrdersService {
         String formFilled = "";
         for(String input : requestDto.getUserInput()){
             formFilled += input + "<br>";
-            System.out.println(formFilled);
         }
-        System.out.println("완료 " + formFilled);
 
         OrderForm orderForm = orderFormRepository.findById(orderFormId)
                 .orElseThrow(()-> new CustomException(ErrorCode.ORDERFORM_NOT_FOUND));
@@ -120,8 +118,6 @@ public class UserOrdersService {
             formList.add(rawForm.trim());
         }
 
-        System.out.println(formList.toString());
-
         // 주문 전 필독사항
         List<String> instructionList = new ArrayList<>();
         String instruction = orderForm.getInstruction();
@@ -141,8 +137,6 @@ public class UserOrdersService {
         for(String rawUserInput : rawUserInputList) {
             userInputList.add(rawUserInput.trim());
         }
-
-        System.out.println(userInputList.toString());
 
         String copyText = "";
 

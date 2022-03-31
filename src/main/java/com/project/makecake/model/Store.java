@@ -51,6 +51,10 @@ public class Store extends Timestamped{
     @Column(columnDefinition = "integer default 0")
     private int reviewCnt;
 
+    @Column
+    private String thumbnailMainImg;
+
+
     // 매장 후기 수 Cnt
     public void countReview(boolean bool) {
         if(bool) {
@@ -58,6 +62,11 @@ public class Store extends Timestamped{
         } else {
             this.reviewCnt -=1;
         }
+    }
+
+    // 썸네일 추가
+    public void setThumbNail(String thumbnailUrl){
+        this.thumbnailMainImg = thumbnailUrl;
     }
 
 }

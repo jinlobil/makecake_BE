@@ -1,19 +1,26 @@
 package com.project.makecake.service.backoffice;
 
+import com.project.makecake.dto.ImageInfoDto;
 import com.project.makecake.dto.backoffice.*;
 import com.project.makecake.enums.CakePriceState;
+import com.project.makecake.enums.FolderName;
 import com.project.makecake.exceptionhandler.CustomException;
 import com.project.makecake.exceptionhandler.ErrorCode;
+import com.project.makecake.model.Cake;
 import com.project.makecake.model.CakeMenu;
 import com.project.makecake.model.Store;
 import com.project.makecake.model.StoreOption;
 import com.project.makecake.repository.CakeMenuRepository;
+import com.project.makecake.repository.CakeRepository;
 import com.project.makecake.repository.StoreOptionRepository;
 import com.project.makecake.repository.StoreRepository;
+import com.project.makecake.service.CakeService;
+import com.project.makecake.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -24,12 +31,13 @@ public class BackOfficeService {
     private final StoreRepository storeRepository;
     private final CakeMenuRepository cakeMenuRepository;
     private final StoreOptionRepository storeOptionRepository;
+    private final S3Service s3Service;
+    private final CakeRepository cakeRepository;
 
     @Transactional
     public CakeMenuOptionPeekResponseDto peekMenuAndOption(CakeMenuOptionPeekRequestDto requestDto) {
         //매장 Id
         Long storeId = requestDto.getStoreId();
-        System.out.println("storeId:" + storeId);
 
         //매장 이름
         Store store = storeRepository.findById(storeId)
@@ -61,7 +69,7 @@ public class BackOfficeService {
         return new CakeMenuOptionPeekResponseDto(storeId, storeName, peekMenuList, peekOptionList);
     }
 
-    //케이크 메뉴, 옵션 데이터 저장
+    //케이크 메뉴, 옵션 데이터 저장 메소드
     public String addMenuAndOption(CakeMenuOptionPeekResponseDto requestDto) {
         Store store = storeRepository.getById(requestDto.getStoreId());
 
@@ -86,18 +94,18 @@ public class BackOfficeService {
         return "데이터가 저장되었습니다.";
     }
 
-    // 케이크 메뉴 삭제
+    // 케이크 메뉴 삭제 메소드
     public void deleteCakeMenu(long storeId){
         cakeMenuRepository.deleteAllByStore_StoreId(storeId);
     }
 
-    // 케이크 옵션 삭제
+    // 케이크 옵션 삭제 메소드
     public void deleteCakeOption(long storeId){
         storeOptionRepository.deleteAllByStore_StoreId(storeId);
     }
 
 
-    //매장 이름으로 매장 id 검색하기
+    //매장 이름으로 매장 id 검색하기 메소드
     public BoSearchStoreIdResponseDto boSearchStoreId(BoSearchStoreIdRequestDto requestDto) {
         String searchText = requestDto.getSearchText();
         Long storeId = Long.valueOf(0);
@@ -113,4 +121,22 @@ public class BackOfficeService {
 
         return responseDto;
     }
+
+    /*@Transactional
+    // 기존 케이크 이미지에 썸네일 이미지 url 추가 메소드
+    public void addCakeThumbNailImg(int page) throws IOException {
+        Pageable pageable = PageRequest.of(page,50);
+        Page<Store> foundStoreList = storeRepository.findAll(pageable);
+
+        for(Store store : foundStoreList){
+            log.info("매장 아이디는 " + store.getStoreId());
+            if(!store.getStoreId().equals(2230L)){
+                ImageInfoDto imageInfo = s3Service.uploadThumbnailFileByUrl(store.getMainImg(), FolderName.STORE_MAIN_RESIZE.name());
+                store.setThumbNail(imageInfo.getUrl());
+            }
+        }
+    }
+
+     */
+
 }

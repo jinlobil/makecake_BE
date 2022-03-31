@@ -25,10 +25,14 @@ public class Cake extends Timestamped{
     @Column
     private int likeCnt;
 
+    @Column
+    private String thumbnailUrl;
+
     @Builder
-    public Cake(String url, Store store) {
+    public Cake(String url, Store store, String thumbnailUrl) {
         this.url = url;
         this.store = store;
+        this.thumbnailUrl = thumbnailUrl;
     }
 
     // 좋아요수 변경 메소드
@@ -39,4 +43,9 @@ public class Cake extends Timestamped{
             this.likeCnt -= 1;
         }
     }
+
+    public void setThumbnailUrl(String thumbnailUrl){
+        this.thumbnailUrl = thumbnailUrl;
+    }
+
 }

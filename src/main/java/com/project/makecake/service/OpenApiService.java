@@ -56,7 +56,7 @@ public class OpenApiService {
 
         //결과 코드가 200이라면 성공
         int responseCode = conn.getResponseCode();
-        System.out.println("responseCode : " + responseCode);
+        //System.out.println("responseCode : " + responseCode);
 
         //요청을 통해 얻은 JSON타입의 Response 메세지 읽어오기
         BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -136,7 +136,7 @@ public class OpenApiService {
 
         for(int i = 0; i < images.size(); i++){
             String imgUrl = images.get(i).getAsJsonObject().get("url").getAsString();
-            Cake cake = new Cake(imgUrl,store);
+            Cake cake = new Cake(imgUrl,store,null);
 
             cakeRepository.save(cake);
         }

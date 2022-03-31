@@ -9,7 +9,7 @@ import java.util.List;
 
 @Getter
 public class OrderFormDetailResponseDto {
-    private long orderFormId;
+    private long orderFormId, storeId;
     private String name;
     private List<String> formList;
     private List<String> instructionList;

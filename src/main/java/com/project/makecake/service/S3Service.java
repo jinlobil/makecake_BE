@@ -132,6 +132,9 @@ public class S3Service {
     // 이미지 url로 파일 업로드하는 메소드
     public ImageInfoDto uploadThumbnailFileByUrl(String inputUrl, String dirName) throws IOException {
 
+        int position = inputUrl.lastIndexOf(".");
+        String ext = inputUrl.substring(position+1);
+
         URL url = new URL(inputUrl);
         BufferedInputStream orginalIs = new BufferedInputStream(url.openStream());
 
@@ -146,7 +149,7 @@ public class S3Service {
                 .asBufferedImage();
 
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        ImageIO.write(resizedImage, "jpg", os);
+        ImageIO.write(resizedImage, ext, os);
         InputStream is = new ByteArrayInputStream(os.toByteArray());
 
         ObjectMetadata metadata = new ObjectMetadata();
@@ -159,6 +162,9 @@ public class S3Service {
         amazonS3Client.putObject(bucket, uploadImageName, is, metadata);
         // S3에 업로드한 이미지의 주소를 받아온다.
         String uploadImageUrl = amazonS3Client.getUrl(bucket, uploadImageName).toString();
+
+        log.info("사이즈 : "+ String.valueOf(os.size()));
+
 
         return ImageInfoDto.builder()
                 .url(uploadImageUrl)

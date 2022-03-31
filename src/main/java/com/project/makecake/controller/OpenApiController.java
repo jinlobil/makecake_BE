@@ -69,7 +69,7 @@ public class OpenApiController {
 
         //결과 코드가 200이라면 성공
         int responseCode = conn.getResponseCode();
-        System.out.println("responseCode : " + responseCode);
+        //System.out.println("responseCode : " + responseCode);
 
         //요청을 통해 얻은 JSON타입의 Response 메세지 읽어오기
         BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -86,10 +86,10 @@ public class OpenApiController {
 
 //        JsonArray rawList = element.getAsJsonObject().get("result").getAsJsonObject().get("place").getAsJsonObject().get("list").getAsJsonArray();
 
-        JsonArray rawList = element.getAsJsonObject().get("result").getAsJsonObject().get("place").getAsJsonObject().get("boundary").getAsJsonArray();
-        for(int i =0; i < rawList.size();i++){
-            System.out.println(i + "번째 " + rawList.get(i).getAsString());
-        }
+//        JsonArray rawList = element.getAsJsonObject().get("result").getAsJsonObject().get("place").getAsJsonObject().get("boundary").getAsJsonArray();
+//        for(int i =0; i < rawList.size();i++){
+//            System.out.println(i + "번째 " + rawList.get(i).getAsString());
+//        }
     }
 
 
