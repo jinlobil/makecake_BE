@@ -13,9 +13,9 @@ public class CakeResponseDto {
     private boolean myLike;
 
     @Builder
-    public CakeResponseDto(Cake cake, boolean myLike) {
+    public CakeResponseDto(Cake cake, boolean myLike, String imgUrl) {
         this.cakeId = cake.getCakeId();
-        this.img = cake.getUrl();
+        this.img = imgUrl;
         this.storeId = cake.getStore().getStoreId();
         this.storeName = cake.getStore().getName();
         this.likeCnt = cake.getLikeCnt();
