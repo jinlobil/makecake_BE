@@ -169,7 +169,7 @@ public class MypageService {
                     .storeId(storeLike.getStore().getStoreId())
                     .name(storeLike.getStore().getName())
                     .addressSimple(addressSimple)
-                    .mainImg(storeLike.getStore().getMainImg())
+                    .mainImg(storeLike.getStore().getThumbnailMainImg())
                     .build();
             responseDtoList.add(responseDto);
         }
@@ -230,7 +230,7 @@ public class MypageService {
         for (CakeLike cakeLike : foundCakeList) {
             MyReactCakeResponseDto responseDto = MyReactCakeResponseDto.builder()
                     .cakeId(cakeLike.getCake().getCakeId())
-                    .img(cakeLike.getCake().getUrl())
+                    .img(cakeLike.getCake().getThumbnailUrl())
                     .storeName(cakeLike.getCake().getStore().getName())
                     .storeId(cakeLike.getCake().getStore().getStoreId())
                     .likeCnt(cakeLike.getCake().getLikeCnt())
