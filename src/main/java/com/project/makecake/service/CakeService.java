@@ -64,6 +64,10 @@ public class CakeService {
     // 케이크 사진 리스트 조회 메소드
     public List<CakeResponseDto> getCakeList(UserDetailsImpl userDetails, int page, String sortType) {
 
+        if (page>=60 && sortType.equals("random")) {
+            return new ArrayList<>();
+        }
+
         // 비로그인 유저는 null 처리
         User user = null;
         if (userDetails!=null) {
