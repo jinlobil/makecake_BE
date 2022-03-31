@@ -27,5 +27,4 @@ public class RestApiExceptionHandler {
     public void handleSocketException(SocketException ex) {
         System.out.println("broken pipe가 발생했다!!!!!!!!!!!! 안돼!!!!!!!!!!!");
     }
-
 }
