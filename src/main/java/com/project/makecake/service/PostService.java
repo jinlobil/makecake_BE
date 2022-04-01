@@ -71,7 +71,7 @@ public class PostService {
 
         // 게시되지 않은 도안인지 확인
         if (foundDesign.isPost()) {
-            throw new IllegalArgumentException("게시중인 도안은 삭제할 수 없습니다.");
+            throw new CustomException(ErrorCode.DESIGN_ALREADY_POST);
         }
 
         // 동일 유저인지 확인
@@ -211,6 +211,16 @@ public class PostService {
     // 도안 게시글 수정 메소드
     @Transactional
     public void editPost(long postId, UserDetailsImpl userDetails, PostRequestDto requestDto) {
+
+        // 게시글 제목 길이 체크(20)
+        if (requestDto.getTitle().length() > 20) {
+            throw new CustomException(ErrorCode.TITLE_LENGTH_WRONG);
+        }
+
+        // 게시글 내용 길이 체크(250)
+        if (requestDto.getContent().length() > 250) {
+            throw new CustomException(ErrorCode.CONTENT_LENGTH_WRONG);
+        }
 
         User user = userDetails.getUser();
 
