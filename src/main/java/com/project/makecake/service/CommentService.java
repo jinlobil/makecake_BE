@@ -95,6 +95,11 @@ public class CommentService {
     @Transactional
     public void editComment(long commentId, UserDetailsImpl userDetails, CommentRequestDto requestDto) {
 
+        // 댓글 내용 길이 체크(100)
+        if (requestDto.getContent().length() > 100) {
+            throw new CustomException(ErrorCode.CONTENT_LENGTH_WRONG);
+        }
+
         User user = userDetails.getUser();
 
         // 댓글 찾기
