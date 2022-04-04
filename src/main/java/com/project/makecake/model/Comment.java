@@ -38,9 +38,4 @@ public class Comment extends Timestamped{
         this.content = content;
     }
 
-    // 연관관계 삭제 메소드
-    public void deleteRelation() {
-        this.post = null;
-        this.user = null;
-    }
 }

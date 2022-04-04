@@ -132,9 +132,6 @@ public class CommentService {
         // 도안 게시글 댓글수 감소
         foundComment.getPost().editCommentCnt(false);
 
-        // 연관관계 삭제
-        foundComment.deleteRelation();
-
         // 댓글 삭제
         commentRepository.delete(foundComment);
     }
