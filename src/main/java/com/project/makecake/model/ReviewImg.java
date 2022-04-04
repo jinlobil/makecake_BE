@@ -26,12 +26,25 @@ public class ReviewImg extends Timestamped{
     @JoinColumn(name = "REVIEW_ID")
     private Review review;
 
+    @Column(nullable = false)
+    private String ThumbnailImgUrl;
+
+    @Column(nullable = false)
+    private String ThumbnailImgName;
+
     //생성자
     @Builder
-    public ReviewImg(ImageInfoDto imgInfo, Review review){
-        this.imgUrl = imgInfo.getUrl();
-        this.imgName = imgInfo.getName();
+    public ReviewImg(ImageInfoDto original,ImageInfoDto thumbnail, Review review){
+        this.imgUrl = original.getUrl();
+        this.imgName = original.getName();
+        this.ThumbnailImgUrl = thumbnail.getUrl();
+        this.ThumbnailImgName = thumbnail.getName();
         this.review= review;
+    }
+
+    public void addThumbnail(ImageInfoDto thumbnail) {
+        this.ThumbnailImgUrl = thumbnail.getUrl();
+        this.ThumbnailImgName = thumbnail.getName();
     }
 }
 

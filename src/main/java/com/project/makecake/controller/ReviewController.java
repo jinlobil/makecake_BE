@@ -48,4 +48,10 @@ public class ReviewController {
     public void deleteReview(@PathVariable long reviewId){
         reviewService.deleteReview(reviewId);
     }
+
+    // 임시 API
+    @GetMapping("/api/admin/review/resize")
+    public void reviewThumbnail() throws IOException {
+        reviewService.resizeReview();
+    }
 }

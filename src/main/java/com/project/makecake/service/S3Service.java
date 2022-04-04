@@ -26,6 +26,7 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -129,11 +130,10 @@ public class S3Service {
     }
 
     // 원본 + 리사이즈 파일 동시 저장 메소드
-    public List<ImageInfoDto> uploadBothFile(MultipartFile multipartFile, int size, String dirName) throws IOException {
-        List<ImageInfoDto> infoDtoList = new ArrayList<>();
-        infoDtoList.add(uploadOriginalFile(multipartFile, dirName));
-        infoDtoList.add(uploadThumbnailFile(multipartFile, size, dirName+"_RESIZE"));
-
+    public HashMap<String,ImageInfoDto> uploadBothFile(MultipartFile multipartFile, int size, String dirName) throws IOException {
+        HashMap<String,ImageInfoDto> infoDtoList = new HashMap<>();
+        infoDtoList.put("original",uploadOriginalFile(multipartFile, dirName));
+        infoDtoList.put("thumbnail",uploadThumbnailFile(multipartFile, size, dirName+"_RESIZE"));
         return infoDtoList;
     }
 
