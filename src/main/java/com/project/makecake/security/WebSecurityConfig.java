@@ -69,6 +69,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET,"/api/**").permitAll()
                 // nginx profile 요청 인증 X
                 .antMatchers(HttpMethod.GET, "/profile").permitAll()
+                .antMatchers(HttpMethod.GET, "/home/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/search/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/stores/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/cakes/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/posts/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/orders/order-guide").permitAll()
+                .antMatchers(HttpMethod.GET, "/orders/stores").permitAll()
                 // 그 외 요청 모두 인증
                 .anyRequest().authenticated()
                 // 시큐리티 예외처리

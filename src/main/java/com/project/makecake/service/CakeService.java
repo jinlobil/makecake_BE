@@ -1,7 +1,8 @@
 package com.project.makecake.service;
 
-import com.project.makecake.dto.*;
+import com.project.makecake.dto.ImageInfoDto;
 import com.project.makecake.dto.cake.CakeResponseDto;
+import com.project.makecake.dto.cake.CakeSimpleResponseDto;
 import com.project.makecake.dto.home.HomeCakeDto;
 import com.project.makecake.dto.like.LikeRequestDto;
 import com.project.makecake.dto.like.LikeResponseDto;
@@ -62,40 +63,17 @@ public class CakeService {
     }
 
     // 케이크 사진 리스트 조회 메소드
-    public List<CakeResponseDto> getCakeList(UserDetailsImpl userDetails, int page, String sortType) {
+    public List<CakeSimpleResponseDto> getCakeList(int page, String sortType) {
 
         if (page>=60 && sortType.equals("random")) {
             return new ArrayList<>();
         }
 
-        // 비로그인 유저는 null 처리
-        User user = null;
-        if (userDetails!=null) {
-            user = userDetails.getUser();
-        }
-
         List<Cake> foundCakeList = findCakeListBySortType(page, sortType);
 
-        // 좋아요 반영해서 반환 DTO에 담기
-        List<CakeResponseDto> responseDtoList = new ArrayList<>();
+        List<CakeSimpleResponseDto> responseDtoList = new ArrayList<>();
         for (Cake cake : foundCakeList) {
-
-            // myLike 디폴트는 false
-            boolean myLike = false;
-
-            // 로그인 유저는 좋아요 여부 반영
-            if(user!=null) {
-                Optional<CakeLike> foundCakeLike = cakeLikeRepository.findByUserAndCake(user, cake);
-                if (foundCakeLike.isPresent()) {
-                    myLike = true;
-                }
-            }
-
-            CakeResponseDto responseDto = CakeResponseDto.builder()
-                    .cake(cake)
-                    .myLike(myLike)
-                    .imgUrl(cake.getUrl())
-                    .build();
+            CakeSimpleResponseDto responseDto = new CakeSimpleResponseDto(cake);
             responseDtoList.add(responseDto);
         }
         return responseDtoList;

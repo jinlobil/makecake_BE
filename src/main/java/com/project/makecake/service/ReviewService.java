@@ -53,7 +53,7 @@ public class ReviewService {
             // 리뷰 이미지 있을 경우 img 반환
             if(!reviewImgRepository.findAllByReview_ReviewId(reviewId).isEmpty()){
                 // (리뷰 대표 이미지 : 이미지 여러 개 중 첫 번 째 이미지)
-                img = reviewImgRepository.findAllByReview_ReviewId(reviewId).get(0).getImgUrl();
+                img = reviewImgRepository.findAllByReview_ReviewId(reviewId).get(0).getThumbnailImgUrl();
             }
 
             HomeReviewDto responseDto = HomeReviewDto.builder()
