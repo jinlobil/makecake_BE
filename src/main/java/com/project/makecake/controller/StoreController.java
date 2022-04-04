@@ -87,7 +87,7 @@ public class StoreController {
 
 
     // (매장 상세페이지) 매장 리뷰 조회 API (3개씩)
-    @GetMapping("/api/stores/{storeId}/reviews")
+    @GetMapping("/stores/{storeId}/reviews")
     public List<ReviewResponseDto> getReviewListAtStore(
             @PathVariable long storeId,
             @RequestParam int page
