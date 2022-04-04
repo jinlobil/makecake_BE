@@ -13,5 +13,4 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
     List<Store> findByNameStartingWith(String searchText);
 
 
-
 }

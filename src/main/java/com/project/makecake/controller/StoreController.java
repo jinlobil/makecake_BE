@@ -42,10 +42,16 @@ public class StoreController {
     }
 
 
-    // 매장 검색 결과 반환 API
+    // 매장 검색 결과 반환 API (original)
     @PostMapping("/api/search")
     public List<SearchResponseDto> getStoreList(@RequestBody SearchRequestDto requestDto) throws IOException {
         return storeService.getStoreList(requestDto);
+    }
+
+    // 매장 검색 결과 반환 API (성능 개선용)
+    @PostMapping("/api/search-renewal")
+    public List<SearchResponseDto> getStoreListRenewal(@RequestBody SearchRequestDto requestDto) throws IOException {
+        return storeService.getStoreListRenewal(requestDto);
     }
 
     // 검색 결과에서 매장 클릭 시 매장 정보 반환
@@ -83,8 +89,6 @@ public class StoreController {
     ) {
         return  storeService.getReviewListAtStore(storeId, page);
     }
-
-
 
 
     // 매장 좋아요 API
