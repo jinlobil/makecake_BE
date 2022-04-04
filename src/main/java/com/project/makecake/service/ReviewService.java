@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -88,10 +89,12 @@ public class ReviewService {
         // 이미지 S3 업로드 및 DB 저장
         if(imgFileList != null){
             for(MultipartFile imgFile : imgFileList){
-                ImageInfoDto imageInfoDto = s3Service.uploadOriginalFile(imgFile, FolderName.REVIEW.name());
+                HashMap<String,ImageInfoDto> imageInfoDtoList
+                        = s3Service.uploadBothFile(imgFile, 200, FolderName.REVIEW.name());
 
                 ReviewImg reviewImg = ReviewImg.builder()
-                        .imgInfo(imageInfoDto)
+                        .original(imageInfoDtoList.get("original"))
+                        .thumbnail(imageInfoDtoList.get("thumbnail"))
                         .review(review)
                         .build();
 
@@ -116,6 +119,7 @@ public class ReviewService {
         Optional<ReviewImg> foundReviewImg = reviewImgRepository.findByReview(review);
         if(foundReviewImg.isPresent()){
             s3Service.deleteFile(foundReviewImg.get().getImgName());
+            s3Service.deleteFile(foundReviewImg.get().getThumbnailImgName());
             reviewImgRepository.deleteAllByReview_ReviewId(reviewId);
         }
         reviewRepository.deleteById(reviewId);
@@ -154,6 +158,7 @@ public class ReviewService {
                     //s3에서 삭제
                     ReviewImg reviewImg = reviewImgRepository.findByImgUrl(foundImgUrlList.get(j));
                     s3Service.deleteFile(reviewImg.getImgName());
+                    s3Service.deleteFile(reviewImg.getThumbnailImgName());
 
                     //db에서 삭제
                     reviewImgRepository.deleteByImgUrl(foundImgUrlList.get(j));
@@ -164,9 +169,11 @@ public class ReviewService {
         // 새로운 이미지를 추가한 경우
         if(imgFileList != null){
             for(MultipartFile imgFile : imgFileList){
-                ImageInfoDto imageInfoDto = s3Service.uploadOriginalFile(imgFile, FolderName.REVIEW.name());
+                HashMap<String,ImageInfoDto> imageInfoDtoList
+                        = s3Service.uploadBothFile(imgFile, 200, FolderName.REVIEW.name());
                 ReviewImg reviewImg = ReviewImg.builder()
-                        .imgInfo(imageInfoDto)
+                        .original(imageInfoDtoList.get("original"))
+                        .thumbnail(imageInfoDtoList.get("thumbnail"))
                         .review(review)
                         .build();
                 reviewImgRepository.save(reviewImg);
@@ -193,4 +200,5 @@ public class ReviewService {
 
         return new ReviewResponseTempDto(review, reviewImage);
     }
+
 }
