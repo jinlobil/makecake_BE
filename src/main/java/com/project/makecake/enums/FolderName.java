@@ -6,5 +6,6 @@ public enum FolderName {
     PROFILE,
     Cake,
     Cake_RESIZE,
-    STORE_MAIN_RESIZE
+    STORE_MAIN_RESIZE,
+    REVIEW_RESIZE
 }
