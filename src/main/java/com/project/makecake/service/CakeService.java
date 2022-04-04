@@ -94,7 +94,7 @@ public class CakeService {
             CakeResponseDto responseDto = CakeResponseDto.builder()
                     .cake(cake)
                     .myLike(myLike)
-                    .imgUrl(cake.getThumbnailUrl())
+                    .imgUrl(cake.getUrl())
                     .build();
             responseDtoList.add(responseDto);
         }
