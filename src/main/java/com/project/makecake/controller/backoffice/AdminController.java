@@ -11,7 +11,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 public class AdminController {
-
     private final AdminService adminService;
 
     @Secured("ROLE_ADMIN")

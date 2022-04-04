@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+
+// 노티로 보낼 만한 공지사항, 안내 사항 웹페이지 생성 Controller
 @RequiredArgsConstructor
 @RestController
 public class GuideController {

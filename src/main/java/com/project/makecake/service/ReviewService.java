@@ -35,16 +35,23 @@ public class ReviewService {
 
     // (홈탭) 최신 매장 후기 조회 메소드 (5개)
     public List<HomeReviewDto> getReviewListAtHome() {
+        // 최신 순 매장 후기 5개 DB에서 가져오기
         List<Review> foundReviewList = reviewRepository.findTop5ByOrderByCreatedAtDesc();
 
+        // DB에서 가져온 데이터 responseDto에 담기
         List<HomeReviewDto> responseDtoList = new ArrayList<>();
         for(Review review : foundReviewList){
             Store store = review.getStore();
 
             long reviewId = review.getReviewId();
 
+            // 리뷰 대표 이미지 반환하기
+            // 리뷰 이미지 없을 경우 기본 이미지 반환
             String img = "https://makecake.s3.ap-northeast-2.amazonaws.com/PROFILE/%EC%97%B0%ED%95%9C%EC%BC%80%EC%9D%B4%ED%81%AC.png";
+
+            // 리뷰 이미지 있을 경우 img 반환
             if(!reviewImgRepository.findAllByReview_ReviewId(reviewId).isEmpty()){
+                // (리뷰 대표 이미지 : 이미지 여러 개 중 첫 번 째 이미지)
                 img = reviewImgRepository.findAllByReview_ReviewId(reviewId).get(0).getImgUrl();
             }
 
@@ -109,11 +116,13 @@ public class ReviewService {
     @Transactional
     public void deleteReview(long reviewId){
         Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(()->new IllegalArgumentException("존재하지 않는 리뷰입니다."));
+                .orElseThrow(()->new CustomException(ErrorCode.REVIEW_NOT_FOUND));
 
         Store store = review.getStore();
 
+        // 매장 후기 이미지 DB에서 검색
         Optional<ReviewImg> foundReviewImg = reviewImgRepository.findByReview(review);
+
         if(foundReviewImg.isPresent()){
             s3Service.deleteFile(foundReviewImg.get().getImgName());
             reviewImgRepository.deleteAllByReview_ReviewId(reviewId);
@@ -122,6 +131,7 @@ public class ReviewService {
 
         boolean bool = false;
         store.countReview(bool);
+
         storeRepository.save(store);
     }
 

@@ -27,7 +27,7 @@ public class UserOrdersController {
         return userOrdersService.addUserOrders(orderFormId, requestDto, userDetails);
     }
 
-    // (주문하기) 사용자가 작성한 주문서 상세 보기
+    // (마이페이지 > 주문하기) 사용자가 작성한 주문서 상세 조회 API
     @GetMapping("/orders/{userOrdersId}")
     public UserOrdersDetailResponseDto getUserOrdersDetails(
             @PathVariable Long userOrdersId
@@ -35,6 +35,7 @@ public class UserOrdersController {
         return userOrdersService.getUserOrdersDetails(userOrdersId);
     }
 
+    // (마이페이지 > 주문하기) 작성한 주문서 삭제 API
     @DeleteMapping("/orders/{userOrdersId}")
     public void deleteUserOrders(
             @PathVariable Long userOrdersId,
