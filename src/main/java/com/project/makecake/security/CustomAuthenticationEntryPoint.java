@@ -26,6 +26,21 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 //            setResponse(response, errorCode);
 //            return;
 //        }
+        if (exception.equals(ErrorCode.USER_NOT_FOUND.name())) {
+            errorCode = ErrorCode.USER_NOT_FOUND;
+            setResponse(response, errorCode);
+            return;
+        }
+        if (exception.equals(ErrorCode.EXPIRED_JWT.name())) {
+            errorCode = ErrorCode.EXPIRED_JWT;
+            setResponse(response, errorCode);
+            return;
+        }
+        if (exception.equals(ErrorCode.WRONG_JWT.name())) {
+            errorCode = ErrorCode.WRONG_JWT;
+            setResponse(response, errorCode);
+            return;
+        }
     }
 
     private void setResponse(HttpServletResponse response, ErrorCode errorCode) throws IOException {
