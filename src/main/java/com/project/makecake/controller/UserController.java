@@ -29,7 +29,7 @@ public class UserController {
     private final S3Service s3Service;
 
     // 회원가입 API
-    @PostMapping("/user/signup")
+    @PostMapping("/users/signup")
     public HashMap<String, Boolean> addUser(
             @RequestBody SignupRequestDto requestDto
     ) {
@@ -37,7 +37,7 @@ public class UserController {
     }
 
     // username 중복검사 API
-    @PostMapping("/user/usernameCheck")
+    @PostMapping("/users/username-check")
     public HashMap<String, Boolean> checkUsername(
             @RequestBody SignupRequestDto requestDto
     ) {
@@ -45,7 +45,7 @@ public class UserController {
     }
 
     // nickname 중복검사 API
-    @PostMapping("/user/nicknameCheck")
+    @PostMapping("/users/nickname-check")
     public HashMap<String, Boolean> checkNickname(
             @RequestBody SignupRequestDto requestDto
     ) {
@@ -53,7 +53,7 @@ public class UserController {
     }
 
     // 로그인 체크 API
-    @GetMapping("/user/loginCheck")
+    @GetMapping("/users/login-check")
     public LoginCheckResponseDto checkLogin(
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
@@ -61,7 +61,7 @@ public class UserController {
     }
 
     // 프로필 수정 API
-    @PutMapping("/user/editProfile")
+    @PutMapping("/users/profile")
     public MypageResponseDto editProfile(
             @RequestParam(value = "imgFile", required = false) MultipartFile imgFile,
             @RequestParam String nickname,
@@ -71,7 +71,7 @@ public class UserController {
     }
 
     // 회원탈퇴 API
-    @PutMapping("/user/resign")
+    @PutMapping("/users/resign")
     public MypageResponseDto resignUser(
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
@@ -79,7 +79,7 @@ public class UserController {
     }
 
     // (임시) 이미지 업로드 API
-    @PostMapping("/user/image")
+    @PostMapping("/users/image")
     public ImageInfoDto userImage(
             @RequestParam(value = "imgFile", required = false) MultipartFile imgFile
     ) throws IOException {
