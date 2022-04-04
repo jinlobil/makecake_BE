@@ -28,7 +28,7 @@ public class MypageController {
     }
 
     // 내가 그린 도안 조회 API
-    @GetMapping("/designs/mine")
+    @GetMapping("/mypage/designs")
     public List<MyDesignResponseDto> getMyDesignList(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestParam String option,
@@ -38,7 +38,7 @@ public class MypageController {
     }
 
     // 내가 게시 안 한 도안 상세 조회 API
-    @GetMapping("/designs/mine/{designId}")
+    @GetMapping("/mypage/designs/{designId}")
     public DesignResponseDto getDesignDetails(
             @PathVariable Long designId,
             @AuthenticationPrincipal UserDetailsImpl userDetails
@@ -47,7 +47,7 @@ public class MypageController {
     }
 
     // 내가 좋아요한 게시글 API
-    @GetMapping("/designs/myReact")
+    @GetMapping("/mypage/posts")
     public List<MyReactPostResponceDto> getMyLikePostList(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestParam int page
@@ -56,7 +56,7 @@ public class MypageController {
     }
 
     // 내가 남긴 댓글 API
-    @GetMapping("/designs/myComment")
+    @GetMapping("/mypage/comments")
     public List<MyCommentResponseDto> getMyCommentList(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestParam int page
@@ -65,7 +65,7 @@ public class MypageController {
     }
 
     // 내가 좋아요한 매장 API
-    @GetMapping("/stores/myReact")
+    @GetMapping("/mypage/stores")
     public List<MyReactStoreResponseDto> getMyLikeStoreList(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestParam int page
@@ -74,7 +74,7 @@ public class MypageController {
     }
 
     // 내가 남긴 후기 API
-    @GetMapping("/stores/myReview")
+    @GetMapping("/mypage/reviews")
     public List<MyReviewResponseDto> getMyReviewList(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestParam int page
@@ -83,7 +83,7 @@ public class MypageController {
     }
 
     // 내가 좋아요한 케이크 API
-    @GetMapping("/cakes/myReact")
+    @GetMapping("/mypage/cakes")
     public List<MyReactCakeResponseDto> getMyLikeCakeList(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestParam int page
@@ -92,7 +92,7 @@ public class MypageController {
     }
 
     // 주문하기 도안 조회 API
-    @GetMapping("/designs/mine/orders")
+    @GetMapping("/mypage/orders")
     public List<MyOrderListResponseDto> getMyOrderList(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestParam String option,
