@@ -49,9 +49,4 @@ public class ReviewController {
         reviewService.deleteReview(reviewId);
     }
 
-    // 임시 API
-    @GetMapping("/api/admin/review/resize")
-    public void reviewThumbnail() throws IOException {
-        reviewService.resizeReview();
-    }
 }

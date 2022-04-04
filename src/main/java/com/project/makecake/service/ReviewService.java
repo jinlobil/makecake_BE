@@ -211,14 +211,4 @@ public class ReviewService {
         return new ReviewResponseTempDto(review, reviewImage);
     }
 
-    @Transactional
-    public void resizeReview() throws IOException {
-        List<ReviewImg> reviewImgList = reviewImgRepository.findAll();
-        for (ReviewImg reviewimg : reviewImgList) {
-            ImageInfoDto infoDto
-                    = s3Service.uploadThumbnailFileByUrl(reviewimg.getImgUrl(),200,FolderName.REVIEW_RESIZE.name());
-            reviewimg.addThumbnail(infoDto);
-        }
-
-    }
 }
