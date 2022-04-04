@@ -74,7 +74,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/stores/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/cakes/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/posts/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/orders/order-guide").permitAll()
+                .antMatchers(HttpMethod.GET, "/order-guide").permitAll()
                 .antMatchers(HttpMethod.GET, "/orders/stores").permitAll()
                 // 그 외 요청 모두 인증
                 .anyRequest().authenticated()
