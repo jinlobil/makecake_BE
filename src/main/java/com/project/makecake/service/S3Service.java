@@ -25,6 +25,9 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 import static java.lang.Math.min;
@@ -77,16 +80,10 @@ public class S3Service {
     }
 
     // 리사이즈 파일 저장 메소드
-    public ImageInfoDto uploadThumbnailFile(MultipartFile multipartFile, String dirName) throws IOException {
+    public ImageInfoDto uploadThumbnailFile(MultipartFile multipartFile, int size, String dirName) throws IOException {
 
         // 0. 이미지 파일인지 체크
-        isImage(multipartFile);
-
-        // 1. 사전 준비
-        // 1-1 메타데이터 생성
-        // InputStream을 통해 Byte만 전달되고 해당 파일에 대한 정보가 없기 때문에 파일의 정보를 담은 메타데이터가 필요하다.
-        ObjectMetadata metadata = new ObjectMetadata();
-        metadata.setContentType(multipartFile.getContentType());
+        String ext = isImage(multipartFile);
 
         // 1-2 S3에 저장할 파일명 생성
         // UUID 사용 이유 : 이름이 같은 파일들이 서로 덮어쓰지 않고 구분될 수 있도록
@@ -100,17 +97,29 @@ public class S3Service {
 
         BufferedImage resizedImage = Thumbnails.of(multipartFile.getInputStream())
                 .sourceRegion(Positions.CENTER, cropSize, cropSize)
-                .size(200,200)
+                .size(size,size)
                 .asBufferedImage();
 
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        ImageIO.write(resizedImage, "jpg", os);
-        InputStream is = new ByteArrayInputStream(os.toByteArray());
+        ImageIO.write(resizedImage, ext, os);
 
-        metadata.setContentLength(os.size());
+        ByteArrayOutputStream uploadOs = new ByteArrayOutputStream();
+
+        if (os.size() == 0) {
+            ImageIO.write(resizedImage, "png", uploadOs);
+        } else {
+            uploadOs = os;
+        }
+
+        InputStream is = new ByteArrayInputStream(uploadOs.toByteArray());
+
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentType(ext);
+        metadata.setContentLength(uploadOs.size());
 
         // 2. s3로 업로드
         amazonS3Client.putObject(bucket,uploadImageName, is, metadata);
+
         // S3에 업로드한 이미지의 주소를 받아온다.
         String uploadImageUrl = amazonS3Client.getUrl(bucket, uploadImageName).toString();
 
@@ -121,16 +130,15 @@ public class S3Service {
     }
 
     // 원본 + 리사이즈 파일 동시 저장 메소드
-    public void uploadBothFile(MultipartFile multipartFile, String dirName) throws IOException {
-        uploadOriginalFile(multipartFile, dirName);
-        uploadThumbnailFile(multipartFile, dirName+"_RESIZE");
+    public HashMap<String,ImageInfoDto> uploadBothFile(MultipartFile multipartFile, int size, String dirName) throws IOException {
+        HashMap<String,ImageInfoDto> infoDtoList = new HashMap<>();
+        infoDtoList.put("original",uploadOriginalFile(multipartFile, dirName));
+        infoDtoList.put("thumbnail",uploadThumbnailFile(multipartFile, size, dirName+"_RESIZE"));
+        return infoDtoList;
     }
 
-
-
-
     // 이미지 url로 파일 업로드하는 메소드
-    public ImageInfoDto uploadThumbnailFileByUrl(String inputUrl, String dirName) throws IOException {
+    public ImageInfoDto uploadThumbnailFileByUrl(String inputUrl, int size, String dirName) throws IOException {
 
         int position = inputUrl.lastIndexOf(".");
         String ext = inputUrl.substring(position+1);
@@ -145,16 +153,24 @@ public class S3Service {
 
         BufferedImage resizedImage = Thumbnails.of(url.openStream())
                 .sourceRegion(Positions.CENTER, cropSize, cropSize)
-                .size(500,500)
+                .size(size,size)
                 .asBufferedImage();
 
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         ImageIO.write(resizedImage, ext, os);
         InputStream is = new ByteArrayInputStream(os.toByteArray());
 
+        ByteArrayOutputStream uploadOs = new ByteArrayOutputStream();
+
+        if (os.size() == 0) {
+            ImageIO.write(resizedImage, "png", uploadOs);
+        } else {
+            uploadOs = os;
+        }
+
         ObjectMetadata metadata = new ObjectMetadata();
-        metadata.setContentType("jpg");
-        metadata.setContentLength(os.size());
+        metadata.setContentType(ext);
+        metadata.setContentLength(uploadOs.size());
 
         String uploadImageName = dirName + "/" + UUID.randomUUID();
 
@@ -162,9 +178,6 @@ public class S3Service {
         amazonS3Client.putObject(bucket, uploadImageName, is, metadata);
         // S3에 업로드한 이미지의 주소를 받아온다.
         String uploadImageUrl = amazonS3Client.getUrl(bucket, uploadImageName).toString();
-
-        log.info("사이즈 : "+ String.valueOf(os.size()));
-
 
         return ImageInfoDto.builder()
                 .url(uploadImageUrl)
@@ -222,7 +235,7 @@ public class S3Service {
     }
 
     // 이미지 파일인지 확인하는 메소드
-    private void isImage(MultipartFile multipartFile) throws IOException {
+    private String isImage(MultipartFile multipartFile) throws IOException {
 
         // tika를 이용해 파일 MIME 타입 체크
         // 파일명에 .jpg 식으로 붙는 확장자는 없앨 수도 있고 조작도 가능하므로 MIME 타입을 체크하는 것이 좋다.
@@ -233,5 +246,7 @@ public class S3Service {
         if (!mimeType.startsWith("image/")) {
             throw new CustomException(ErrorCode.NOT_IMAGEFILE);
         }
+
+        return mimeType.substring(6);
     }
 }

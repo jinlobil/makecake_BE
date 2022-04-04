@@ -48,6 +48,7 @@ public class StoreController {
         return storeService.getStoreList(requestDto);
     }
 
+    // 검색 결과에서 매장 클릭 시 매장 정보 반환
     @GetMapping("/api/search/{storeId}")
     public SearchResponseDto getStoreDetailsAtSearch(@PathVariable Long storeId){
         return storeService.getStoreDetailsAtSearch(storeId);

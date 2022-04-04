@@ -130,10 +130,11 @@ public class UserOrdersService {
             }
         }
 
-        // 사용자 입력 사항
+        // 사용자 입력 사항 반환
         List<String> userInputList = new ArrayList<>();
         String userInput = userOrders.getFormFilled();
 
+        // 마지막 공백으로
         if(userInput.endsWith("<br><br>")){
             userInput = userInput.substring(0, userInput.length()-8) + "<br> <br>";
         }
@@ -185,6 +186,7 @@ public class UserOrdersService {
 
         userOrdersRepository.delete(userOrders);
     }
+
     // 주문서의 도안 전송 메소드
     public ResponseEntity<byte[]> getDesignAtOrders(long userOrdersId) throws IOException {
 

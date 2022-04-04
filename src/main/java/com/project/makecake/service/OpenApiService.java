@@ -47,16 +47,21 @@ public class OpenApiService {
 
     // api 요청 JSON 반환 메소드
     public JsonElement getOpenApiResult(String urlString) throws IOException {
+
+        // 문자열에 대한 Url 객체 생성
         URL url = new URL(urlString);
 
+        // UrlConnection vs HttpUrlConnection
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
         conn.setRequestMethod("GET");
+
+        //Server 통신에서 출력 가능한 상태로 만듬
         conn.setDoOutput(true);
 
         //결과 코드가 200이라면 성공
         int responseCode = conn.getResponseCode();
-        //System.out.println("responseCode : " + responseCode);
+        System.out.println("responseCode : " + responseCode);
 
         //요청을 통해 얻은 JSON타입의 Response 메세지 읽어오기
         BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));

@@ -275,7 +275,7 @@ public class StoreService {
     }
 
 
-    // (매장 상세 페이지 조회 메소드) 매장 홈페이지 url 2개 반환 메소드 (리팩토링 매우 필요)
+    // (매장 상세 페이지 조회 메소드) 매장 홈페이지 url 2개 반환 메소드
     public List<StoreDetailUrlDto> getUrlList(long storeId){
         List<StoreDetailUrlDto> urlList = new ArrayList<>();
         List<StoreUrl> foundUrlList = storeUrlRepository.findAllByStore_StoreId(storeId);
