@@ -16,8 +16,8 @@ public class CommentController {
 
     private final CommentService commentService;
 
-    // 도안 댓글 리스트 조회 API (5개씩)
-    @GetMapping("/api/designs/{postId}/comments")
+    // 도안 게시글 댓글 리스트 조회 API (5개씩)
+    @GetMapping("/posts/{postId}/comments")
     public List<CommentResponseDto> getCommentList(
             @PathVariable long postId,
             @RequestParam int page
@@ -26,7 +26,7 @@ public class CommentController {
     }
 
     // 도안 댓글 작성 API
-    @PostMapping("/comments/{postId}")
+    @PostMapping("/posts/{postId}/comments")
     public void addComment(
             @PathVariable long postId,
             @AuthenticationPrincipal UserDetailsImpl userDetails,
