@@ -117,7 +117,7 @@ public class NotiService {
         foundFixNoti.editReveal();
     }
 
-    //알림 발송 메소드
+    //개인 알림 발송 메소드
     @Transactional
     public void addPersonalNoti(long notiId, RedirectUrlRequestDto requestDto) {
 
