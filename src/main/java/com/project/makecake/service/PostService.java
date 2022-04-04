@@ -1,12 +1,10 @@
 package com.project.makecake.service;
 
-import com.project.makecake.dto.*;
 import com.project.makecake.dto.like.LikeRequestDto;
 import com.project.makecake.dto.like.LikeResponseDto;
 import com.project.makecake.dto.post.PostDetailResponseDto;
 import com.project.makecake.dto.post.PostRequestDto;
 import com.project.makecake.dto.post.PostSimpleResponseDto;
-import com.project.makecake.enums.FolderName;
 import com.project.makecake.enums.NotiType;
 import com.project.makecake.exceptionhandler.CustomException;
 import com.project.makecake.exceptionhandler.ErrorCode;
@@ -20,9 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,55 +30,10 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final DesignRepository designRepository;
-    private final S3Service s3Service;
     private final PostLikeRepository postLikeRepository;
     private final CommentRepository commentRepository;
     private final NotiRepository notiRepository;
     private final PersonalNotiRepository personalNotiRepository;
-    private final UserOrdersRepository userOrdersRepository;
-
-    // 도안 저장 메소드
-    @Transactional
-    public DesignResponseDto addDesign(UserDetailsImpl userDetails, MultipartFile img) throws IOException {
-
-        User user = userDetails.getUser();
-
-        // S3에 이미지 업로드하고 업로드 정보 받아오기
-        ImageInfoDto imgInfo = s3Service.uploadOriginalFile(img, FolderName.DESIGN.name());
-
-        // 디비에 저장
-        Design design = Design.builder()
-                .imgInfo(imgInfo)
-                .user(user)
-                .build();
-        Design savedDesign = designRepository.save(design);
-
-        return new DesignResponseDto(savedDesign);
-    }
-
-
-    // 도안 삭제 메소드
-    @Transactional
-    public void removeDesign(UserDetailsImpl userDetails, long designId) {
-
-        // 도안 찾기
-        Design foundDesign = designRepository.findById(designId)
-                .orElseThrow(()->new CustomException(ErrorCode.DESIGN_NOT_FOUND));
-
-        // 게시되지 않은 도안인지 확인
-        if (foundDesign.isPost()) {
-            throw new CustomException(ErrorCode.DESIGN_ALREADY_POST);
-        }
-
-        // 동일 유저인지 확인
-        if (!foundDesign.getUser().getUserId().equals(userDetails.getUser().getUserId())) {
-            throw new CustomException(ErrorCode.NOT_DESIGN_OWNER);
-        }
-
-        userOrdersRepository.deleteByDesign(foundDesign);
-        s3Service.deleteFile(foundDesign.getImgName());
-        designRepository.deleteById(designId);
-    }
 
     // 도안 게시글 리스트 조회 메소드 (54개씩)
     public List<PostSimpleResponseDto> getPostList(UserDetailsImpl userDetails, int page, String sortType) {
