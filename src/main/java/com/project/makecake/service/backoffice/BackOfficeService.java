@@ -1,12 +1,9 @@
 package com.project.makecake.service.backoffice;
 
-import com.project.makecake.dto.ImageInfoDto;
 import com.project.makecake.dto.backoffice.*;
 import com.project.makecake.enums.CakePriceState;
-import com.project.makecake.enums.FolderName;
 import com.project.makecake.exceptionhandler.CustomException;
 import com.project.makecake.exceptionhandler.ErrorCode;
-import com.project.makecake.model.Cake;
 import com.project.makecake.model.CakeMenu;
 import com.project.makecake.model.Store;
 import com.project.makecake.model.StoreOption;
@@ -14,17 +11,17 @@ import com.project.makecake.repository.CakeMenuRepository;
 import com.project.makecake.repository.CakeRepository;
 import com.project.makecake.repository.StoreOptionRepository;
 import com.project.makecake.repository.StoreRepository;
-import com.project.makecake.service.CakeService;
 import com.project.makecake.service.S3Service;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class BackOfficeService {

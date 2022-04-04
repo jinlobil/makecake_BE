@@ -26,7 +26,7 @@ public class StoreController {
 
 
     // (홈탭) 인기 매장, 인기 케이크 5개 조회 API
-    @GetMapping("/api/home")
+    @GetMapping("/home")
     public HomeResponseDto getStoreAndCakeAtHome() {
         List<HomeStoreDto> storeResponseDtoList = storeService.getStoreListAtHome();
         List<HomeCakeDto> cakeResponseDtoList = cakeService.getCakeListAtHome();
@@ -36,33 +36,39 @@ public class StoreController {
     }
 
     // (홈탭) 최신 리뷰 조회 API
-    @GetMapping("/api/home/review")
+    @GetMapping("/home/reviews")
     public List<HomeReviewDto> getReviewListAtHome(){
         return reviewService.getReviewListAtHome();
     }
 
 
     // 매장 검색 결과 반환 API (original)
-    @PostMapping("/api/search")
-    public List<SearchResponseDto> getStoreList(@RequestBody SearchRequestDto requestDto) throws IOException {
-        return storeService.getStoreList(requestDto);
+    @GetMapping("/search-before-renewal")
+    public List<SearchResponseDto> getStoreList(
+            @RequestParam String searchType,
+            @RequestParam String searchText
+    ) throws IOException {
+        return storeService.getStoreList(searchType, searchText);
     }
 
     // 매장 검색 결과 반환 API (성능 개선용)
-    @PostMapping("/api/search-renewal")
-    public List<SearchResponseDto> getStoreListRenewal(@RequestBody SearchRequestDto requestDto) throws IOException {
-        return storeService.getStoreListRenewal(requestDto);
+    @GetMapping("/search")
+    public List<SearchResponseDto> getStoreListRenewal(
+            @RequestParam String searchType,
+            @RequestParam String searchText
+    ) throws IOException {
+        return storeService.getStoreListRenewal(searchType, searchText);
     }
 
-    // 검색 결과에서 매장 클릭 시 매장 정보 반환
-    @GetMapping("/api/search/{storeId}")
+    // 지도에서 매장 정보 반환 API
+    @GetMapping("search/{storeId}")
     public SearchResponseDto getStoreDetailsAtSearch(@PathVariable Long storeId){
         return storeService.getStoreDetailsAtSearch(storeId);
     }
 
 
     // 매장 상세페이지 조회 API
-    @GetMapping("/api/stores/{storeId}")
+    @GetMapping("/stores/{storeId}")
     public StoreDetailResponseDto getStoreDetails(
             @PathVariable Long storeId,
             @AuthenticationPrincipal UserDetailsImpl userDetails
@@ -71,20 +77,19 @@ public class StoreController {
     }
 
     // (매장 상세페이지) 매장 케이크 조회 API (9개씩)
-    @GetMapping("/api/stores/cakes")
+    @GetMapping("/stores/{storeId}/cakes")
     public List<StoreDetailCakeResponseDto> getCakeListAtStore(
-            @RequestParam long storeId,
-            /*@RequestParam int page,*/
+            @PathVariable long storeId,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        return  storeService.getCakeListAtStore(storeId, userDetails/*, page*/);
+        return  storeService.getCakeListAtStore(storeId, userDetails);
     }
 
 
     // (매장 상세페이지) 매장 리뷰 조회 API (3개씩)
-    @GetMapping("/api/stores/reviews")
+    @GetMapping("/api/stores/{storeId}/reviews")
     public List<ReviewResponseDto> getReviewListAtStore(
-            @RequestParam long storeId,
+            @PathVariable long storeId,
             @RequestParam int page
     ) {
         return  storeService.getReviewListAtStore(storeId, page);
@@ -92,7 +97,7 @@ public class StoreController {
 
 
     // 매장 좋아요 API
-    @PostMapping("/stores/like/{storeId}")
+    @PostMapping("/stores/{storeId}/likes")
     public LikeResponseDto likeStore(
             @RequestBody LikeRequestDto requestDto,
             @PathVariable Long storeId,

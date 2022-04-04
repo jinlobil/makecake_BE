@@ -3,7 +3,6 @@ package com.project.makecake.service;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.project.makecake.dto.home.HomeStoreDto;
-import com.project.makecake.dto.home.SearchRequestDto;
 import com.project.makecake.dto.home.SearchResponseDto;
 import com.project.makecake.dto.like.LikeResponseDto;
 import com.project.makecake.dto.review.ReviewResponseDto;
@@ -222,9 +221,7 @@ public class StoreService {
     }
 
     // 매장 검색 결과 반환 메소드
-    public List<SearchResponseDto> getStoreList(SearchRequestDto requestDto) throws IOException {
-        String searchType = requestDto.getSearchType();
-        String searchText = requestDto.getSearchText();
+    public List<SearchResponseDto> getStoreList(String searchType, String searchText) throws IOException {
         List<Store> foundStoreList = new ArrayList<>();
 
         if (searchType.equals("store")) {
@@ -278,9 +275,7 @@ public class StoreService {
 
     // 매장 검색 결과 반환 메소드 2
     @Transactional
-    public List<SearchResponseDto> getStoreListRenewal(SearchRequestDto requestDto) throws IOException {
-        String searchType = requestDto.getSearchType();
-        String searchText = requestDto.getSearchText();
+    public List<SearchResponseDto> getStoreListRenewal(String searchType, String searchText) throws IOException {
         List<Store> foundStoreList = new ArrayList<>();
 
 
