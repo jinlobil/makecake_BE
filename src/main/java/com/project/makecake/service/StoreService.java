@@ -12,7 +12,6 @@ import com.project.makecake.exceptionhandler.ErrorCode;
 import com.project.makecake.model.*;
 import com.project.makecake.repository.*;
 import com.project.makecake.security.UserDetailsImpl;
-import com.project.makecake.service.backoffice.OrderFormService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -129,27 +128,9 @@ public class StoreService {
         StoreMoreDetailsDto moreDetails = orderFormService.getMoreDetails(storeId);
 
         //cakeImgList 최근 9개
-        List<StoreDetailCakeResponseDto> cakeImgList = new ArrayList<>();
         List<Cake> foundCakeList = cakeRepository.findTop9ByStoreOrderByCreatedAtDesc(store);
 
-        for (Cake cake : foundCakeList) {
-            boolean myCakeLike = false;
-            if (userDetails != null){
-                User user = userDetails.getUser();
-                if (cakeLikeRepository.findByUserAndCake(user, cake).isPresent()) {
-                    myCakeLike = true;
-                }
-            }
-
-            StoreDetailCakeResponseDto cakeDto = StoreDetailCakeResponseDto
-                    .builder()
-                    .cake(cake)
-                    .myLike(myCakeLike)
-                    .build();
-            cakeImgList.add(cakeDto);
-        }
-
-        StoreDetailResponseDto responseDto = StoreDetailResponseDto.builder()
+        return StoreDetailResponseDto.builder()
                 .store(store)
                 .openTimeToday(openTimeToday)
                 .urlList(urlList)
@@ -157,9 +138,8 @@ public class StoreService {
                 .likeCnt(store.getLikeCnt())
                 .menuList(menuList)
                 .moreDetails(moreDetails)
-                .cakeImgList(cakeImgList)
+                .cakeImgList(getCakeList(foundCakeList, userDetails))
                 .build();
-        return responseDto;
     }
 
     // (매장 상세) 케이크 조회 메소드
@@ -167,28 +147,7 @@ public class StoreService {
 
         List<Cake> foundCakeList = cakeRepository.findAllByStore_StoreId(storeId);
 
-
-        List<StoreDetailCakeResponseDto> responseDtoList = new ArrayList<>();
-
-        //이 아래부분 겹치는 코드 - 코드 리팩토링 필요
-        for(Cake cake : foundCakeList){
-            boolean myCakeLike = false;
-            if(userDetails != null){
-                User user = userDetails.getUser();
-                if(cakeLikeRepository.findByUserAndCake(user, cake).isPresent()){
-                    myCakeLike = true;
-                }
-            }
-            //dto 값 담고, 리스트에 추가하기
-            StoreDetailCakeResponseDto cakeDto = StoreDetailCakeResponseDto
-                    .builder()
-                    .cake(cake)
-                    .myLike(myCakeLike)
-                    .build();
-
-            responseDtoList.add(cakeDto);
-        }
-        return responseDtoList;
+        return getCakeList(foundCakeList, userDetails);
     }
 
     // (매장 상세) 리뷰 조회 메소드
@@ -370,6 +329,30 @@ public class StoreService {
 
         for(Store store : foundStoreList){
             responseDtoList.add(StoreDetailsAtSearch(store));
+        }
+        return responseDtoList;
+    }
+
+    // (매장 상세 페이지 조회 메소드) 케이크 이미지 반환 메소드
+    public List<StoreDetailCakeResponseDto> getCakeList(List<Cake> foundCakeList, UserDetailsImpl userDetails){
+        List<StoreDetailCakeResponseDto> responseDtoList = new ArrayList<>();
+
+        for(Cake cake : foundCakeList){
+            boolean myCakeLike = false;
+            if(userDetails != null){
+                User user = userDetails.getUser();
+                if(cakeLikeRepository.findByUserAndCake(user, cake).isPresent()){
+                    myCakeLike = true;
+                }
+            }
+            //dto 값 담고, 리스트에 추가하기
+            StoreDetailCakeResponseDto cakeDto = StoreDetailCakeResponseDto
+                    .builder()
+                    .cake(cake)
+                    .myLike(myCakeLike)
+                    .build();
+
+            responseDtoList.add(cakeDto);
         }
         return responseDtoList;
     }

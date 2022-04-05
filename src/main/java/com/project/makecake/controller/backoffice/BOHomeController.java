@@ -6,11 +6,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class BOHomeController {
     @GetMapping("/back-office/register-menu-option")
-    public String addMenuAndOption() {return "index";}
+    public String addMenuAndOption() {return "bo_add_menu_and_option";}
 
     @GetMapping("/back-office/cake-img")
-    public String getCakeImages() { return "admincake"; }
+    public String getCakeImages() { return "bo_cake_img"; }
 
     @GetMapping("/back-office/order-form")
-    public String addOrderFormPage() { return "addOrderFormPage"; }
+    public String addOrderFormPage() { return "bo_add_order_form"; }
 }

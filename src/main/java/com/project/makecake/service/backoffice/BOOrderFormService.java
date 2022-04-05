@@ -29,37 +29,37 @@ public class BOOrderFormService {
         // 매장명
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(()->new CustomException(ErrorCode.STORE_NOT_FOUND));
+
         String storeName = store.getName();
 
-        // 주문서 양식
-        List<String> peekFormList = new ArrayList<>();
-        String stringForm = requestDto.getForm();
-        List<String> rawFormList = Arrays.asList(stringForm.split(":"));
+        // 1. 주문서 입력란 (formList)
+        List<String> formList = new ArrayList<>();
+
+        // ':' 기준으로 분리해서 배열에 넣어 반환
+        String[] rawFormList = requestDto.getForm().split(":");
 
         for(String rawForm : rawFormList){
-            peekFormList.add(rawForm.trim());
+            formList.add(rawForm.trim());
         }
 
-        // 주문 전 필독사항
-        List<String> peekInstructionList = new ArrayList<>();
-        String stringInstruction = requestDto.getInstruction();
+        // 2. 주문 전 필독사항 (instructionList)
+        List<String> instructionList = new ArrayList<>();
 
-        List<String> rawInstructionList = Arrays.asList(stringInstruction.trim().split("\\*"));
+        // '*' 기준으로 분리해서 배열에 넣어 반환
+        String[] rawInstructionList = requestDto.getInstruction().trim().split("\\*");
         for(String rawInstruction : rawInstructionList) {
             if(!rawInstruction.trim().equals("")){
-                peekInstructionList.add(rawInstruction.trim());
+                instructionList.add(rawInstruction.trim());
             }
         }
 
-        OrderFormPeekResponseDto responseDto = OrderFormPeekResponseDto.builder()
+        return OrderFormPeekResponseDto.builder()
                 .storeId(storeId)
                 .storeName(storeName)
                 .name(requestDto.getName())
-                .peekFormList(peekFormList)
-                .peekInstructionList(peekInstructionList)
+                .peekFormList(formList)
+                .peekInstructionList(instructionList)
                 .build();
-
-        return responseDto;
     }
 
     // 주문서 등록 메소드
@@ -68,12 +68,12 @@ public class BOOrderFormService {
         Store store = storeRepository.findById(requestDto.getStoreId())
                 .orElseThrow(()-> new CustomException(ErrorCode.STORE_NOT_FOUND));
 
-        OrderForm orderForm = OrderForm.builder()
+        orderFormRepository.save(
+                OrderForm.builder()
                 .requestDto(requestDto)
                 .store(store)
-                .build();
-
-        orderFormRepository.save(orderForm);
+                .build()
+        );
 
         return "주문서 등록 완료";
     }

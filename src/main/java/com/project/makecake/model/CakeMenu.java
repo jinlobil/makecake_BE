@@ -37,6 +37,7 @@ public class CakeMenu extends Timestamped{
     private Store store;
 
     //생성자
+    @Builder
     public CakeMenu(CakeMenuRowDto menuRowDto, Store store, CakePriceState priceState){
         this.type = menuRowDto.getType();
         this.size = menuRowDto.getSize();

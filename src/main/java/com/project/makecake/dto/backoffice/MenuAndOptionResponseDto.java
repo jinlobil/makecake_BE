@@ -9,13 +9,13 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-public class CakeMenuOptionPeekResponseDto {
+public class MenuAndOptionResponseDto {
     private long storeId;
     private String storeName;
     private List<CakeMenuRowDto> peekMenuList;
     private List<CakeOptionRowDto> peekOptionList;
 
-    public CakeMenuOptionPeekResponseDto(long storeId, String storeName, List<CakeMenuRowDto> peekMenuList, List<CakeOptionRowDto> peekOptionList){
+    public MenuAndOptionResponseDto(long storeId, String storeName, List<CakeMenuRowDto> peekMenuList, List<CakeOptionRowDto> peekOptionList){
         this.storeId = storeId;
         this.storeName = storeName;
         this.peekMenuList = peekMenuList;
