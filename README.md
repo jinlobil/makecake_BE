@@ -2,18 +2,21 @@
 
 <img src="https://user-images.githubusercontent.com/94432600/161845731-81e78a42-4913-41da-a184-199dfc31f171.png" width="80%">
 
-**나만의 케이크, 그려보지 않을래요?**
+### 나만의 케이크, 그려보지 않을래요?
 
 - 메이크케이크는 주문제작 케이크의 불편하고 복잡한 주문 과정을 편하게 만들기 위한 서비스입니다. 
 
 - 주문제작 케이크 매장 정보들을 쉽게 찾아볼 수 있고, 직접 도안을 그려 볼 수 있습니다.
 
-[makecake 서비스 바로가기](https://make-cake.com/)
+- **`매장, 케이크 정보 제공`** **`도안그리기`** **`주문서 작성`** 
 
-[서비스 시연 영상 (준비중)](https://make-cake.com/)
+🍰 **[makecake 서비스 바로가기](https://make-cake.com/)**
 
+🎬 **[서비스 시연 영상 (준비중)](https://make-cake.com/)**
 
-## 기획의도
+<br />
+
+## ❓ 기획의도
 `"👩 케이크 사이즈, 가격 정보를 알려면 직접 매장에 연락해야 하는 경우가 대부분이라 부담스러워요."`
 
 `"👩‍🦱 도안을 매번 손으로 그려서 사진으로 찍어 보내야 하는 게 불편해요!"`
@@ -21,110 +24,191 @@
 `"👱‍♂️ 인스타그램, 네이버, 카카오톡을 번갈아 가면서 정보를 얻어야 해서 번거로워요."`
 
 **메이크케이크는 이러한 불편한 경험을 해소하기 위해 개발한 서비스입니다.**
-    
+
+<br />
 
 ## 👥 팀 소개
 #### `Backend`
-<p><a href="https://github.com/minjoo-kou" target="_blank"><img width="180"  src="https://img.shields.io/static/v1?label=Spring&message=구민주 &color=08CE5D&style=for-the-badge&>"/></a></p>
-<p><a href="https://github.com/sun-land" target="_blank"><img width="180"  src="https://img.shields.io/static/v1?label=Spring&message=고혜지 &color=08CE5D&style=for-the-badge&>"/></a></p>
-<p><a href="https://github.com/devssk" target="_blank"><img width="180"  src="https://img.shields.io/static/v1?label=Spring&message=송성근 &color=08CE5D&style=for-the-badge&>"/></a></p>
+<a href="https://github.com/minjoo-kou" target="_blank"><img width="180"  src="https://img.shields.io/static/v1?label=Spring&message=구민주 &color=08CE5D&style=for-the-badge&>"/></a>
+<a href="https://github.com/sun-land" target="_blank"><img width="180"  src="https://img.shields.io/static/v1?label=Spring&message=고혜지 &color=08CE5D&style=for-the-badge&>"/></a>
+<a href="https://github.com/devssk" target="_blank"><img width="180"  src="https://img.shields.io/static/v1?label=Spring&message=송성근 &color=08CE5D&style=for-the-badge&>"/></a>
 
 #### `Frontend`
- <p><a href="https://github.com/nevergettingold" target="_blank"><img width="180"  src="https://img.shields.io/static/v1?label=React&message=오성택 &color=61dafb&style=for-the-badge&>"/></a></p>
- <p><a href="https://github.com/durukim" target="_blank"><img width="180"  src="https://img.shields.io/static/v1?label=React&message=김두루 &color=61dafb&style=for-the-badge&>"/></a></p>
- <p><a href="https://github.com/jeonghwanJay" target="_blank"><img width="180"  src="https://img.shields.io/static/v1?label=React&message=지정환 &color=61dafb&style=for-the-badge&>"/></a></p>
+ <a href="https://github.com/nevergettingold" target="_blank"><img width="180"  src="https://img.shields.io/static/v1?label=React&message=오성택 &color=61dafb&style=for-the-badge&>"/></a>
+ <a href="https://github.com/durukim" target="_blank"><img width="180"  src="https://img.shields.io/static/v1?label=React&message=김두루 &color=61dafb&style=for-the-badge&>"/></a>
+ <a href="https://github.com/jeonghwanJay" target="_blank"><img width="180"  src="https://img.shields.io/static/v1?label=React&message=지정환 &color=61dafb&style=for-the-badge&>"/></a>
 
- [Front-end github](https://gitub.com/team12-foodmpa/Front)
+**[(Front-end github)](https://gitub.com/team12-foodmpa/Front)**
 
 #### `Designer`
- <p><img width="180"  src="https://img.shields.io/static/v1?label=Design&message=황성원 &color=FF7F50&style=for-the-badge&>"/></a></p>
- <p><img width="180"  src="https://img.shields.io/static/v1?label=Design&message=이지해 &color=FF7F50&style=for-the-badge&>"/></a></p>
+ <img width="180"  src="https://img.shields.io/static/v1?label=Design&message=황성원 &color=FF7F50&style=for-the-badge&>"/></a>
+ <img width="180"  src="https://img.shields.io/static/v1?label=Design&message=이지해 &color=FF7F50&style=for-the-badge&>"/></a>
 
+<br />
 
 ## 🗓 프로젝트 기간
-- 2022년 2월 25일 ~ 2022년 4월 8일   
+- 2022년 2월 25일 ~ 2022년 4월 8일
+- 
 - 배포 : 2022년 3월 30일
+
+<br />
 
 ## 📜 기술스택
 |분류|기술|
 | :-: |:- |
-|IDE|<img src="https://img.shields.io/badge/IntelliJ IDEA-000000?style=for-the-badge&logo=IntelliJ IDEA&logoColor=white">|
 |Language|<img src="https://img.shields.io/badge/JAVA-007396?style=for-the-badge&logo=java&logoColor=white">|
 |Framework|<img src="https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=Spring&logoColor=white"> <img src="https://img.shields.io/badge/Springboot-6DB33F?style=for-the-badge&logo=Springboot&logoColor=white">|
 |Build Tool|<img src="https://img.shields.io/badge/gradle-02303A?style=for-the-badge&logo=gradle&logoColor=white">|
 |DB|<img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white">|
 |Server|<img src="https://img.shields.io/badge/aws-232F3E?style=for-the-badge&logo=AmazonAWS&logoColor=white"> <img src="https://img.shields.io/badge/Amazon S3-569A31?style=for-the-badge&logo=Amazon S3&logoColor=white">|
-|CI/CD|<img src="https://img.shields.io/badge/Travis CI-3EAAAF?style=for-the-badge&logo=Travis CI&logoColor=white"> <img src="https://img.shields.io/badge/codedeploy-6DB33F?style=for-the-badge&logo=codedeploy&logoColor=white">|
+|CI/CD|<img src="https://img.shields.io/badge/GitHub Actions-2088FF?style=for-the-badge&logo=GitHub Actions&logoColor=white"> <img src="https://img.shields.io/badge/codedeploy-6DB33F?style=for-the-badge&logo=codedeploy&logoColor=white">|
 |Test|<img src="https://img.shields.io/badge/JUnit5-25A162?style=for-the-badge&logo=JUnit5&logoColor=white">|
-|Load Test|<img src="https://img.shields.io/badge/Apache JMeter-D22128?style=for-the-badge&logo=Apache JMeter&logoColor=white">|
-|VCS|<img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">|
 |Reverse Proxy|<img src="https://img.shields.io/badge/NGINX-009639?style=for-the-badge&logo=NGINX&logoColor=white">|
-|Coperation Tool|<img src="https://img.shields.io/badge/slack-85EA2D?style=for-the-badge&logo=slack&logoColor=black">|
 
-## 📜 아키텍쳐
-<img src="https://user-images.githubusercontent.com/94432600/161740584-6f3c814c-f90d-4715-8341-2dbc7b3602f8.png" width="80%" height="80%">
 
-## 📜 ER 다이어그램     
+<br />
+
+## 🏰 아키텍쳐
+<img src="https://user-images.githubusercontent.com/94432600/161740584-6f3c814c-f90d-4715-8341-2dbc7b3602f8.png">
+
+**[아키텍쳐 선택 과정 (WIKI) (준비중)](https://make-cake.com/)**
+
+<br />
+
+## 📕 ER 다이어그램     
     
-<img src="https://user-images.githubusercontent.com/94432600/161751237-c33b9980-10ea-4d97-a21d-01fc7e11e57b.PNG" width="80%" height="80%">   
+<img src="https://user-images.githubusercontent.com/94432600/161852720-357f0c2b-0085-4b5b-a3e7-497c0fc58d1f.png">  
 
+<br />
 
-## ✨ 핵심기능
-**`도안그리기`**
-**`주문서 작성`**
-**`매장, 케이크 정보 제공`**
+## ✨ 기능설명
 
+<details>
+<summary> <b>1. 매장 검색 및 상세 정보 제공</b> </summary>
+    
+**`매장 검색`**
 
+- 매장이름/주소/플레이스 중 검색 옵션을 선택한 뒤 매장 검색을 할 수 있습니다.
+    
+- 지도에서 검색한 매장의 위치를 살펴볼 수 있습니다.
+    
+**`상세 정보 제공`**
 
-## 🐛 트러블 슈팅
+- 매장 주소, 영업시간, 케이크 사진 등 기본 정보와 검색으로 알기 힘든 케이크 사이즈, 모양, 맛, 꾸미기 옵션별 가격 정보를 한눈에 볼 수 있습니다.
+    
+- 매장 좋아요 기능을 통해 마음에 드는 매장을 찜해놓을 수 있습니다.
+    
+- 매장 리뷰를 남길 수 있습니다.
+    
+</details>
 
+<details>
+<summary> <b>2. 주문제작 케이크 모아보기</b> </summary>
+    
+- 서울의 매장에 있는 오천여 개의 케이크를 인기순/랜덤순으로 한눈에 볼 수 있습니다.
+    
+- 케이크 좋아요 기능을 통해 마음에 드는 케이크를 찜해놓을 수 있습니다.
+    
+- 마음에 드는 케이크의 매장 상세 페이지로 바로 이동할 수 있습니다.
+    
+</details>
+
+<details>
+<summary> <b>3. 케이크 도안 그리기 및 공유</b> </summary>
+    
+- 만들고 싶은 케이크 도안을 손쉽게 그려볼 수 있습니다.
+    
+- 그린 도안을 게시물 형식으로 올려 사람들과 공유할 수 있습니다.
+    
+- 도안 게시물에 댓글을 달며 소통할 수 있습니다.
+    
+</details>
+
+<details>
+<summary> <b>4. 주문하기</b> </summary>
+    
+- 서비스 내에서 그린 도안으로 주문서를 작성할 수 있습니다.
+    
+- 매장별 맞춤형 주문서가 제공되고 해당 매장의 가격 정보와 주문 전 필독사항도 한눈에 볼 수 있습니다.
+    
+</details>
+
+<details>
+<summary> <b>5. 마이페이지</b> </summary>
+    
+- 프로필 수정하기에서 닉네임/프로필사진을 변경할 수 있습니다.
+    
+- 내가 좋아요한 도안 게시물/매장/케이크를 모아볼 수 있습니다.
+    
+- 내가 작성한 도안 게시물/매장 리뷰/게시물 댓글을 모아볼 수 있습니다.
+    
+</details>
+
+<details>
+<summary> <b>6. 홈탭</b> </summary>
+    
+- 인기 있는 매장, 케이크와 최신 리뷰를 한 눈에 볼 수 있습니다.
+    
+- 알림 기능을 통해 makecake의 공지사항과 내 게시물의 반응들을 확인할 수 있습니다.
+    
+</details>
+
+<br />
 
 ## 🔨 API 설계   
 
-#### 🔗 [API link]()   
+**API 설계 한눈에 보기**
+
+<img src="https://user-images.githubusercontent.com/94432600/161857074-15fc6adf-9c0d-47dc-a714-1c6dfe39756d.PNG" width="70%">
+<img src="https://user-images.githubusercontent.com/94432600/161857082-a84f9336-f9c8-4579-b69d-a8a2a827ef25.PNG" width="70%">
+<img src="https://user-images.githubusercontent.com/94432600/161857087-3a3c8d01-239d-4ac2-9f11-3ea2b827fd29.PNG" width="70%">
+<img src="https://user-images.githubusercontent.com/94432600/161857093-4c8d464e-97d4-46d7-84c3-670f1c6dbeda.PNG" width="70%">
+
+**[API 설계 자세히보기](https://www.notion.so/API-d8a2df6e8b844149a67b085c5ece89bc)**
+
+<br />
+
+## 🐛 트러블 슈팅
+<details>
+<summary><b>자세히 보기</b></summary>
+간단한 설명
+**[해결과정 (WIKI)](https://make-cake.com/)**
+</details>
+
+<details>
+<summary><b>자세히 보기</b></summary>
+간단한 설명
+**[해결과정 (WIKI)](https://make-cake.com/)**
+</details>
+
+<details>
+<summary><b>자세히 보기</b></summary>
+간단한 설명
+**[해결과정 (WIKI)](https://make-cake.com/)**
+</details>
+
+<details>
+<summary><b>자세히 보기</b></summary>
+간단한 설명
+**[해결과정 (WIKI)](https://make-cake.com/)**
+</details>
+
+<details>
+<summary><b>자세히 보기</b></summary>
+간단한 설명
+**[해결과정 (WIKI)](https://make-cake.com/)**
+</details>
+
+<details>
+<summary><b>자세히 보기</b></summary>
+간단한 설명
+**[해결과정 (WIKI)](https://make-cake.com/)**
+</details>
+
+<details>
+<summary><b>자세히 보기</b></summary>
+간단한 설명
+**[해결과정 (WIKI)](https://make-cake.com/)**
+</details>
 
 
-## 📖 상세 페이지
-
-
-
-## 🎈 LINK  
-🎥 유튜브 링크 : 
-
-📔 노션 링크 : 
-
-
-
-
-
-## 🛠 Tech Stack
-**Frontend Tech Stack**  
-<img src="https://img.shields.io/badge/React-60d3f3?style=for-the-badge&logo=react&logoColor=black"> 
-<img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black">
-<img src="https://img.shields.io/badge/Redux-7247b5?style=for-the-badge&logo=redux&logoColor=white">
-
-
-**Backend Tech Stack**  
-<img src="https://img.shields.io/badge/JAVA-007396?style=for-the-badge&logo=java&logoColor=white">
-<img src="https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=Spring&logoColor=white">
-<img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white">
-
-
-<!-- 
-<img src="https://img.shields.io/badge/css-1572B6?style=for-the-badge&logo=css3&logoColor=white">
-
-
-<img src="https://img.shields.io/badge/oracle-F80000?style=for-the-badge&logo=oracle&logoColor=white">
-
-<img src="https://img.shields.io/badge/mariaDB-003545?style=for-the-badge&logo=mariaDB&logoColor=white">
-
-<img src="https://img.shields.io/badge/jquery-0769AD?style=for-the-badge&logo=jquery&logoColor=white">
-<img src="https://img.shields.io/badge/react-61DAFB?style=for-the-badge&logo=react&logoColor=black">
-<img src="https://img.shields.io/badge/vue.js-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white">
-<img src="https://img.shields.io/badge/html-E34F26?style=for-the-badge&logo=html5&logoColor=white">
-
-<img src="https://img.shields.io/badge/bootstrap-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white">
-<img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
-<img src="https://img.shields.io/badge/linux-FCC624?style=for-the-badge&logo=linux&logoColor=black">
-<img src="https://img.shields.io/badge/aws-232F3E?style=for-the-badge&logo=aws&logoColor=white">
-<img src="https://img.shields.io/badge/apache tomcat-F8DC75?style=for-the-badge&logo=apachetomcat&logoColor=white"> -->
