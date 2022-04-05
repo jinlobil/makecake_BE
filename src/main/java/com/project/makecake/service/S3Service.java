@@ -25,9 +25,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.UUID;
 
 import static java.lang.Math.min;
@@ -49,7 +47,7 @@ public class S3Service {
     // 파라미터로 multipartFile(업로드하려는 파일)과 dirName(이 파일을 업로드하고 싶은 S3 버킷의 폴더 이름)을 받는다.
 
     // 사진 원본 파일 저장 메소드
-    public ImageInfoDto uploadOriginalFile(MultipartFile multipartFile, String dirName) throws IOException {
+    public ImageInfoDto uploadImg(MultipartFile multipartFile, String dirName) throws IOException {
 
         // 0. 이미지 파일인지 체크
         isImage(multipartFile);
@@ -80,7 +78,7 @@ public class S3Service {
     }
 
     // 리사이즈 파일 저장 메소드
-    public ImageInfoDto uploadThumbnailFile(MultipartFile multipartFile, int size, String dirName) throws IOException {
+    public ImageInfoDto uploadThumbImg(MultipartFile multipartFile, int size, String dirName) throws IOException {
 
         // 0. 이미지 파일인지 체크
         String ext = isImage(multipartFile);
@@ -90,29 +88,32 @@ public class S3Service {
         String fileName = createFileName(multipartFile);
         String uploadImageName = dirName + "/" + UUID.randomUUID() + fileName;
 
+        // 원본 이미지 사이즈
         BufferedImage originalImage = ImageIO.read(multipartFile.getInputStream());
         int width = originalImage.getWidth();
         int height = originalImage.getHeight();
         int cropSize = min(width,height);
 
+        // 정사각형으로 크롭하고 사이즈 줄이기
         BufferedImage resizedImage = Thumbnails.of(multipartFile.getInputStream())
                 .sourceRegion(Positions.CENTER, cropSize, cropSize)
                 .size(size,size)
                 .asBufferedImage();
 
+        // 이미지 쓰기
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         ImageIO.write(resizedImage, ext, os);
 
+        // 에러날 경우 무조건 png로 쓰기
         ByteArrayOutputStream uploadOs = new ByteArrayOutputStream();
-
         if (os.size() == 0) {
             ImageIO.write(resizedImage, "png", uploadOs);
         } else {
             uploadOs = os;
         }
 
+        // input스트림과 메타데이터 생성
         InputStream is = new ByteArrayInputStream(uploadOs.toByteArray());
-
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentType(ext);
         metadata.setContentLength(uploadOs.size());
@@ -132,42 +133,47 @@ public class S3Service {
     // 원본 + 리사이즈 파일 동시 저장 메소드
     public HashMap<String,ImageInfoDto> uploadBothFile(MultipartFile multipartFile, int size, String dirName) throws IOException {
         HashMap<String,ImageInfoDto> infoDtoList = new HashMap<>();
-        infoDtoList.put("original",uploadOriginalFile(multipartFile, dirName));
-        infoDtoList.put("thumbnail",uploadThumbnailFile(multipartFile, size, dirName+"_RESIZE"));
+        infoDtoList.put("original", uploadImg(multipartFile, dirName));
+        infoDtoList.put("thumbnail", uploadThumbImg(multipartFile, size, dirName+"_RESIZE"));
         return infoDtoList;
     }
 
-    // 이미지 url로 파일 업로드하는 메소드
-    public ImageInfoDto uploadThumbnailFileByUrl(String inputUrl, int size, String dirName) throws IOException {
-
-        int position = inputUrl.lastIndexOf(".");
-        String ext = inputUrl.substring(position+1);
+    // 이미지 url로 썸네일 파일 업로드하는 메소드
+    public ImageInfoDto uploadThumbByUrl(String inputUrl, int size, String dirName) throws IOException {
 
         URL url = new URL(inputUrl);
         BufferedInputStream orginalIs = new BufferedInputStream(url.openStream());
 
+        Tika tika = new Tika();
+        String mimeType = tika.detect(orginalIs);
+        String ext = mimeType.substring(6);
+
+        // 원본 이미지 사이즈
         BufferedImage originalImage = ImageIO.read(orginalIs);
         int width = originalImage.getWidth();
         int height = originalImage.getHeight();
         int cropSize = min(width,height);
 
+        // 정사각형으로 크롭하고 사이즈 줄이기
         BufferedImage resizedImage = Thumbnails.of(url.openStream())
                 .sourceRegion(Positions.CENTER, cropSize, cropSize)
                 .size(size,size)
                 .asBufferedImage();
 
+        // 이미지 쓰기
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         ImageIO.write(resizedImage, ext, os);
-        InputStream is = new ByteArrayInputStream(os.toByteArray());
 
+        // 에러날 경우 무조건 png로 쓰기
         ByteArrayOutputStream uploadOs = new ByteArrayOutputStream();
-
         if (os.size() == 0) {
             ImageIO.write(resizedImage, "png", uploadOs);
         } else {
             uploadOs = os;
         }
 
+        // input스트림과 메타데이터 생성
+        InputStream is = new ByteArrayInputStream(uploadOs.toByteArray());
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentType(ext);
         metadata.setContentLength(uploadOs.size());
@@ -176,6 +182,7 @@ public class S3Service {
 
         // 2. s3로 업로드
         amazonS3Client.putObject(bucket, uploadImageName, is, metadata);
+
         // S3에 업로드한 이미지의 주소를 받아온다.
         String uploadImageUrl = amazonS3Client.getUrl(bucket, uploadImageName).toString();
 
@@ -183,6 +190,7 @@ public class S3Service {
                 .url(uploadImageUrl)
                 .name(uploadImageName)
                 .build();
+
     }
 
     // 파일 삭제하기

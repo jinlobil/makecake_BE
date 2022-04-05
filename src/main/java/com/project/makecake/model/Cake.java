@@ -44,8 +44,4 @@ public class Cake extends Timestamped{
         }
     }
 
-    public void setThumbnailUrl(String thumbnailUrl){
-        this.thumbnailUrl = thumbnailUrl;
-    }
-
 }
