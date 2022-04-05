@@ -60,9 +60,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // 로그인 요청 인증 X
                 .antMatchers(HttpMethod.POST, "/login").permitAll()
                 // 회원가입, 중복체크 등 인증 X
-                .antMatchers(HttpMethod.POST, "/user/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/users/**").permitAll()
                 // 로그인 체크 인증 X
-                .antMatchers(HttpMethod.GET, "/user/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/users/**").permitAll()
                 // /api로 된 POST 요청 인증 X
                 .antMatchers(HttpMethod.POST, "/api/**").permitAll()
                 // /api로 된 GET 요청 인증 X
@@ -74,7 +74,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/stores/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/cakes/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/posts/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/orders/order-guide").permitAll()
+                .antMatchers(HttpMethod.GET, "/order-guide").permitAll()
                 .antMatchers(HttpMethod.GET, "/orders/stores").permitAll()
                 // 그 외 요청 모두 인증
                 .anyRequest().authenticated()

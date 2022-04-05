@@ -34,13 +34,13 @@ public class OrderFormController {
     }
 
     // (주문하기) 주문 가능 매장 리스트 조회 API
-    @GetMapping("/api/orders/stores")
+    @GetMapping("/orders/stores")
     public List<OrderFormReadyResponseDto> getOrderFormList(){
         return orderFormService.getOrderFormList();
     }
 
     // (주문하기) 케이크 주문서 작성 페이지 조회 API
-    @GetMapping("/order-forms/{orderFormId}")
+    @GetMapping("/orders/order-forms/{orderFormId}")
     public OrderFormDetailResponseDto getOrderFormDetails(
             @PathVariable Long orderFormId
     ) {

@@ -17,7 +17,7 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     // 매장 후기 작성 API
-    @PostMapping("/reviews/{storeId}")
+    @PostMapping("/stores/{storeId}/reviews")
     public void addReview(
             @PathVariable long storeId,
             @RequestPart(value="content") String content,
