@@ -1,4 +1,4 @@
-# <img src="https://user-images.githubusercontent.com/94432600/160968532-52f4b8a5-ce1b-423e-9cc5-15e9a90ef056.png" align=left width=50>makecake
+# <img src="https://user-images.githubusercontent.com/94432600/160968532-52f4b8a5-ce1b-423e-9cc5-15e9a90ef056.png" align=left width=50 >makecake 소개
 
 <img src="https://user-images.githubusercontent.com/94432600/161845731-81e78a42-4913-41da-a184-199dfc31f171.png" width="80%">
 
