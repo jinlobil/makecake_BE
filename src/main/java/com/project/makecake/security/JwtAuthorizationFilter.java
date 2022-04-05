@@ -2,6 +2,8 @@ package com.project.makecake.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.project.makecake.exceptionhandler.CustomException;
+import com.project.makecake.exceptionhandler.ErrorCode;
 import com.project.makecake.model.User;
 import com.project.makecake.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -50,18 +52,25 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         Date expireDate = JWT.require(Algorithm.HMAC256(JwtProperties.secretKey)).build().verify(jwtToken).getClaim("expireDate").asDate();
         Date now = new Date();
         log.info("토큰 유효시간 : " + expireDate + " 현재시간 : " + now);
-        // 유효시간이 현재시간보다 이전이면 다시 필터를 타게함
+        // 유효시간 검증
         if (expireDate.before(now)) {
-            chain.doFilter(request,response);
-            return;
+            throw new CustomException(ErrorCode.EXPIRED_JWT);
         }
-        // 토큰에서 username 빼기
-        String username = JWT.require(Algorithm.HMAC256(JwtProperties.secretKey)).build().verify(jwtToken).getClaim("username").asString();
-
+        // 토큰에서 username 검증
+        String username = "";
+        try {
+            username = JWT.require(Algorithm.HMAC256(JwtProperties.secretKey)).build().verify(jwtToken).getClaim("username").asString();
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.WRONG_JWT);
+        }
         if (username != null) {
             log.info("username 정상 : " + username);
 
-            User userEntity = userRepository.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("유저가 존재하지 않습니다."));
+            User userEntity = userRepository.findByUsername(username).orElse(null);
+            // 회원 검증
+            if (userEntity == null) {
+                throw new CustomException(ErrorCode.USER_NOT_FOUND);
+            }
 
             UserDetailsImpl userDetails = new UserDetailsImpl(userEntity);
 

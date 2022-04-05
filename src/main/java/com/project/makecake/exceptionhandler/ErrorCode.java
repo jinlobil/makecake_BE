@@ -25,13 +25,14 @@ public enum ErrorCode {
     NOT_ADD_NOTITYPE(HttpStatus.BAD_REQUEST, "추가할 수 없는 알림 타입입니다."),
     NOT_FIX_NOTITYPE(HttpStatus.BAD_REQUEST, "고정할 수 없는 알림 타입입니다."),
     NOT_SEND_NOTITYPE(HttpStatus.BAD_REQUEST, "발송할 수 없는 알림 타입입니다."),
-    EXPIRED_JWT(HttpStatus.BAD_REQUEST, "유효기간이 지난 토큰입니다."),
-    WRONG_JWT(HttpStatus.BAD_REQUEST, "유효한 토큰이 아닙니다."),
 
     // 401
     LOGIN_FAILED(HttpStatus.UNAUTHORIZED, "로그인 실패!"),
+    EMAIL_PASSWORD_NULL(HttpStatus.UNAUTHORIZED, "아이디/패스워드를 입력해주세요"),
     EMAIL_PASSWORD_ERROR(HttpStatus.UNAUTHORIZED, "아이디/패스워드가 틀립니다."),
     UNAUTHORIZED_MAMBER(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다."),
+    EXPIRED_JWT(HttpStatus.UNAUTHORIZED, "유효기간이 지난 토큰입니다."),
+    WRONG_JWT(HttpStatus.UNAUTHORIZED, "유효한 토큰이 아닙니다."),
     // 403
     NOT_POST_OWNER(HttpStatus.FORBIDDEN, "로그인한 사용자의 게시물이 아닙니다."),
     NOT_COMMENT_OWNER(HttpStatus.FORBIDDEN, "로그인한 사용자의 댓글이 아닙니다."),
