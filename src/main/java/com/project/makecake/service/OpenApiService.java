@@ -29,60 +29,10 @@ public class OpenApiService {
     private final StoreRepository storeRepository;
     private final OpenTimeRepository openTimeRepository;
 
-    // 유니코드 -> 한글 변환 메소드
-    public String uniToKor(String uni){
-        StringBuffer result = new StringBuffer();
-
-        for(int i=0; i<uni.length(); i++){
-            if(uni.charAt(i) == '\\' &&  uni.charAt(i+1) == 'u'){
-                Character c = (char)Integer.parseInt(uni.substring(i+2, i+6), 16);
-                result.append(c);
-                i+=5;
-            }else{
-                result.append(uni.charAt(i));
-            }
-        }
-        return result.toString();
-    }
-
-    // api 요청 JSON 반환 메소드
-    public JsonElement getOpenApiResult(String urlString) throws IOException {
-
-        // 문자열에 대한 Url 객체 생성
-        URL url = new URL(urlString);
-
-        // UrlConnection vs HttpUrlConnection
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-
-        conn.setRequestMethod("GET");
-
-        //Server 통신에서 출력 가능한 상태로 만듬
-        conn.setDoOutput(true);
-
-        //결과 코드가 200이라면 성공
-        int responseCode = conn.getResponseCode();
-        System.out.println("responseCode : " + responseCode);
-
-        //요청을 통해 얻은 JSON타입의 Response 메세지 읽어오기
-        BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-        String line = "";
-        String result = "";
-
-        while ((line = br.readLine()) != null) {
-            result += line;
-        }
-        br.close();
-
-        //Gson 라이브러리로 JSON파싱
-        JsonParser parser = new JsonParser();
-        JsonElement element = parser.parse(result);
-        return element;
-    }
-
-
+    // (초기 데이터 쌓기) naver 지도 api 요청으로 레터링 케이크 매장 정보 저장 메소드
     @Transactional
-    public void collectStoreData(int productNo) throws IOException {
-        String urlString = "https://map.naver.com/v5/api/sites/summary/" + productNo + "?lang=ko";
+    public void collectStoreData(int storeNo) throws IOException {
+        String urlString = "https://map.naver.com/v5/api/sites/summary/" + storeNo + "?lang=ko";
 
         JsonElement element = getOpenApiResult(urlString);
 
@@ -132,10 +82,6 @@ public class OpenApiService {
             storeUrlRepository.save(storeUrl);
         }
 
-
-
-
-
         // 네이버 지도 검색 결과 중 업체 사진 가져오기
         JsonArray images = element.getAsJsonObject().get("images").getAsJsonArray();
 
@@ -170,4 +116,37 @@ public class OpenApiService {
         }
     }
 
+    // naver 지도 api 요청 JSON 반환 메소드
+    public JsonElement getOpenApiResult(String urlString) throws IOException {
+
+        // 문자열에 대한 Url 객체 생성
+        URL url = new URL(urlString);
+
+        // UrlConnection vs HttpUrlConnection
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+        conn.setRequestMethod("GET");
+
+        //Server 통신에서 출력 가능한 상태로 만듬
+        conn.setDoOutput(true);
+
+        //결과 코드가 200이라면 성공
+        int responseCode = conn.getResponseCode();
+        System.out.println("responseCode : " + responseCode);
+
+        //요청을 통해 얻은 JSON타입의 Response 메세지 읽어오기
+        BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        String line = "";
+        String result = "";
+
+        while ((line = br.readLine()) != null) {
+            result += line;
+        }
+        br.close();
+
+        //Gson 라이브러리로 JSON파싱
+        JsonParser parser = new JsonParser();
+        JsonElement element = parser.parse(result);
+        return element;
+    }
 }

@@ -1,21 +1,17 @@
 package com.project.makecake.service;
 
-import com.project.makecake.dto.ImageInfoDto;
 import com.project.makecake.dto.cake.CakeResponseDto;
 import com.project.makecake.dto.cake.CakeSimpleResponseDto;
 import com.project.makecake.dto.home.HomeCakeDto;
 import com.project.makecake.dto.like.LikeRequestDto;
 import com.project.makecake.dto.like.LikeResponseDto;
-import com.project.makecake.enums.FolderName;
 import com.project.makecake.exceptionhandler.CustomException;
 import com.project.makecake.exceptionhandler.ErrorCode;
 import com.project.makecake.model.Cake;
 import com.project.makecake.model.CakeLike;
-import com.project.makecake.model.Store;
 import com.project.makecake.model.User;
 import com.project.makecake.repository.CakeLikeRepository;
 import com.project.makecake.repository.CakeRepository;
-import com.project.makecake.repository.StoreRepository;
 import com.project.makecake.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -23,10 +19,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -36,10 +30,6 @@ import java.util.Optional;
 public class CakeService {
     private final CakeRepository cakeRepository;
     private final CakeLikeRepository cakeLikeRepository;
-    //임시
-    private final StoreRepository storeRepository;
-    private final S3Service s3Service;
-
 
     //홈탭 케이크 불러오기
     @Transactional
@@ -159,50 +149,6 @@ public class CakeService {
 
     }
 
-    // (관리자용) 가게별 케이크 사진 리스트 조회 메소드
-    public List<Cake> GetCakeListAtBackoffice(long storeId) {
-
-        Store foundStore = storeRepository.findById(storeId)
-                .orElseThrow(()->new CustomException(ErrorCode.STORE_NOT_FOUND));
-
-        List<Cake> foundCakeList = cakeRepository.findAllByStore(foundStore);
-        return foundCakeList;
-    }
-
-    // (관리자용) 케이크 사진 삭제 메소드
-    @Transactional
-    public long deleteCake(long cakeId) {
-
-        Cake foundCake = cakeRepository.findById(cakeId)
-                .orElseThrow(()->new CustomException(ErrorCode.CAKE_NOT_FOUND));
-
-        // 좋아요 삭제
-        cakeLikeRepository.deleteAllByCake(foundCake);
-
-        // 케이크 삭제
-        cakeRepository.delete(foundCake);
-
-        return foundCake.getCakeId();
-    }
-
-    // (관리자용) 케이크 사진 저장 메소드
-    @Transactional
-    public void addCakeList(long storeId, List<MultipartFile> imgFileList) throws IOException {
-
-        Store foundStore = storeRepository.findById(storeId)
-                .orElseThrow(()->new CustomException(ErrorCode.STORE_NOT_FOUND));
-
-        if(imgFileList != null){
-            for(MultipartFile imgFile : imgFileList){
-                ImageInfoDto imgInfo = s3Service.uploadOriginalFile(imgFile, FolderName.Cake.name());
-                Cake cake = Cake.builder()
-                        .url(imgInfo.getUrl())
-                        .store(foundStore)
-                        .build();
-                cakeRepository.save(cake);
-            }
-        }
-    }
 
     // 케이크 리스트 찾기 메소드
     public List<Cake> findCakeListBySortType(int page, String sortType) {

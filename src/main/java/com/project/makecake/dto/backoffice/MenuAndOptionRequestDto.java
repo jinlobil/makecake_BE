@@ -5,7 +5,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class BoSearchStoreIdResponseDto {
+public class MenuAndOptionRequestDto {
     private long storeId;
-    private String storeName;
+    private String aboutCake;
+    private String aboutOption;
 }
