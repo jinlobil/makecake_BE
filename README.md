@@ -159,10 +159,8 @@
 
 **API 설계 한눈에 보기**
 
-<img src="https://user-images.githubusercontent.com/94432600/161857074-15fc6adf-9c0d-47dc-a714-1c6dfe39756d.PNG" width="70%">
-<img src="https://user-images.githubusercontent.com/94432600/161857082-a84f9336-f9c8-4579-b69d-a8a2a827ef25.PNG" width="70%">
-<img src="https://user-images.githubusercontent.com/94432600/161857087-3a3c8d01-239d-4ac2-9f11-3ea2b827fd29.PNG" width="70%">
-<img src="https://user-images.githubusercontent.com/94432600/161857093-4c8d464e-97d4-46d7-84c3-670f1c6dbeda.PNG" width="70%">
+<img src="https://user-images.githubusercontent.com/94432600/161863177-ff0056ff-ff89-4f18-a246-e9876d89d284.PNG" width="70%">
+
 
 **[API 설계 자세히보기](https://www.notion.so/API-d8a2df6e8b844149a67b085c5ece89bc)**
 
@@ -171,44 +169,37 @@
 ## 🐛 트러블 슈팅
 <details>
 <summary><b>자세히 보기</b></summary>
-간단한 설명
-**[해결과정 (WIKI)](https://make-cake.com/)**
+
 </details>
 
 <details>
 <summary><b>자세히 보기</b></summary>
-간단한 설명
-**[해결과정 (WIKI)](https://make-cake.com/)**
+
 </details>
 
 <details>
 <summary><b>자세히 보기</b></summary>
-간단한 설명
-**[해결과정 (WIKI)](https://make-cake.com/)**
+
 </details>
 
 <details>
 <summary><b>자세히 보기</b></summary>
-간단한 설명
-**[해결과정 (WIKI)](https://make-cake.com/)**
+
 </details>
 
 <details>
 <summary><b>자세히 보기</b></summary>
-간단한 설명
-**[해결과정 (WIKI)](https://make-cake.com/)**
+
 </details>
 
 <details>
 <summary><b>자세히 보기</b></summary>
-간단한 설명
-**[해결과정 (WIKI)](https://make-cake.com/)**
+
 </details>
 
 <details>
 <summary><b>자세히 보기</b></summary>
-간단한 설명
-**[해결과정 (WIKI)](https://make-cake.com/)**
+
 </details>
 
 
