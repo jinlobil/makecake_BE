@@ -16,7 +16,7 @@ public class GuideController {
     private final OrderFormService orderFormService;
 
     // 주문 가능 매장 안내 페이지 조회 API
-    @GetMapping("/api/pages/order-guide")
+    @GetMapping("/order-guide")
     public List<OrderReadyStoreResponseDto> getOrderReadyStoreList(){
         return orderFormService.getOrderReadyStoreList();
     }

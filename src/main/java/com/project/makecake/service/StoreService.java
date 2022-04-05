@@ -3,7 +3,6 @@ package com.project.makecake.service;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.project.makecake.dto.home.HomeStoreDto;
-import com.project.makecake.dto.home.SearchRequestDto;
 import com.project.makecake.dto.home.SearchResponseDto;
 import com.project.makecake.dto.like.LikeResponseDto;
 import com.project.makecake.dto.review.ReviewResponseDto;
@@ -28,6 +27,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,6 +45,7 @@ public class StoreService {
     private final CakeMenuRepository cakeMenuRepository;
     private final OpenApiService openApiService;
     private final OrderFormService orderFormService;
+    private final SearchKeywordRepository searchKeywordRepository;
 
     // (홈탭) 인기 매장 리스트 조회 메소드
     public List<HomeStoreDto> getStoreListAtHome() {
@@ -220,9 +221,7 @@ public class StoreService {
     }
 
     // 매장 검색 결과 반환 메소드
-    public List<SearchResponseDto> getStoreList(SearchRequestDto requestDto) throws IOException {
-        String searchType = requestDto.getSearchType();
-        String searchText = requestDto.getSearchText();
+    public List<SearchResponseDto> getStoreList(String searchType, String searchText) throws IOException {
         List<Store> foundStoreList = new ArrayList<>();
 
         if (searchType.equals("store")) {
@@ -274,6 +273,106 @@ public class StoreService {
         return responseDtoList;
     }
 
+    // 매장 검색 결과 반환 메소드 2
+    @Transactional
+    public List<SearchResponseDto> getStoreListRenewal(String searchType, String searchText) throws IOException {
+        List<Store> foundStoreList = new ArrayList<>();
+
+
+        // 1. 매장명을 검색한 경우
+        if(searchType.equals("store")) {
+            foundStoreList = storeRepository.findAllByNameContainingOrderByLikeCntDesc(searchText);
+
+        } else {
+
+        // 2. 주소 또는 플레이스로 검색한 경우
+
+            // 2-(1). store DB의 fullAddress에서 해당 검색어를 포함할 경우 결과 반환
+            foundStoreList = storeRepository.findByFullAddressContainingOrderByLikeCntDesc(searchText);
+
+            // 2-(2). 검색어가 fullAddress에 없을 경우 SearchKeyword DB 검색
+            if(foundStoreList.size()==0){
+                Optional<SearchKeyword> foundKeyWordOpt = searchKeywordRepository.findBySearchInput(searchText);
+
+                // searchKeyword에 검색어가 존재하는 경우 결과 반환 & searchCnt +1
+                if(foundKeyWordOpt.isPresent()){
+                    SearchKeyword foundKeyWord = foundKeyWordOpt.get();
+                    foundStoreList = storeRepository.findByXBetweenAndYBetweenOrderByLikeCntDesc(
+                                    foundKeyWord.getMinX(),
+                                    foundKeyWord.getMaxX(),
+                                    foundKeyWord.getMinY(),
+                                    foundKeyWord.getMaxY()
+                                    );
+
+                    foundKeyWord.addSearchCnt();
+
+                // 2-(3) 검색어가 searchKeyword에 없을 경우엔 api 검색 결과 반환 & searchKeyword에 데이터 추가
+                } else {
+                    float minX = 0;
+                    float maxX = 0;
+                    float minY = 0;
+                    float maxY = 0;
+
+                    String urlString = "";
+
+                    // 네이버 지도로 검색하기
+
+                    // 검색어가 '서울'로 시작할 경우 그대로 검색
+                    if (searchText.startsWith("서울")){
+                        urlString = "https://map.naver.com/v5/api/search?caller=pcweb&query=" + URLEncoder.encode(searchText, "UTF-8") + "&type=all&searchCoord=127.0234346;37.4979517&page=1&displayCount=20&isPlaceRecommendationReplace=true&lang=ko";
+
+                    // 검색어가 '서울' 시작하지 않는 경우 '서울'을 붙여서 검색
+                    } else {
+                        urlString = "https://map.naver.com/v5/api/search?caller=pcweb&query=" + URLEncoder.encode("서울" + searchText, "UTF-8") + "&type=all&searchCoord=127.0234346;37.4979517&page=1&displayCount=20&isPlaceRecommendationReplace=true&lang=ko";
+                    }
+
+                    // api 검색 결과 반환
+                    JsonElement element = openApiService.getOpenApiResult(urlString);
+
+                    JsonArray rawJsonArray = element.getAsJsonObject().get("result").getAsJsonObject().get("place").getAsJsonObject().get("boundary").getAsJsonArray();
+
+                    List<Float> foundBoundaryList = new ArrayList<>();
+
+                    // 검색결과에서 위경도 값 추출 후 가공
+                    for (int i=0; i< rawJsonArray.size(); i++) {
+                        String measureString = rawJsonArray.get(i).getAsString();
+                        float measure = Float.parseFloat(measureString);
+                        foundBoundaryList.add(measure);
+                    }
+
+                    Collections.sort(foundBoundaryList);
+
+                    minY = foundBoundaryList.get(0) - 0.01f;
+                    maxY = foundBoundaryList.get(1) + 0.01f;
+                    minX = foundBoundaryList.get(2)- 0.01f;
+                    maxX = foundBoundaryList.get(3) + 0.01f;
+
+                    // 위경도 값으로 db 검색 결과 반환
+                    foundStoreList = storeRepository.findByXBetweenAndYBetweenOrderByLikeCntDesc(minX, maxX, minY, maxY);
+
+
+                    // 사용자 검색어 db에 신규 등록
+                    SearchKeyword searchKeyword = new SearchKeyword().builder()
+                            .searchInput(searchText)
+                            .minX(minX)
+                            .maxX(maxX)
+                            .minY(minY)
+                            .maxY(maxY)
+                            .build();
+
+                    searchKeywordRepository.save(searchKeyword);
+                }
+            }
+        }
+
+        // foundStoreList를 Dto에 담아 반환
+        List<SearchResponseDto> responseDtoList = new ArrayList<>();
+
+        for(Store store : foundStoreList){
+            responseDtoList.add(StoreDetailsAtSearch(store));
+        }
+        return responseDtoList;
+    }
 
     // (매장 상세 페이지 조회 메소드) 매장 홈페이지 url 2개 반환 메소드
     public List<StoreDetailUrlDto> getUrlList(long storeId){

@@ -59,7 +59,7 @@ public class NotiController {
     }
 
     // 새로운 알림 여부 조회 API
-    @GetMapping("/api/newNoti")
+    @GetMapping("/home/new-noti")
     public NewNotiResponseDto getNewNoti(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return notiService.getNewNoti(userDetails);
     }
