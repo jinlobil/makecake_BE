@@ -38,7 +38,7 @@
  <a href="https://github.com/durukim" target="_blank"><img width="180"  src="https://img.shields.io/static/v1?label=React&message=김두루 &color=61dafb&style=for-the-badge&>"/></a>
  <a href="https://github.com/jeonghwanJay" target="_blank"><img width="180"  src="https://img.shields.io/static/v1?label=React&message=지정환 &color=61dafb&style=for-the-badge&>"/></a>
 
-**[(Front-end github)](https://gitub.com/team12-foodmpa/Front)**
+**[(Front-end github)](https://github.com/makecake04/makecake_FE)**
 
 #### `Designer`
  <img width="180"  src="https://img.shields.io/static/v1?label=Design&message=황성원 &color=FF7F50&style=for-the-badge&>"/></a>
