@@ -20,7 +20,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-public class AdminCakeService {
+public class BOCakeService {
 
     private final StoreRepository storeRepository;
     private final CakeRepository cakeRepository;
