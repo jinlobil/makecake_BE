@@ -23,7 +23,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-public class AdminNotiService {
+public class BONotiService {
 
     private final NotiRepository notiRepository;
     private final FixNotiRepository fixNotiRepository;
