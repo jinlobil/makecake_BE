@@ -5,7 +5,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class BoSearchStoreIdResponseDto {
-    private long storeId;
-    private String storeName;
+public class findStoreId {
+    private String searchText;
 }

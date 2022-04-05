@@ -103,7 +103,7 @@ public class BackOfficeService {
 
 
     //매장 이름으로 매장 id 검색하기 메소드
-    public BoSearchStoreIdResponseDto boSearchStoreId(BoSearchStoreIdRequestDto requestDto) {
+    public findStoreIdResponseDto findStoreId(findStoreId requestDto) {
         String searchText = requestDto.getSearchText();
         Long storeId = Long.valueOf(0);
         String storeName = "";
@@ -112,7 +112,7 @@ public class BackOfficeService {
             storeName = searchResult.get(0).getName();
             storeId = searchResult.get(0).getStoreId();
         }
-        BoSearchStoreIdResponseDto responseDto = new BoSearchStoreIdResponseDto();
+        findStoreIdResponseDto responseDto = new findStoreIdResponseDto();
         responseDto.setStoreId(storeId);
         responseDto.setStoreName(storeName);
 

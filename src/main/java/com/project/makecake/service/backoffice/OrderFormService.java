@@ -1,10 +1,8 @@
 package com.project.makecake.service.backoffice;
 
 import com.project.makecake.dto.orders.OrderReadyStoreResponseDto;
-import com.project.makecake.dto.backoffice.OrderFormPeekResponseDto;
 import com.project.makecake.dto.orders.OrderFormDetailResponseDto;
 import com.project.makecake.dto.orders.OrderFormReadyResponseDto;
-import com.project.makecake.dto.orders.OrderFormRequestDto;
 import com.project.makecake.dto.store.StoreMoreCakeMenuDto;
 import com.project.makecake.dto.store.StoreMoreCakeOptionDto;
 import com.project.makecake.dto.store.StoreMoreCakeTasteDto;
@@ -22,87 +20,18 @@ import com.project.makecake.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 
 public class OrderFormService {
-    private final StoreRepository storeRepository;
     private final OrderFormRepository orderFormRepository;
     private final CakeMenuRepository cakeMenuRepository;
     private final StoreOptionRepository storeOptionRepository;
 
 
-    // (백오피스) 주문서 등록 메소드
-    @Transactional
-    public String addOrderForm(OrderFormRequestDto requestDto) {
-        Store store = storeRepository.findById(requestDto.getStoreId())
-                .orElseThrow(()-> new CustomException(ErrorCode.STORE_NOT_FOUND));
-
-        OrderForm orderForm = OrderForm.builder()
-                .requestDto(requestDto)
-                .store(store)
-                .build();
-
-        orderFormRepository.save(orderForm);
-
-        return "주문서 등록 완료";
-    }
-
-    // (백오피스) 주문서 삭제 메소드
-    @Transactional
-    public String deleteOrderForm(long orderFormId) {
-        OrderForm orderForm = orderFormRepository.findById(orderFormId)
-                .orElseThrow(()-> new CustomException(ErrorCode.ORDER_NOT_FOUND));
-
-        orderFormRepository.delete(orderForm);
-
-        return "주문서 삭제 완료";
-    }
-
-    // (백오피스) 주문서 등록 전 데이터 미리보기 메소드
-    public OrderFormPeekResponseDto peekOrderForm(OrderFormRequestDto requestDto) {
-        long storeId = requestDto.getStoreId();
-
-        // 매장명
-        Store store = storeRepository.findById(storeId)
-                .orElseThrow(()->new CustomException(ErrorCode.STORE_NOT_FOUND));
-        String storeName = store.getName();
-
-        // 주문서 양식
-        List<String> peekFormList = new ArrayList<>();
-        String stringForm = requestDto.getForm();
-        List<String> rawFormList = Arrays.asList(stringForm.split(":"));
-
-        for(String rawForm : rawFormList){
-            peekFormList.add(rawForm.trim());
-        }
-
-        // 주문 전 필독사항
-        List<String> peekInstructionList = new ArrayList<>();
-        String stringInstruction = requestDto.getInstruction();
-
-        List<String> rawInstructionList = Arrays.asList(stringInstruction.trim().split("\\*"));
-        for(String rawInstruction : rawInstructionList) {
-            if(!rawInstruction.trim().equals("")){
-                peekInstructionList.add(rawInstruction.trim());
-            }
-        }
-
-        OrderFormPeekResponseDto responseDto = OrderFormPeekResponseDto.builder()
-                .storeId(storeId)
-                .storeName(storeName)
-                .name(requestDto.getName())
-                .peekFormList(peekFormList)
-                .peekInstructionList(peekInstructionList)
-                .build();
-
-       return responseDto;
-    }
-
-    // (주문하기) 주문 가능 매장 리스트 조회 메소드
+    // 주문 가능한 주문서 리스트 조회 메소드
     public List<OrderFormReadyResponseDto> getOrderFormList() {
         List<OrderFormReadyResponseDto> responseDtoList = new ArrayList<>();
         List<OrderForm> foundOrderFormList = orderFormRepository.findAllByOrderByNameAsc();
@@ -116,7 +45,7 @@ public class OrderFormService {
         return responseDtoList;
     }
 
-    // (주문하기) 케이크 주문서 작성 페이지 조회 API
+    // 케이크 주문서 작성 페이지 조회 메소드
     public OrderFormDetailResponseDto getOrderFormDetails(Long orderFormId) {
 
         OrderForm orderForm = orderFormRepository.findById(orderFormId)
@@ -156,6 +85,35 @@ public class OrderFormService {
         return responseDto;
     }
 
+    // 주문 가능한 매장 정보 조회 메소드
+    public List<OrderReadyStoreResponseDto> getOrderReadyStoreList() {
+        List<OrderReadyStoreResponseDto> responseDtoList = new ArrayList<>();
+
+        List<Store> foundStoreList = orderFormRepository.findDistinctStore();
+        for(Store store : foundStoreList){
+            String addressSimple = "";
+
+            //"서울 OO구 OO동"
+            if(!store.getFullAddress().equals(null)){
+                String[] arr = store.getFullAddress().split(" ");
+                addressSimple = arr[0].substring(0,2) + " "  + arr[1] + " " + arr[2];
+            }
+
+            OrderReadyStoreResponseDto responseDto = OrderReadyStoreResponseDto.builder()
+                    .store(store)
+                    .simpleAddress(addressSimple)
+                    .build();
+            responseDtoList.add(responseDto);
+
+            // 간편 주소 가나다 순 정렬
+            Comparator<OrderReadyStoreResponseDto> compareByAddress = (OrderReadyStoreResponseDto r1, OrderReadyStoreResponseDto r2) -> r1.getSimpleAddress().compareTo( r2.getSimpleAddress() );
+            Collections.sort(responseDtoList, compareByAddress);
+
+        }
+        return responseDtoList;
+    }
+
+    // (내부 메소드) 케이크 메뉴, 꾸미기 옵션 조회 메소드
     public StoreMoreDetailsDto getMoreDetails(long storeId){
         //cakeMenuList
         List<StoreMoreCakeMenuDto> cakeMenuList = new ArrayList<>();
@@ -196,32 +154,5 @@ public class OrderFormService {
                 .build();
 
         return moreDetails;
-    }
-
-    public List<OrderReadyStoreResponseDto> getOrderReadyStoreList() {
-        List<OrderReadyStoreResponseDto> responseDtoList = new ArrayList<>();
-
-        List<Store> foundStoreList = orderFormRepository.findDistinctStore();
-        for(Store store : foundStoreList){
-            String addressSimple = "";
-
-            //"서울 OO구 OO동"
-            if(!store.getFullAddress().equals(null)){
-                String[] arr = store.getFullAddress().split(" ");
-                addressSimple = arr[0].substring(0,2) + " "  + arr[1] + " " + arr[2];
-            }
-
-            OrderReadyStoreResponseDto responseDto = OrderReadyStoreResponseDto.builder()
-                    .store(store)
-                    .simpleAddress(addressSimple)
-                    .build();
-            responseDtoList.add(responseDto);
-
-            // 간편 주소 가나다 순 정렬
-            Comparator<OrderReadyStoreResponseDto> compareByAddress = (OrderReadyStoreResponseDto r1, OrderReadyStoreResponseDto r2) -> r1.getSimpleAddress().compareTo( r2.getSimpleAddress() );
-            Collections.sort(responseDtoList, compareByAddress);
-
-        }
-        return responseDtoList;
     }
 }
