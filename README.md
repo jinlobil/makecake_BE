@@ -63,7 +63,7 @@
 |Server|<img src="https://img.shields.io/badge/aws-232F3E?style=for-the-badge&logo=AmazonAWS&logoColor=white"> <img src="https://img.shields.io/badge/Amazon S3-569A31?style=for-the-badge&logo=Amazon S3&logoColor=white">|
 |CI/CD|<img src="https://img.shields.io/badge/GitHub Actions-2088FF?style=for-the-badge&logo=GitHub Actions&logoColor=white"> <img src="https://img.shields.io/badge/codedeploy-6DB33F?style=for-the-badge&logo=codedeploy&logoColor=white">|
 |Test|<img src="https://img.shields.io/badge/JUnit5-25A162?style=for-the-badge&logo=JUnit5&logoColor=white">|
-|Reverse Proxy|<img src="https://img.shields.io/badge/NGINX-009639?style=for-the-badge&logo=NGINX&logoColor=white">|
+|무중단배포|<img src="https://img.shields.io/badge/NGINX-009639?style=for-the-badge&logo=NGINX&logoColor=white">|
 
 
 <br />
@@ -168,38 +168,43 @@
 
 ## 🐛 트러블 슈팅
 <details>
-<summary><b>자세히 보기</b></summary>
-
+<summary><b>매장 검색 기능 개선</b></summary>
+내용 적기
 </details>
 
 <details>
-<summary><b>자세히 보기</b></summary>
-
+<summary><b>JPA N+1문제 해결</b></summary>
+내용 적기
 </details>
 
 <details>
-<summary><b>자세히 보기</b></summary>
-
+<summary><b>이미지 렌더링 속도 개선을 위한 리사이징</b></summary>
+내용 적기
 </details>
 
 <details>
-<summary><b>자세히 보기</b></summary>
-
+<summary><b>ec2 서버 다운</b></summary>
+내용 적기
 </details>
 
 <details>
-<summary><b>자세히 보기</b></summary>
-
+<summary><b>데이터 수집 및 클렌징을 위한 백오피스</b></summary>
+내용 적기
 </details>
 
 <details>
-<summary><b>자세히 보기</b></summary>
-
+<summary><b>무한스크롤 구현</b></summary>
+내용 적기
 </details>
 
 <details>
-<summary><b>자세히 보기</b></summary>
+<summary><b>복잡한 데이터 구조로 인한 매장 상세 정보 조회 어려움</b></summary>
+내용 적기
+</details>
 
+<details>
+<summary><b>소셜 로그인</b></summary>
+내용 적기
 </details>
 
 
