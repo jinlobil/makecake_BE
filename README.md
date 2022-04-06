@@ -29,14 +29,14 @@
 
 ## 👥 팀 소개
 #### `Backend`
-<a href="https://github.com/minjoo-kou" target="_blank"><img width="180"  src="https://img.shields.io/static/v1?label=Spring&message=구민주 &color=08CE5D&style=for-the-badge&>"/></a>
-<a href="https://github.com/sun-land" target="_blank"><img width="180"  src="https://img.shields.io/static/v1?label=Spring&message=고혜지 &color=08CE5D&style=for-the-badge&>"/></a>
-<a href="https://github.com/devssk" target="_blank"><img width="180"  src="https://img.shields.io/static/v1?label=Spring&message=송성근 &color=08CE5D&style=for-the-badge&>"/></a>
+<a href="https://github.com/minjoo-kou" target="_blank"><img height="40"  src="https://img.shields.io/static/v1?label=Spring&message=구민주 &color=08CE5D&style=for-the-badge&>"/></a>
+<a href="https://github.com/sun-land" target="_blank"><img height="40"  src="https://img.shields.io/static/v1?label=Spring&message=고혜지 &color=08CE5D&style=for-the-badge&>"/></a>
+<a href="https://github.com/devssk" target="_blank"><img height="40"  src="https://img.shields.io/static/v1?label=Spring&message=송성근 &color=08CE5D&style=for-the-badge&>"/></a>
 
 #### `Frontend`
- <a href="https://github.com/nevergettingold" target="_blank"><img width="180"  src="https://img.shields.io/static/v1?label=React&message=오성택 &color=61dafb&style=for-the-badge&>"/></a>
- <a href="https://github.com/durukim" target="_blank"><img width="180"  src="https://img.shields.io/static/v1?label=React&message=김두루 &color=61dafb&style=for-the-badge&>"/></a>
- <a href="https://github.com/jeonghwanJay" target="_blank"><img width="180"  src="https://img.shields.io/static/v1?label=React&message=지정환 &color=61dafb&style=for-the-badge&>"/></a>
+ <a href="https://github.com/nevergettingold" target="_blank"><img height="40"  src="https://img.shields.io/static/v1?label=React&message=오성택 &color=61dafb&style=for-the-badge&>"/></a>
+ <a href="https://github.com/durukim" target="_blank"><img height="40"  src="https://img.shields.io/static/v1?label=React&message=김두루 &color=61dafb&style=for-the-badge&>"/></a>
+ <a href="https://github.com/jeonghwanJay" target="_blank"><img height="40"  src="https://img.shields.io/static/v1?label=React&message=지정환 &color=61dafb&style=for-the-badge&>"/></a>
 
 **[(Front-end github)](https://github.com/makecake04/makecake_FE)**
 
@@ -63,6 +63,7 @@
 |Server|<img src="https://img.shields.io/badge/aws-232F3E?style=for-the-badge&logo=AmazonAWS&logoColor=white"> <img src="https://img.shields.io/badge/Amazon S3-569A31?style=for-the-badge&logo=Amazon S3&logoColor=white">|
 |CI/CD|<img src="https://img.shields.io/badge/GitHub Actions-2088FF?style=for-the-badge&logo=GitHub Actions&logoColor=white"> <img src="https://img.shields.io/badge/codedeploy-6DB33F?style=for-the-badge&logo=codedeploy&logoColor=white">|
 |Test|<img src="https://img.shields.io/badge/JUnit5-25A162?style=for-the-badge&logo=JUnit5&logoColor=white">|
+|Load Test|<img src="https://img.shields.io/badge/Apache JMeter-D22128?style=for-the-badge&logo=Apache JMeter&logoColor=white">|
 |무중단배포|<img src="https://img.shields.io/badge/NGINX-009639?style=for-the-badge&logo=NGINX&logoColor=white">|
 
 
