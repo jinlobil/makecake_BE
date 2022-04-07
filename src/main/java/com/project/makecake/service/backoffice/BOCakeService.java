@@ -62,7 +62,7 @@ public class BOCakeService {
 
         if(imgFileList != null){
             for(MultipartFile imgFile : imgFileList){
-                ImageInfoDto imgInfo = s3Service.uploadOriginalFile(imgFile, FolderName.Cake.name());
+                ImageInfoDto imgInfo = s3Service.uploadImg(imgFile, FolderName.Cake.name());
                 Cake cake = Cake.builder()
                         .url(imgInfo.getUrl())
                         .store(foundStore)

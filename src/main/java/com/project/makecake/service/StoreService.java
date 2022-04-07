@@ -13,22 +13,24 @@ import com.project.makecake.model.*;
 import com.project.makecake.repository.*;
 import com.project.makecake.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class StoreService {
@@ -331,6 +333,29 @@ public class StoreService {
             responseDtoList.add(StoreDetailsAtSearch(store));
         }
         return responseDtoList;
+    }
+
+    // 밤12시마다 오타 검색 키워드 삭제 메소드
+    @Transactional
+    @Scheduled(cron = "0 0 3 * * ?", zone = "Asia/Seoul")
+    public void deleteSearchKeyword() {
+
+        System.out.println("안녕");
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date now = new Date();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(now);
+        calendar.add(Calendar.DATE,-7);
+
+        String standard = formatter.format(calendar.getTime());
+
+        List<SearchKeyword> searchKeywordList = searchKeywordRepository.findWrongKeyword(standard);
+        for (SearchKeyword searchKeyword : searchKeywordList) {
+            log.info("검색어 삭제 : " + searchKeyword.getSearchInput());
+            searchKeywordRepository.delete(searchKeyword);
+        }
     }
 
     // (매장 상세 페이지 조회 메소드) 케이크 이미지 반환 메소드
