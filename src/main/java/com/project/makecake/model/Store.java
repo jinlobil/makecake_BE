@@ -64,9 +64,4 @@ public class Store extends Timestamped{
         }
     }
 
-    // 썸네일 추가
-    public void setThumbNail(String thumbnailUrl){
-        this.thumbnailMainImg = thumbnailUrl;
-    }
-
 }

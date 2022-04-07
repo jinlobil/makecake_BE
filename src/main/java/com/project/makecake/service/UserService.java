@@ -179,7 +179,7 @@ public class UserService {
             if (foundUser.getProfileImgName() != null){
                 s3Service.deleteFile(foundUser.getProfileImgName());
             }
-            ImageInfoDto imageInfoDto = s3Service.uploadOriginalFile(imgFile, FolderName.PROFILE.name());
+            ImageInfoDto imageInfoDto = s3Service.uploadImg(imgFile, FolderName.PROFILE.name());
             profile = imageInfoDto.getUrl();
             profileName = imageInfoDto.getName();
         }
