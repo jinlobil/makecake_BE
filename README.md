@@ -169,15 +169,15 @@
 
 **[ec2 서버 다운 - WIKI](https://github.com/makecake04/makecake_BE/wiki/%5B%ED%8A%B8%EB%9F%AC%EB%B8%94%EC%8A%88%ED%8C%85%5D-EC2-%EC%84%9C%EB%B2%84-%EB%8B%A4%EC%9A%B4)**
 
-**[이미지 렌더링 속도 개선을 위한 리사이징 - WIKI (준비중)](https://github.com/makecake04/makecake_BE/wiki/%5B%ED%8A%B8%EB%9F%AC%EB%B8%94-%EC%8A%88%ED%8C%85%5D-%EC%9D%B4%EB%AF%B8%EC%A7%80-%EB%A0%8C%EB%8D%94%EB%A7%81-%EC%86%8D%EB%8F%84-%EA%B0%9C%EC%84%A0%EC%9D%84-%EC%9C%84%ED%95%9C-%EB%A6%AC%EC%82%AC%EC%9D%B4%EC%A7%95)**
+**[이미지 렌더링 속도 개선을 위한 리사이징 - WIKI](https://github.com/makecake04/makecake_BE/wiki/%5B%ED%8A%B8%EB%9F%AC%EB%B8%94-%EC%8A%88%ED%8C%85%5D-%EC%9D%B4%EB%AF%B8%EC%A7%80-%EB%A0%8C%EB%8D%94%EB%A7%81-%EC%86%8D%EB%8F%84-%EA%B0%9C%EC%84%A0%EC%9D%84-%EC%9C%84%ED%95%9C-%EB%A6%AC%EC%82%AC%EC%9D%B4%EC%A7%95)**
 
 **[매장 검색 기능 개선 - WIKI (준비중)]()**
+
+**[복잡한 데이터 구조로 인한 매장 상세 정보 조회 어려움 - WIKI (준비중)]()**
 
 **[JPA N+1문제 해결 - WIKI (준비중)]()**
 
 **[데이터 수집 및 클렌징을 위한 백오피스 - WIKI (준비중)]()**
-
-**[복잡한 데이터 구조로 인한 매장 상세 정보 조회 어려움 - WIKI (준비중)]()**
 
 
 <!-- |Test|<img src="https://img.shields.io/badge/JUnit5-25A162?style=for-the-badge&logo=JUnit5&logoColor=white">| -->
