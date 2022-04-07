@@ -72,8 +72,6 @@
 ## 🏰 아키텍쳐
 <img src="https://user-images.githubusercontent.com/94432600/161740584-6f3c814c-f90d-4715-8341-2dbc7b3602f8.png">
 
-**[아키텍쳐 선택 과정 (WIKI) (준비중)](https://make-cake.com/)**
-
 <br />
 
 ## 📕 ER 다이어그램     
@@ -183,10 +181,8 @@
 내용 적기
 </details>
 
-<details>
-<summary><b>ec2 서버 다운</b></summary>
-내용 적기
-</details>
+**[ec2 서버 다운-WIKI](https://github.com/makecake04/makecake_BE/wiki/%5B%ED%8A%B8%EB%9F%AC%EB%B8%94%EC%8A%88%ED%8C%85%5D-EC2-%EC%84%9C%EB%B2%84-%EB%8B%A4%EC%9A%B4)**
+
 
 <details>
 <summary><b>데이터 수집 및 클렌징을 위한 백오피스</b></summary>
