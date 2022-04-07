@@ -158,7 +158,7 @@
 
 **API 설계 한눈에 보기**
 
-<img src="https://user-images.githubusercontent.com/94432600/161863177-ff0056ff-ff89-4f18-a246-e9876d89d284.PNG" width="70%">
+<img src="https://user-images.githubusercontent.com/94432600/162270762-9ff9e403-f515-4757-8c71-77ae386b4f01.jpg" width=800>
 
 
 **[API 설계 자세히보기](https://www.notion.so/API-d8a2df6e8b844149a67b085c5ece89bc)**
@@ -166,40 +166,19 @@
 <br />
 
 ## 🐛 트러블 슈팅
-<details>
-<summary><b>매장 검색 기능 개선</b></summary>
-내용 적기
-</details>
-
-<details>
-<summary><b>JPA N+1문제 해결</b></summary>
-내용 적기
-</details>
-
-<details>
-<summary><b>이미지 렌더링 속도 개선을 위한 리사이징</b></summary>
-내용 적기
-</details>
+**[좋아요순으로 무한스크롤 구현하기 - 오프셋 페이징과 커서 페이징-WIKI](https://github.com/makecake04/makecake_BE/wiki/%5B%ED%8A%B8%EB%9F%AC%EB%B8%94%EC%8A%88%ED%8C%85%5D-%EB%AC%B4%ED%95%9C%EC%8A%A4%ED%81%AC%EB%A1%A4-%EA%B5%AC%ED%98%84%ED%95%98%EA%B8%B0-%EC%98%A4%ED%94%84%EC%85%8B-%ED%8E%98%EC%9D%B4%EC%A7%95%EA%B3%BC-%EC%BB%A4%EC%84%9C-%ED%8E%98%EC%9D%B4%EC%A7%95)**
 
 **[ec2 서버 다운-WIKI](https://github.com/makecake04/makecake_BE/wiki/%5B%ED%8A%B8%EB%9F%AC%EB%B8%94%EC%8A%88%ED%8C%85%5D-EC2-%EC%84%9C%EB%B2%84-%EB%8B%A4%EC%9A%B4)**
 
+**[매장 검색 기능 개선-WIKI (준비중)]()**
 
-<details>
-<summary><b>데이터 수집 및 클렌징을 위한 백오피스</b></summary>
-내용 적기
-</details>
+**[JPA N+1문제 해결-WIKI (준비중)]()**
 
-**[좋아요순으로 무한스크롤 구현하기 - 오프셋 페이징과 커서 페이징-WIKI](https://github.com/makecake04/makecake_BE/wiki/%5B%ED%8A%B8%EB%9F%AC%EB%B8%94%EC%8A%88%ED%8C%85%5D-%EB%AC%B4%ED%95%9C%EC%8A%A4%ED%81%AC%EB%A1%A4-%EA%B5%AC%ED%98%84%ED%95%98%EA%B8%B0-%EC%98%A4%ED%94%84%EC%85%8B-%ED%8E%98%EC%9D%B4%EC%A7%95%EA%B3%BC-%EC%BB%A4%EC%84%9C-%ED%8E%98%EC%9D%B4%EC%A7%95)**
+**[이미지 렌더링 속도 개선을 위한 리사이징-WIKI (준비중)]()**
 
+**[데이터 수집 및 클렌징을 위한 백오피스-WIKI (준비중)]()**
 
-<details>
-<summary><b>복잡한 데이터 구조로 인한 매장 상세 정보 조회 어려움</b></summary>
-내용 적기
-</details>
+**[복잡한 데이터 구조로 인한 매장 상세 정보 조회 어려움-WIKI (준비중)]()**
 
-<details>
-<summary><b>소셜 로그인</b></summary>
-내용 적기
-</details>
 
 
