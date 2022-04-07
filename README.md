@@ -193,10 +193,8 @@
 내용 적기
 </details>
 
-<details>
-<summary><b>무한스크롤 구현</b></summary>
-내용 적기
-</details>
+**[좋아요순으로 무한스크롤 구현하기 - 오프셋 페이징과 커서 페이징-WIKI](https://github.com/makecake04/makecake_BE/wiki/%5B%ED%8A%B8%EB%9F%AC%EB%B8%94%EC%8A%88%ED%8C%85%5D-%EB%AC%B4%ED%95%9C%EC%8A%A4%ED%81%AC%EB%A1%A4-%EA%B5%AC%ED%98%84%ED%95%98%EA%B8%B0-%EC%98%A4%ED%94%84%EC%85%8B-%ED%8E%98%EC%9D%B4%EC%A7%95%EA%B3%BC-%EC%BB%A4%EC%84%9C-%ED%8E%98%EC%9D%B4%EC%A7%95)**
+
 
 <details>
 <summary><b>복잡한 데이터 구조로 인한 매장 상세 정보 조회 어려움</b></summary>
