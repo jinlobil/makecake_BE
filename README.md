@@ -175,7 +175,7 @@
 
 **[복잡한 데이터 구조로 인한 매장 상세 정보 조회 어려움 - WIKI (준비중)]()**
 
-**[JPA N+1문제 해결 - WIKI (준비중)]()**
+**[JPA N+1문제 해결 - NOTION](https://puffy-net-2c4.notion.site/JPA-N-1-c00fc7a9bac64d99b3d4baf1a6868d97)**
 
 **[데이터 수집 및 클렌징을 위한 백오피스 - WIKI (준비중)]()**
 
