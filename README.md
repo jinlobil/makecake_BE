@@ -12,7 +12,8 @@
 
 🍰 **[makecake 서비스 바로가기](https://make-cake.com/)**
 
-🎬 **[서비스 시연 영상 (준비중)](https://make-cake.com/)**
+🎬 **[서비스 시연 및 발표 영상](https://www.youtube.com/watch?v=7CAoUo4Ma4c)**
+
 
 <br />
 
@@ -63,7 +64,7 @@
 |Server|<img src="https://img.shields.io/badge/aws-232F3E?style=for-the-badge&logo=AmazonAWS&logoColor=white"> <img src="https://img.shields.io/badge/Amazon S3-569A31?style=for-the-badge&logo=Amazon S3&logoColor=white">|
 |CI/CD|<img src="https://img.shields.io/badge/GitHub Actions-2088FF?style=for-the-badge&logo=GitHub Actions&logoColor=white"> <img src="https://img.shields.io/badge/codedeploy-6DB33F?style=for-the-badge&logo=codedeploy&logoColor=white">|
 |Load Test|<img src="https://img.shields.io/badge/Apache JMeter-D22128?style=for-the-badge&logo=Apache JMeter&logoColor=white">|
-|무중단배포|<img src="https://img.shields.io/badge/NGINX-009639?style=for-the-badge&logo=NGINX&logoColor=white">|
+|proxy, 무중단배포|<img src="https://img.shields.io/badge/NGINX-009639?style=for-the-badge&logo=NGINX&logoColor=white">|
 
 
 <br />
