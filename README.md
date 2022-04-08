@@ -157,7 +157,7 @@
 
 **API 설계 한눈에 보기**
 
-<img src="https://user-images.githubusercontent.com/94432600/162270762-9ff9e403-f515-4757-8c71-77ae386b4f01.jpg" width=800>
+<img src="https://user-images.githubusercontent.com/97426206/162351496-10ef4bd5-42de-4fce-ab05-0ec989f8996f.png" width=800>
 
 
 **[API 설계 자세히보기](https://www.notion.so/API-d8a2df6e8b844149a67b085c5ece89bc)**
