@@ -3,7 +3,9 @@ package com.project.makecake.controller.backoffice;
 import com.project.makecake.service.OpenApiService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 
 @RequiredArgsConstructor
@@ -16,5 +18,6 @@ public class BOOpenApiController {
     @PostMapping("/back-office/open-api/stores")
     public void collectStoreData(@RequestParam int storeNo) throws IOException {
         openApiService.collectStoreData(storeNo);
-        }
     }
+
+}

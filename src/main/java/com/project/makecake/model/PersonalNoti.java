@@ -46,4 +46,5 @@ public class PersonalNoti extends Timestamped{
     public void editChecked() {
         this.checked=true;
     }
+
 }

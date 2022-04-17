@@ -98,4 +98,5 @@ public class Post extends Timestamped{
             this.commentCnt -=1;
         }
     }
+
 }

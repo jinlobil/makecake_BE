@@ -6,6 +6,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class StoreDetailUrlDto {
+
     private String type;
     private String url;
+
 }

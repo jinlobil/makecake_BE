@@ -3,10 +3,10 @@ package com.project.makecake.dto.store;
 import com.project.makecake.model.Cake;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
 public class StoreDetailCakeResponseDto {
+
     private Long cakeId;
     private String img;
     private int likeCnt;
@@ -19,6 +19,5 @@ public class StoreDetailCakeResponseDto {
         this.likeCnt = cake.getLikeCnt();
         this.myLike = myLike;
     }
-
 
 }

@@ -1,7 +1,7 @@
 package com.project.makecake.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.project.makecake.dto.*;
+import com.project.makecake.dto.ImageInfoDto;
 import com.project.makecake.dto.mypage.MypageResponseDto;
 import com.project.makecake.dto.user.LoginCheckResponseDto;
 import com.project.makecake.dto.user.SignupRequestDto;

@@ -11,6 +11,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 public class OrderFormController {
+
     private final OrderFormService orderFormService;
 
     // (주문하기) 주문 가능 매장 리스트 조회 API
@@ -26,4 +27,5 @@ public class OrderFormController {
     ) {
         return orderFormService.getOrderFormDetails(orderFormId);
     }
+
 }

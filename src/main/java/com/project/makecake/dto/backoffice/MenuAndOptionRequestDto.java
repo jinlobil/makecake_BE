@@ -6,7 +6,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MenuAndOptionRequestDto {
+
     private long storeId;
     private String aboutCake;
     private String aboutOption;
+
 }

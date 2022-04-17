@@ -5,6 +5,7 @@ import lombok.Getter;
 
 @Getter
 public class CommentResponseDto {
+
     private Long commentId;
     private String nickname, content, createdDate;
 

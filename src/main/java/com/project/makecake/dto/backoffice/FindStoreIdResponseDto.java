@@ -6,6 +6,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class FindStoreIdResponseDto {
+
     private long storeId;
     private String storeName;
+
 }

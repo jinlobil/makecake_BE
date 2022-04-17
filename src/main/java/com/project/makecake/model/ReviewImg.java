@@ -11,6 +11,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 public class ReviewImg extends Timestamped{
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reviewImgId;
@@ -18,7 +19,6 @@ public class ReviewImg extends Timestamped{
     @Column(nullable = false)
     private String imgUrl;
 
-    //도안 이름이 필요
     @Column(nullable = false)
     private String imgName;
 
@@ -46,5 +46,6 @@ public class ReviewImg extends Timestamped{
         this.ThumbnailImgUrl = thumbnail.getUrl();
         this.ThumbnailImgName = thumbnail.getName();
     }
+
 }
 

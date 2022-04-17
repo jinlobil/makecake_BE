@@ -18,7 +18,7 @@ public class Cake extends Timestamped{
     @Column
     private String url;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "STORE_ID")
     private Store store;
 

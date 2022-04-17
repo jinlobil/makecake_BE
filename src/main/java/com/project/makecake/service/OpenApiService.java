@@ -24,6 +24,7 @@ import java.net.URL;
 @Service
 @RequiredArgsConstructor
 public class OpenApiService {
+
     private final CakeRepository cakeRepository;
     private final StoreUrlRepository storeUrlRepository;
     private final StoreRepository storeRepository;
@@ -32,6 +33,7 @@ public class OpenApiService {
     // (초기 데이터 쌓기) naver 지도 api 요청으로 레터링 케이크 매장 정보 저장 메소드
     @Transactional
     public void collectStoreData(int storeNo) throws IOException {
+
         String urlString = "https://map.naver.com/v5/api/sites/summary/" + storeNo + "?lang=ko";
 
         JsonElement element = getOpenApiResult(urlString);
@@ -88,7 +90,6 @@ public class OpenApiService {
         for(int i = 0; i < images.size(); i++){
             String imgUrl = images.get(i).getAsJsonObject().get("url").getAsString();
             Cake cake = new Cake(imgUrl,store,null);
-
             cakeRepository.save(cake);
         }
 
@@ -119,22 +120,12 @@ public class OpenApiService {
     // naver 지도 api 요청 JSON 반환 메소드
     public JsonElement getOpenApiResult(String urlString) throws IOException {
 
-        // 문자열에 대한 Url 객체 생성
         URL url = new URL(urlString);
-
-        // UrlConnection vs HttpUrlConnection
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-
         conn.setRequestMethod("GET");
-
-        //Server 통신에서 출력 가능한 상태로 만듬
         conn.setDoOutput(true);
 
-        //결과 코드가 200이라면 성공
-        int responseCode = conn.getResponseCode();
-        System.out.println("responseCode : " + responseCode);
-
-        //요청을 통해 얻은 JSON타입의 Response 메세지 읽어오기
+        // 요청을 통해 얻은 JSON타입의 Response 메세지 읽어오기
         BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
         String line = "";
         String result = "";
@@ -144,7 +135,7 @@ public class OpenApiService {
         }
         br.close();
 
-        //Gson 라이브러리로 JSON파싱
+        // Gson 라이브러리로 JSON파싱
         JsonParser parser = new JsonParser();
         JsonElement element = parser.parse(result);
         return element;

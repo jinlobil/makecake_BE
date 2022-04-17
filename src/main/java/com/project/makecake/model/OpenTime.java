@@ -10,8 +10,8 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor
-
 public class OpenTime extends Timestamped{
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long openTimeId;
@@ -34,4 +34,5 @@ public class OpenTime extends Timestamped{
     @ManyToOne
     @JoinColumn(name = "STORE_ID")
     private Store store;
+
 }

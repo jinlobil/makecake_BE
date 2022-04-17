@@ -9,6 +9,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 public class StoreLike  extends Timestamped{
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long storeLikeId;
@@ -20,4 +21,5 @@ public class StoreLike  extends Timestamped{
     @ManyToOne
     @JoinColumn(name = "USER_ID")
     private User user;
+
 }

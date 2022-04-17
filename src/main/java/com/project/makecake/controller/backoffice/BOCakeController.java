@@ -1,8 +1,6 @@
 package com.project.makecake.controller.backoffice;
 
-import com.project.makecake.dto.openapi.OpenApiImgDto;
 import com.project.makecake.model.Cake;
-import com.project.makecake.model.Store;
 import com.project.makecake.service.backoffice.BOCakeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.annotation.Secured;
@@ -10,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -42,4 +39,5 @@ public class BOCakeController {
     ) throws IOException {
         BOCakeService.addCakeList(storeId, imgFileList);
     }
+
 }

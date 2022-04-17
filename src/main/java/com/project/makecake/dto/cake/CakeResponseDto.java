@@ -21,4 +21,5 @@ public class CakeResponseDto {
         this.likeCnt = cake.getLikeCnt();
         this.myLike = myLike;
     }
+
 }

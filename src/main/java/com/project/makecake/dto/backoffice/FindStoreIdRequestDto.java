@@ -6,5 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class FindStoreIdRequestDto {
+
     private String searchText;
+
 }

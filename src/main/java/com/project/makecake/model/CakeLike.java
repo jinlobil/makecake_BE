@@ -10,6 +10,7 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor
 public class CakeLike extends Timestamped{
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cakeLikeId;
@@ -27,4 +28,5 @@ public class CakeLike extends Timestamped{
         this.cake = cake;
         this.user = user;
     }
+
 }

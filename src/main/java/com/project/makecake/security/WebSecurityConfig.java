@@ -76,7 +76,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/orders/stores").permitAll()
                 // 그 외 요청 모두 인증
                 .anyRequest().authenticated()
-//                .anyRequest().permitAll()
                 .and().cors();
         // 시큐리티 예외처리
         http.addFilterBefore(exceptionHandlerFilter, JwtAuthorizationFilter.class);

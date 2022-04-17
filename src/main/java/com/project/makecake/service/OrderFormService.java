@@ -1,8 +1,8 @@
 package com.project.makecake.service;
 
-import com.project.makecake.dto.orders.OrderReadyStoreResponseDto;
 import com.project.makecake.dto.orders.OrderFormDetailResponseDto;
 import com.project.makecake.dto.orders.OrderFormReadyResponseDto;
+import com.project.makecake.dto.orders.OrderReadyStoreResponseDto;
 import com.project.makecake.dto.store.StoreMoreCakeMenuDto;
 import com.project.makecake.dto.store.StoreMoreCakeOptionDto;
 import com.project.makecake.dto.store.StoreMoreCakeTasteDto;
@@ -19,21 +19,24 @@ import com.project.makecake.repository.StoreOptionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 
 public class OrderFormService {
+
     private final OrderFormRepository orderFormRepository;
     private final CakeMenuRepository cakeMenuRepository;
     private final StoreOptionRepository storeOptionRepository;
 
     // 주문 가능한 주문서 조회 메소드
     public List<OrderFormReadyResponseDto> getOrderFormList() {
+
         List<OrderFormReadyResponseDto> responseDtoList = new ArrayList<>();
 
-        // ㄱ,ㄴ,ㄷ 순으로 주문서 가져오기
         List<OrderForm> foundOrderFormList = orderFormRepository.findAllByOrderByNameAsc();
 
         // 주문서를 Dto에 담아 반환
@@ -47,9 +50,10 @@ public class OrderFormService {
 
     // 주문 가능한 매장 조회 메소드
     public List<OrderReadyStoreResponseDto> getOrderReadyStoreList() {
+
         List<OrderReadyStoreResponseDto> responseDtoList = new ArrayList<>();
 
-        // 매장 DB에서 유니크한 매장 리스트 반환
+        // 매장 리스트 반환
         List<Store> foundStoreList = orderFormRepository.findDistinctStore();
         for(Store store : foundStoreList){
             String addressSimple = "";
@@ -60,7 +64,6 @@ public class OrderFormService {
                 addressSimple = arr[0].substring(0,2) + " "  + arr[1] + " " + arr[2];
             }
 
-            // responseDto에 담기
             responseDtoList.add(
                     OrderReadyStoreResponseDto.builder()
                     .store(store)
@@ -77,7 +80,6 @@ public class OrderFormService {
     // 케이크 주문서 작성 페이지 조회 메소드
     public OrderFormDetailResponseDto getOrderFormDetails(Long orderFormId) {
 
-        // 주문서
         OrderForm orderForm = orderFormRepository.findById(orderFormId)
                 .orElseThrow(()-> new CustomException(ErrorCode.ORDER_NOT_FOUND));
 
@@ -115,6 +117,7 @@ public class OrderFormService {
 
     // (내부 메소드) 케이크 메뉴, 꾸미기 옵션 조회 메소드
     public StoreMoreDetailsDto getMoreDetails(long storeId){
+
         // 1. 케이크 메뉴
         List<StoreMoreCakeMenuDto> cakeMenuList = new ArrayList<>();
 
@@ -128,7 +131,6 @@ public class OrderFormService {
         }
 
         // 2. 케이크 맛, 3. 케이크 꾸미기 옵션
-
         List<StoreMoreCakeTasteDto> cakeTasteList = new ArrayList<>();
         List<StoreMoreCakeOptionDto> cakeOptionList = new ArrayList<>();
 

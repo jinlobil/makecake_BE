@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 @Getter
 public enum ErrorCode {
+
     // 400
     POST_VALUE_NULL(HttpStatus.BAD_REQUEST, "게시글에 빈값이 있습니다."),
     COMMENT_CONTENT_NULL(HttpStatus.BAD_REQUEST, "댓글에 content가 없습니다."),
@@ -33,12 +34,14 @@ public enum ErrorCode {
     UNAUTHORIZED_MAMBER(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다."),
     EXPIRED_JWT(HttpStatus.UNAUTHORIZED, "유효기간이 지난 토큰입니다."),
     WRONG_JWT(HttpStatus.UNAUTHORIZED, "유효한 토큰이 아닙니다."),
+
     // 403
     NOT_POST_OWNER(HttpStatus.FORBIDDEN, "로그인한 사용자의 게시물이 아닙니다."),
     NOT_COMMENT_OWNER(HttpStatus.FORBIDDEN, "로그인한 사용자의 댓글이 아닙니다."),
     NOT_REVIEW_OWNER(HttpStatus.FORBIDDEN, "로그인한 사용자의 리뷰가 아닙니다."),
     NOT_DESIGN_OWNER(HttpStatus.FORBIDDEN, "로그인한 사용자의 도안이 아닙니다."),
     NOT_ORDER_OWNER(HttpStatus.FORBIDDEN, "로그인한 사용자의 주문이 아닙니다."),
+
     // 404
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, "게시글이 존재하지 않습니다."),
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "댓글이 존재하지 않습니다."),
@@ -51,6 +54,7 @@ public enum ErrorCode {
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "사용자가 존재하지 않습니다."),
     NOTI_NOT_FOUND(HttpStatus.NOT_FOUND, "알림이 존재하지 않습니다."),
     FIXNOTI_NOT_FOUND(HttpStatus.NOT_FOUND, "고정알림이 존재하지 않습니다."),
+
     // 409
     EMAIL_DUPLICATE(HttpStatus.CONFLICT, "중복된 이메일이 존재합니다."),
     NICKNAME_DUPLICATE(HttpStatus.CONFLICT, "중복된 닉네임이 존재합니다."),
@@ -58,7 +62,7 @@ public enum ErrorCode {
     LIKE_ALREADY_EXIST(HttpStatus.CONFLICT, "이미 좋아요를 눌렀습니다."),
     LIKE_NOT_EXIST(HttpStatus.CONFLICT, "이미 좋아요 취소를 눌렀습니다.");
 
-
     private final HttpStatus httpStatus;
     private final String message;
+
 }

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SearchKeywordRepository extends JpaRepository<SearchKeyword, Long> {
+
     Optional<SearchKeyword> findBySearchInput(String searchText);
 
     @Query(value = "select s from SearchKeyword as s where s.createdAt<:standard and s.searchCnt=1")

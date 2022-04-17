@@ -12,12 +12,9 @@ import java.util.Optional;
 public interface CakeLikeRepository extends JpaRepository<CakeLike, Long> {
 
     Optional<CakeLike> findByUserAndCake(User user, Cake cake);
-
     void deleteByUserAndCake(User user, Cake foundCake);
-
     Page<CakeLike> findByUserOrderByCreatedAtDesc(User user, Pageable pageable);
-
     void deleteAllByCake(Cake cake);
-
     boolean existsByUserAndCake(User user, Cake foundCake);
+
 }

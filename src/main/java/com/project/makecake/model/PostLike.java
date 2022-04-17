@@ -28,4 +28,5 @@ public class PostLike extends Timestamped{
         this.post = post;
         this.user = user;
     }
+
 }
