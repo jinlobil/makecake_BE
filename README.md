@@ -174,11 +174,9 @@
 
 **[매장 검색 기능 개선 - NOTION](https://puffy-net-2c4.notion.site/4ff9795f085c458093082638c2d5ec75)**
 
-**[복잡한 데이터 구조로 인한 매장 상세 정보 조회 어려움 - WIKI (준비중)]()**
+**[복잡한 데이터 구조로 인한 매장 상세 정보 조회 어려움 - NOTION](https://puffy-net-2c4.notion.site/af6ac141d456426c9936de5563c99e65)**
 
 **[JPA N+1문제 해결 - NOTION](https://puffy-net-2c4.notion.site/JPA-N-1-c00fc7a9bac64d99b3d4baf1a6868d97)**
-
-**[데이터 수집 및 클렌징을 위한 백오피스 - WIKI (준비중)]()**
 
 
 <!-- |Test|<img src="https://img.shields.io/badge/JUnit5-25A162?style=for-the-badge&logo=JUnit5&logoColor=white">| -->
