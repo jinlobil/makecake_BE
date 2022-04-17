@@ -70,13 +70,21 @@
 <br />
 
 ## 🏰 아키텍쳐
-<img src="https://user-images.githubusercontent.com/94432600/161740584-6f3c814c-f90d-4715-8341-2dbc7b3602f8.png">
+<details>
+<summary> <b>아키텍쳐 바로보기</b> </summary>
+    <img src="https://user-images.githubusercontent.com/94432600/161740584-6f3c814c-f90d-4715-8341-2dbc7b3602f8.png"> 
+</details>
+
 
 <br />
 
 ## 📕 ER 다이어그램     
     
-<img src="https://user-images.githubusercontent.com/94432600/161852720-357f0c2b-0085-4b5b-a3e7-497c0fc58d1f.png">  
+<details>
+<summary> <b>ERD 바로보기</b> </summary>
+    <img src="https://user-images.githubusercontent.com/94432600/161852720-357f0c2b-0085-4b5b-a3e7-497c0fc58d1f.png"> 
+</details>
+ 
 
 <br />
 
