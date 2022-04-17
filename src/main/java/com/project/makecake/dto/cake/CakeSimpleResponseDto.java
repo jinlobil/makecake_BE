@@ -5,6 +5,7 @@ import lombok.Getter;
 
 @Getter
 public class CakeSimpleResponseDto {
+
     Long cakeId;
     String img;
 

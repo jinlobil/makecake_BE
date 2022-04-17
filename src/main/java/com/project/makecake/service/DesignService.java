@@ -31,10 +31,8 @@ public class DesignService {
 
         User user = userDetails.getUser();
 
-        // S3에 이미지 업로드하고 업로드 정보 받아오기
         ImageInfoDto imgInfo = s3Service.uploadImg(img, FolderName.DESIGN.name());
 
-        // 디비에 저장
         Design design = Design.builder()
                 .imgInfo(imgInfo)
                 .user(user)
@@ -49,16 +47,13 @@ public class DesignService {
     @Transactional
     public void removeDesign(UserDetailsImpl userDetails, long designId) {
 
-        // 도안 찾기
         Design foundDesign = designRepository.findById(designId)
                 .orElseThrow(()->new CustomException(ErrorCode.DESIGN_NOT_FOUND));
 
-        // 게시되지 않은 도안인지 확인
         if (foundDesign.isPost()) {
             throw new CustomException(ErrorCode.DESIGN_ALREADY_POST);
         }
 
-        // 동일 유저인지 확인
         if (!foundDesign.getUser().getUserId().equals(userDetails.getUser().getUserId())) {
             throw new CustomException(ErrorCode.NOT_DESIGN_OWNER);
         }

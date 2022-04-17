@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class CakeMenuRowDto {
+
     private String type;
     private String size;
     private String priceState;
@@ -21,4 +22,5 @@ public class CakeMenuRowDto {
         this.price = price;
         this.moreInfo = moreInfo;
     }
+
 }

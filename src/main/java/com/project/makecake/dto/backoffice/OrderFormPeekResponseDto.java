@@ -14,7 +14,13 @@ public class OrderFormPeekResponseDto {
     private List<String> peekInstructionList;
 
     @Builder
-    public OrderFormPeekResponseDto(long storeId, String storeName, String name, List<String> peekFormList, List<String> peekInstructionList){
+    public OrderFormPeekResponseDto(
+            long storeId,
+            String storeName,
+            String name,
+            List<String> peekFormList,
+            List<String> peekInstructionList
+    ){
         this.storeId = storeId;
         this.storeName = storeName;
         this.name = name;

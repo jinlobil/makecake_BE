@@ -10,6 +10,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 public class Review extends Timestamped{
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reviewId;
@@ -24,7 +25,6 @@ public class Review extends Timestamped{
     @ManyToOne
     @JoinColumn(name="USER_ID")
     private User user;
-
 
     // 생성자
     @Builder

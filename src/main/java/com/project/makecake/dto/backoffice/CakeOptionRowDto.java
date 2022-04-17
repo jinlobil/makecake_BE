@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class CakeOptionRowDto {
+
     private String mainCat;
     private String subCat;
     private String priceState;
@@ -21,4 +22,5 @@ public class CakeOptionRowDto {
         this.addedPrice = addedPrice.trim();
         this.moreInfo = moreInfo.trim();
     }
+
 }

@@ -8,23 +8,27 @@ import java.util.List;
 
 @Getter
 public class StoreDetailResponseDto {
+
     private long storeId;
-    private String mainImg;
-    private String name;
-    private String roadAddress;
-    private String fullAddress;
-    private OpenTimeResponseDto openTimeToday; //오늘 기준
-    private String phone;
-    private List<StoreDetailUrlDto> urlList; //2개만
+    private String mainImg, name, roadAddress, fullAddress, phone;
+    private OpenTimeResponseDto openTimeToday;
+    private List<StoreDetailUrlDto> urlList;
     private Boolean myLike;
     private int likeCnt;
-    private List<StoreDetailMenuDto> menuList; //수정 필요
+    private List<StoreDetailMenuDto> menuList;
     private StoreMoreDetailsDto moreDetails;
     private List<StoreDetailCakeResponseDto> cakeImgList;
 
     @Builder
-    public StoreDetailResponseDto(Store store, OpenTimeResponseDto openTimeToday, List<StoreDetailUrlDto> urlList,
-                                  Boolean myLike,int likeCnt, List<StoreDetailMenuDto> menuList, StoreMoreDetailsDto moreDetails, List<StoreDetailCakeResponseDto> cakeImgList){
+    public StoreDetailResponseDto(
+            Store store,
+            OpenTimeResponseDto openTimeToday,
+            List<StoreDetailUrlDto> urlList,
+            Boolean myLike,int likeCnt,
+            List<StoreDetailMenuDto> menuList,
+            StoreMoreDetailsDto moreDetails,
+            List<StoreDetailCakeResponseDto> cakeImgList
+    ){
         this.storeId = store.getStoreId();
         this.mainImg = store.getMainImg();
         this.name = store.getName();

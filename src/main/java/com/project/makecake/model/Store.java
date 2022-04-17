@@ -11,6 +11,7 @@ import javax.persistence.*;
 @Setter
 @DynamicUpdate
 public class Store extends Timestamped{
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long storeId;
@@ -53,7 +54,6 @@ public class Store extends Timestamped{
 
     @Column
     private String thumbnailMainImg;
-
 
     // 매장 후기 수 Cnt
     public void countReview(boolean bool) {

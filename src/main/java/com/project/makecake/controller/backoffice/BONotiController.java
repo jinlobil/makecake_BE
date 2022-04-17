@@ -57,4 +57,5 @@ public class BONotiController {
     ) {
         BONotiService.addPersonalNoti(notiId, requestDto);
     }
+
 }

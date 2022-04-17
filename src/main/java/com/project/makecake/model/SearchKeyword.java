@@ -9,9 +9,8 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor
-
-//인덱싱은 나중에!
 public class SearchKeyword extends Timestamped{
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long searchKeywordId;
@@ -48,4 +47,5 @@ public class SearchKeyword extends Timestamped{
     public void addSearchCnt() {
         this.searchCnt += 1;
     }
+
 }

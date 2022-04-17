@@ -1,6 +1,6 @@
 package com.project.makecake.service;
 
-import com.project.makecake.dto.*;
+import com.project.makecake.dto.DesignResponseDto;
 import com.project.makecake.dto.mypage.*;
 import com.project.makecake.exceptionhandler.CustomException;
 import com.project.makecake.exceptionhandler.ErrorCode;
@@ -63,7 +63,9 @@ public class MypageService {
         List<MyDesignResponseDto> responseDtoList = new ArrayList<>();
         if (option.equals("nonpost")){
             Pageable pageable = PageRequest.of(page, 54);
-            Page<Design> foundDesignList = designRepository.findByUserAndPostOrderByCreatedAtDesc(foundUser, false, pageable);
+            Page<Design> foundDesignList = designRepository
+                    .findByUserAndPostOrderByCreatedAtDesc(foundUser, false, pageable);
+
             for (Design design : foundDesignList){
                 MyDesignResponseDto responseDto = MyDesignResponseDto.builder()
                         .designId(design.getDesignId())
@@ -92,7 +94,6 @@ public class MypageService {
             throw new CustomException(ErrorCode.UNAUTHORIZED_MAMBER);
         }
 
-        // 도안 찾기
         Design foundDesign = designRepository.findById(designId)
                 .orElseThrow(()->new CustomException(ErrorCode.DESIGN_NOT_FOUND));
 
@@ -176,7 +177,7 @@ public class MypageService {
         return responseDtoList;
     }
 
-    // 내가 남긴 후기 조회 메소드..
+    // 내가 남긴 후기 조회 메소드
     public List<MyReviewResponseDto> getMyReviewList(UserDetailsImpl userDetails, int page) {
         if (userDetails == null) {
             throw new CustomException(ErrorCode.UNAUTHORIZED_MAMBER);
@@ -189,26 +190,17 @@ public class MypageService {
         List<MyReviewResponseDto> responseDtoList = new ArrayList<>();
         for (Review review : foundReviewList){
             ReviewImg reviewImg = reviewImgRepository.findTop1ByReview(review);
-//            String reviewImgUrl = "https://makecake.s3.ap-northeast-2.amazonaws.com/PROFILE/18d2090b-1b98-4c34-b92b-a9f50d03bd53makecake_default.png";
             String reviewImgUrl = "";
             if (reviewImg != null) {
                 reviewImgUrl = reviewImg.getImgUrl();
             }
-//            List<ReviewImg> findReviewImg = reviewImgRepository.findByReview(review);
-//            List<String> reviewImgList = new ArrayList<>();
-//            if (findReviewImg != null){
-//                for (int i = 0; i < findReviewImg.size(); i++){
-//                    String reviewImg = findReviewImg.get(i).getImgName();
-//                    reviewImgList.add(reviewImg);
-//                }
-//            }
+
             MyReviewResponseDto responseDto = MyReviewResponseDto.builder()
                     .reviewId(review.getReviewId())
                     .storeId(review.getStore().getStoreId())
                     .name(review.getStore().getName())
                     .content(review.getContent())
                     .createdDate(review.getCreatedAt())
-//                    .reviewImages(reviewImgList)
                     .reviewImages(reviewImgUrl)
                     .build();
             responseDtoList.add(responseDto);

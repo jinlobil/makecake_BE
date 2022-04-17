@@ -23,6 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class BOMenuService {
+
     private final StoreRepository storeRepository;
     private final CakeMenuRepository cakeMenuRepository;
     private final StoreOptionRepository storeOptionRepository;
@@ -30,18 +31,13 @@ public class BOMenuService {
     // 케이크 메뉴와 옵션 데이터를 잘 입력했는지 확인 메소드
     public MenuAndOptionResponseDto peekMenuAndOption(MenuAndOptionRequestDto requestDto) {
 
-        //매장 Id 반환
         long storeId = requestDto.getStoreId();
-
-        //매장 이름 반환
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(()->new CustomException(ErrorCode.STORE_NOT_FOUND));
         String storeName = store.getName();
 
         // 1. 케이크 메뉴
         List<CakeMenuRowDto> CakeMenuList = new ArrayList<>();
-
-        // 백오피스에서 입력한 케이크 메뉴 정보를 반환
         String rawCakeMenuString = requestDto.getAboutCake();
 
         // 반환한 값을 '/' 기준으로 나눠서 배열에 담음
@@ -50,14 +46,19 @@ public class BOMenuService {
         // 케이크 메뉴의 필드는 5개이므로 5개 정보를 한 행에 담음
         for(int j=0; j < rawCakeMenuList.size()/5; j++){
             List<String> rawRow = rawCakeMenuList.subList(j*5, (j+1)*5);
-            CakeMenuRowDto menuRow = new CakeMenuRowDto(rawRow.get(0).trim(), rawRow.get(1).trim(), rawRow.get(2).trim(), rawRow.get(3).trim(), rawRow.get(4).trim());
+            CakeMenuRowDto menuRow = new CakeMenuRowDto(
+                    rawRow.get(0).trim(),
+                    rawRow.get(1).trim(),
+                    rawRow.get(2).trim(),
+                    rawRow.get(3).trim(),
+                    rawRow.get(4).trim()
+            );
             CakeMenuList.add(menuRow);
         }
 
         // 2. 케이크 옵션
         List<CakeOptionRowDto> CakeOptionList = new ArrayList<>();
 
-        // 백오피스에서 입력한 케이크 옵션 정보를 반환
         String rawCakeOptionString = requestDto.getAboutOption();
 
         // 반환한 값을 '/' 기준으로 나눠서 배열에 담음
@@ -66,7 +67,13 @@ public class BOMenuService {
         // 케이크 옵션의 필드는 5개이므로 5개 정보를 한 행에 담음
         for(int j=0; j < rawCakeOptionList.size()/5; j++){
             List<String> rawRow = rawCakeOptionList.subList(j*5, (j+1)*5);
-            CakeOptionRowDto optionRow = new CakeOptionRowDto(rawRow.get(0).trim(), rawRow.get(1).trim(), rawRow.get(2).trim(), rawRow.get(3).trim(), rawRow.get(4).trim());
+            CakeOptionRowDto optionRow = new CakeOptionRowDto(
+                    rawRow.get(0).trim(),
+                    rawRow.get(1).trim(),
+                    rawRow.get(2).trim(),
+                    rawRow.get(3).trim(),
+                    rawRow.get(4).trim()
+            );
             CakeOptionList.add(optionRow);
         }
 
@@ -74,11 +81,10 @@ public class BOMenuService {
     }
 
 
-    //케이크 메뉴와 옵션 데이터 저장 메소드
+    // 케이크 메뉴와 옵션 데이터 저장 메소드
     @Transactional
     public String addMenuAndOption(MenuAndOptionResponseDto requestDto) {
 
-        // 케이크 매장 조회
         Store store = storeRepository.findById(requestDto.getStoreId())
                 .orElseThrow(()->new CustomException(ErrorCode.STORE_NOT_FOUND));
 
@@ -111,8 +117,7 @@ public class BOMenuService {
         storeOptionRepository.deleteAllByStore_StoreId(storeId);
     }
 
-
-    //매장 이름으로 매장 id 검색하기 메소드
+    // 매장 이름으로 매장 id 검색하기 메소드
     public FindStoreIdResponseDto findStoreId(FindStoreIdRequestDto requestDto) {
         String searchText = requestDto.getSearchText();
         Long storeId = 0L;

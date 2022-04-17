@@ -6,7 +6,9 @@ import lombok.Getter;
 @Builder
 @Getter
 public class MypageResponseDto {
+
     private String profileImg;
     private String nickname;
     private String email;
+
 }

@@ -47,6 +47,7 @@ public class NaverLoginService {
 
     // 네이버 로그인
     public void naverLogin(String code, String state, HttpServletResponse response3) throws JsonProcessingException {
+
         // 인가코드로 엑세스토큰 가져오기
         String accessToken = getAccessToken(code, state);
 
@@ -65,6 +66,7 @@ public class NaverLoginService {
 
     // 인가코드로 엑세스토큰 가져오기
     private String getAccessToken(String code, String state) throws JsonProcessingException {
+
         // 헤더에 Content-type 지정
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
@@ -80,7 +82,11 @@ public class NaverLoginService {
         // POST 요청 보내기
         HttpEntity<MultiValueMap<String, String>> naverToken = new HttpEntity<>(body, headers);
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> response = restTemplate.exchange("https://nid.naver.com/oauth2.0/token", HttpMethod.POST, naverToken, String.class);
+        ResponseEntity<String> response = restTemplate.exchange(
+                "https://nid.naver.com/oauth2.0/token",
+                HttpMethod.POST, naverToken,
+                String.class
+        );
 
         // response에서 엑세스토큰 가져오기
         String responseBody = response.getBody();
@@ -92,6 +98,7 @@ public class NaverLoginService {
 
     // 엑세스토큰으로 유저정보 가져오기
     private JsonNode getNaverUserInfo(String accessToken) throws JsonProcessingException {
+
         // 헤더에 엑세스토큰 담기, Content-type 지정
         HttpHeaders headers = new HttpHeaders();
         headers.add(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + accessToken);
@@ -100,7 +107,11 @@ public class NaverLoginService {
         // POST 요청 보내기
         HttpEntity<MultiValueMap<String, String>> naverUser = new HttpEntity<>(headers);
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> response = restTemplate.exchange("https://openapi.naver.com/v1/nid/me", HttpMethod.POST, naverUser, String.class);
+        ResponseEntity<String> response = restTemplate.exchange(
+                "https://openapi.naver.com/v1/nid/me",
+                HttpMethod.POST, naverUser,
+                String.class
+        );
 
         // response에서 유저정보 가져오기
         String responseBody = response.getBody();
@@ -111,6 +122,7 @@ public class NaverLoginService {
 
     // 유저확인 & 회원가입
     private User getUser(JsonNode naverUserInfo) {
+
         // 유저정보 작성
         String providerId = naverUserInfo.get("response").get("id").asText();
         String providerEmail = naverUserInfo.get("response").get("email").asText();
@@ -160,7 +172,11 @@ public class NaverLoginService {
         UserDetailsImpl userDetails = new UserDetailsImpl(foundUser);
         log.info("naver 로그인 완료 : " + userDetails.getUser().getUsername());
         // UsernamePasswordAuthenticationToken 발급
-        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                userDetails,
+                null,
+                userDetails.getAuthorities()
+        );
         // 강제로 시큐리티 세션에 접근하여 authentication 객체를 저장
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return userDetails;
@@ -168,6 +184,7 @@ public class NaverLoginService {
 
     // jwt 토큰 발급
     private void jwtToken(HttpServletResponse response, UserDetailsImpl userDetails) {
+
         String jwtToken = JWT.create()
                 // 토큰이름
                 .withSubject("JwtToken : " + userDetails.getUser().getUsername())

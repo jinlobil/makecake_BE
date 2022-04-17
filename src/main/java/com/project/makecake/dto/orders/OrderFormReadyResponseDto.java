@@ -6,6 +6,7 @@ import lombok.Getter;
 
 @Getter
 public class OrderFormReadyResponseDto {
+
     private Long orderFormId;
     private String name;
 

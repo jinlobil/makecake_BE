@@ -12,6 +12,7 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor
 public class CakeMenu extends Timestamped{
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cakeMenuId;
@@ -46,7 +47,6 @@ public class CakeMenu extends Timestamped{
         this.priceState = priceState;
         this.store = store;
     }
-
 
     // (백오피스) 수정 메소드
     @Builder

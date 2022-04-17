@@ -6,8 +6,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-
 public class OpenTimeResponseDto {
+
     private String type;
     private String startTime;
     private String endTime;

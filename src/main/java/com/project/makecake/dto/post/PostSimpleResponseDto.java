@@ -17,4 +17,5 @@ public class PostSimpleResponseDto {
         this.img = post.getDesign().getImgUrl();
         this.myLike = myLike;
     }
+
 }

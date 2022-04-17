@@ -39,14 +39,12 @@ public class KakaoLoginService {
     @Value("${kakao.client-id}")
     String kakaoClientId;
 
-//    @Value("${kakao.client-secret}")
-//    String kakaoClientSecret;
-
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
 
     // 카카오 로그인
     public void kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException {
+
         // 인가코드로 엑세스토큰 가져오기
         String accessToken = getAccessToken(code);
 
@@ -63,9 +61,9 @@ public class KakaoLoginService {
         jwtToken(response, userDetails);
     }
 
-
     // 인가 코드로 엑세스토큰 가져오기
     private String getAccessToken(String code) throws JsonProcessingException {
+
         // 헤더에 Content-type 지정
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
@@ -75,14 +73,17 @@ public class KakaoLoginService {
         body.add("grant_type", "authorization_code");
         // 새로운 코드
         body.add("client_id", kakaoClientId);
-//        body.add("client_secret", kakaoClientSecret);
         body.add("redirect_uri", "https://make-cake.com/user/kakao/callback");
         body.add("code", code);
 
         // POST 요청 보내기
         HttpEntity<MultiValueMap<String, String>> kakaoToken = new HttpEntity<>(body, headers);
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> response = restTemplate.exchange("https://kauth.kakao.com/oauth/token", HttpMethod.POST, kakaoToken, String.class);
+        ResponseEntity<String> response = restTemplate.exchange(
+                "https://kauth.kakao.com/oauth/token",
+                HttpMethod.POST, kakaoToken,
+                String.class
+        );
 
         // response에서 엑세스토큰 가져오기
         String responseBody = response.getBody();
@@ -94,6 +95,7 @@ public class KakaoLoginService {
 
     // 엑세스토큰으로 유저정보 가져오기
     private JsonNode getKakaoUserInfo(String accessToken) throws JsonProcessingException {
+
         // 헤더에 엑세스토큰 담기
         HttpHeaders headers = new HttpHeaders();
         headers.add(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + accessToken);
@@ -101,7 +103,12 @@ public class KakaoLoginService {
         // POST 요청 보내기
         HttpEntity<MultiValueMap<String, String>> kakaoUser = new HttpEntity<>(headers);
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> response = restTemplate.exchange("https://kapi.kakao.com/v2/user/me", HttpMethod.POST, kakaoUser, String.class);
+        ResponseEntity<String> response = restTemplate.exchange(
+                "https://kapi.kakao.com/v2/user/me",
+                HttpMethod.POST,
+                kakaoUser,
+                String.class
+        );
 
         // response에서 유저정보 가져오기
         String responseBody = response.getBody();
@@ -112,12 +119,9 @@ public class KakaoLoginService {
 
     // 유저확인 & 회원가입
     private User getUser(JsonNode kakaoUserInfo) {
+
         // 유저정보 작성
         String providerId = kakaoUserInfo.get("id").asText();
-//        String providerEmail = null;
-//        if (!kakaoUserInfo.get("kakao_account").get("email").isNull()){
-//            providerEmail = kakaoUserInfo.get("kakao_account").get("email").asText();
-//        }
         String provider = "kakao";
         String username = provider + "_" + providerId;
         String nickname = kakaoUserInfo.get("properties").get("nickname").asText();
@@ -160,11 +164,16 @@ public class KakaoLoginService {
 
     // 강제로 시큐리티 로그인
     private UserDetailsImpl securityLogin(User foundUser) {
+
         // userDetails 생성
         UserDetailsImpl userDetails = new UserDetailsImpl(foundUser);
         log.info("kakao 로그인 완료 : " + userDetails.getUser().getUsername());
         // UsernamePasswordAuthenticationToken 발급
-        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                userDetails,
+                null,
+                userDetails.getAuthorities()
+        );
         // 강제로 시큐리티 세션에 접근하여 authentication 객체를 저장
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return userDetails;
@@ -172,6 +181,7 @@ public class KakaoLoginService {
 
     // jwt 토큰 발급
     private void jwtToken(HttpServletResponse response, UserDetailsImpl userDetails) {
+
         String jwtToken = JWT.create()
                 // 토큰이름
                 .withSubject("JwtToken : " + userDetails.getUser().getUsername())

@@ -15,6 +15,7 @@ import java.io.IOException;
 @Slf4j
 @Component
 public class ExceptionHandlerFilter extends OncePerRequestFilter {
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         // 필터체인중에 CustomException을 캐치
@@ -37,4 +38,5 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
                 + "\", \"message\" : \"" + errorCode.getMessage()
                 + "\" }");
     }
+
 }

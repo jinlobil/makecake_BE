@@ -13,23 +13,21 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class BOOrderFormService {
+
     private final StoreRepository storeRepository;
     private final OrderFormRepository orderFormRepository;
 
     // 주문서 등록 전 데이터 미리보기 메소드
     public OrderFormPeekResponseDto peekOrderForm(OrderFormRequestDto requestDto) {
-        long storeId = requestDto.getStoreId();
 
-        // 매장명
+        long storeId = requestDto.getStoreId();
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(()->new CustomException(ErrorCode.STORE_NOT_FOUND));
-
         String storeName = store.getName();
 
         // 1. 주문서 입력란 (formList)
@@ -65,6 +63,7 @@ public class BOOrderFormService {
     // 주문서 등록 메소드
     @Transactional
     public String addOrderForm(OrderFormRequestDto requestDto) {
+
         Store store = storeRepository.findById(requestDto.getStoreId())
                 .orElseThrow(()-> new CustomException(ErrorCode.STORE_NOT_FOUND));
 
@@ -81,6 +80,7 @@ public class BOOrderFormService {
     // 주문서 삭제 메소드
     @Transactional
     public String deleteOrderForm(long orderFormId) {
+
         OrderForm orderForm = orderFormRepository.findById(orderFormId)
                 .orElseThrow(()-> new CustomException(ErrorCode.ORDER_NOT_FOUND));
 

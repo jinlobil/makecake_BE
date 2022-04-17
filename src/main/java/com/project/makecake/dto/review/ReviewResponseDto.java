@@ -9,6 +9,7 @@ import java.util.List;
 @Getter
 
 public class ReviewResponseDto {
+
     private Long reviewId;
     private String writerImg, writerNickname, createdDate,content;
     private List<String> reviewImgList;
@@ -22,4 +23,5 @@ public class ReviewResponseDto {
         this.content = review.getContent();
         this.reviewImgList = reviewImgList;
     }
+
 }
