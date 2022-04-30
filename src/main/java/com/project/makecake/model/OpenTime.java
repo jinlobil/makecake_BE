@@ -31,7 +31,7 @@ public class OpenTime extends Timestamped{
     @Column
     private Boolean isDayOff;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "STORE_ID")
     private Store store;
 

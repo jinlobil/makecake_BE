@@ -85,8 +85,8 @@ public class CakeService {
 
         // 좋아요 여부 반영
         if(user!=null) {
-            Optional<CakeLike> foundCakeLike = cakeLikeRepository.findByUserAndCake(user, foundCake);
-            if (foundCakeLike.isPresent()) {
+            boolean foundCakeLike = cakeLikeRepository.existsByUserAndCake(user, foundCake);
+            if (foundCakeLike) {
                 myLike = true;
             }
         }

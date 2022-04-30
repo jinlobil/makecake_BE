@@ -15,11 +15,11 @@ public class CakeLike extends Timestamped{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cakeLikeId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="cakeId")
     private Cake cake;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="userId")
     private User user;
 

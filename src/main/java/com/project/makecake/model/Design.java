@@ -28,7 +28,7 @@ public class Design extends Timestamped{
     @Column(nullable = false)
     private boolean orders;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="userId")
     private User user;
 

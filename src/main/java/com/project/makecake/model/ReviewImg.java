@@ -22,7 +22,7 @@ public class ReviewImg extends Timestamped{
     @Column(nullable = false)
     private String imgName;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "REVIEW_ID")
     private Review review;
 
