@@ -1,15 +1,13 @@
 package com.project.makecake.controller;
 
-import com.project.makecake.dto.*;
 import com.project.makecake.dto.noti.NewNotiResponseDto;
-import com.project.makecake.dto.noti.NotiContentRequestDto;
-import com.project.makecake.dto.noti.NotiRequestDto;
 import com.project.makecake.dto.noti.NotiResponseDto;
 import com.project.makecake.security.UserDetailsImpl;
 import com.project.makecake.service.NotiService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.text.ParseException;
 
@@ -32,4 +30,5 @@ public class NotiController {
     ) throws ParseException {
         return notiService.getNotiList(userDetails);
     }
+
 }

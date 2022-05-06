@@ -7,8 +7,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-
 public class SearchResponseDto {
+
     private long storeId;
     private String name;
     private float x;
@@ -33,4 +33,5 @@ public class SearchResponseDto {
         this.likeCnt = store.getLikeCnt();
         this.reviewCnt = store.getReviewCnt();
     }
+
 }

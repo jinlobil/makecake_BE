@@ -5,8 +5,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CakeMenuOptionPeekRequestDto {
+public class FindStoreIdResponseDto {
+
     private long storeId;
-    private String aboutCake;
-    private String aboutOption;
+    private String storeName;
+
 }

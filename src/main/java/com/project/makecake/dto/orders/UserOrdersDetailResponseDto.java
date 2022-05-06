@@ -1,6 +1,5 @@
 package com.project.makecake.dto.orders;
 
-import com.project.makecake.model.OrderForm;
 import com.project.makecake.model.UserOrders;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,6 +8,7 @@ import java.util.List;
 
 @Getter
 public class UserOrdersDetailResponseDto {
+
     private String name;
     private String img;
     private List<String> formList;
@@ -18,7 +18,14 @@ public class UserOrdersDetailResponseDto {
     private String storeUrl;
 
     @Builder
-    public UserOrdersDetailResponseDto (UserOrders userOrders, List<String> formList, List<String>instructionList, List<String>userInput, String copyText, String storeUrl) {
+    public UserOrdersDetailResponseDto (
+            UserOrders userOrders,
+            List<String> formList,
+            List<String>instructionList,
+            List<String>userInput,
+            String copyText,
+            String storeUrl
+    ) {
         this.name = userOrders.getOrderForm().getName();
         this.img = userOrders.getDesign().getImgUrl();
         this.formList = formList;
@@ -27,4 +34,5 @@ public class UserOrdersDetailResponseDto {
         this.copyText = copyText;
         this.storeUrl = storeUrl;
     }
+
 }

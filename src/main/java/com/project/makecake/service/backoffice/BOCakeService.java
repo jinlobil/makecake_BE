@@ -44,10 +44,7 @@ public class BOCakeService {
         Cake foundCake = cakeRepository.findById(cakeId)
                 .orElseThrow(()->new CustomException(ErrorCode.CAKE_NOT_FOUND));
 
-        // 좋아요 삭제
         cakeLikeRepository.deleteAllByCake(foundCake);
-
-        // 케이크 삭제
         cakeRepository.delete(foundCake);
 
         return foundCake.getCakeId();
@@ -62,7 +59,7 @@ public class BOCakeService {
 
         if(imgFileList != null){
             for(MultipartFile imgFile : imgFileList){
-                ImageInfoDto imgInfo = s3Service.uploadOriginalFile(imgFile, FolderName.Cake.name());
+                ImageInfoDto imgInfo = s3Service.uploadImg(imgFile, FolderName.Cake.name());
                 Cake cake = Cake.builder()
                         .url(imgInfo.getUrl())
                         .store(foundStore)

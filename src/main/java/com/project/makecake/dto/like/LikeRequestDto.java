@@ -8,5 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 public class LikeRequestDto {
+
     private boolean myLike;
+
 }

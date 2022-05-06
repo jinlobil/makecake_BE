@@ -7,6 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class StoreDetailMenuDto {
+
     private String type;
     private String size;
     private String price;
@@ -16,4 +17,5 @@ public class StoreDetailMenuDto {
         this.size = cakeMenu.getSize();
         this.price = cakeMenu.getPrice();
     }
+
 }

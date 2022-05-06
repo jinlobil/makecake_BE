@@ -31,14 +31,12 @@ public class CommentService {
     private final NotiRepository notiRepository;
     private final PersonalNotiRepository personalNotiRepository;
 
-    // 도안 댓글 리스트 조회 메소드 (5개씩)
+    // 도안 댓글 리스트 조회 메소드
     public List<CommentResponseDto> getCommentList(long postId, int page) {
 
-        // 게시글 찾기
         Post foundPost = postRepository.findById(postId)
                 .orElseThrow(()->new CustomException(ErrorCode.POST_NOT_FOUND));
 
-        // 게시글에 달린 댓글 리스트 찾기 (5개씩)
         Sort sort = Sort.by(Sort.Direction.DESC,"commentId");
         Pageable pageable = PageRequest.of(page,15,sort);
         Page<Comment> foundCommentList = commentRepository.findAllByPost(foundPost, pageable);
@@ -59,11 +57,10 @@ public class CommentService {
 
         User user = userDetails.getUser();
 
-        // 댓글 내용 길이 체크(100)
         if (requestDto.getContent().length() > 100) {
             throw new CustomException(ErrorCode.CONTENT_LENGTH_WRONG);
         }
-        // 게시글 찾기
+
         Post foundPost = postRepository.findById(postId)
                 .orElseThrow(()->new CustomException(ErrorCode.POST_NOT_FOUND));
 
@@ -80,14 +77,11 @@ public class CommentService {
         commentRepository.save(comment);
 
         // 댓글 작성자와 게시글 작성자가 다를 경우에만 댓글 알림 발송
-        if (
-                !user.getUserId().equals(foundPost.getUser().getUserId())
-                && foundPost.getUser().getRole()!=null
-        ) {
+        if (!user.getUserId().equals(foundPost.getUser().getUserId())
+                && foundPost.getUser().getRole()!=null) {
             addCommentNoti(foundPost,user);
         }
 
-        // 도안 게시글 댓글수 증가
         foundPost.editCommentCnt(true);
     }
 
@@ -95,18 +89,15 @@ public class CommentService {
     @Transactional
     public void editComment(long commentId, UserDetailsImpl userDetails, CommentRequestDto requestDto) {
 
-        // 댓글 내용 길이 체크(100)
         if (requestDto.getContent().length() > 100) {
             throw new CustomException(ErrorCode.CONTENT_LENGTH_WRONG);
         }
 
         User user = userDetails.getUser();
 
-        // 댓글 찾기
         Comment foundComment = commentRepository.findById(commentId)
                 .orElseThrow(()->new CustomException(ErrorCode.COMMENT_NOT_FOUND));
 
-        // 동일 유저인지 확인
         if (!user.getUserId().equals(foundComment.getUser().getUserId())) {
             throw new CustomException(ErrorCode.NOT_COMMENT_OWNER);
         }
@@ -120,11 +111,9 @@ public class CommentService {
 
         User user = userDetails.getUser();
 
-        // 댓글 찾기
         Comment foundComment = commentRepository.findById(commentId)
                 .orElseThrow(()->new CustomException(ErrorCode.COMMENT_NOT_FOUND));
 
-        // 동일 유저인지 확인
         if (!user.getUserId().equals(foundComment.getUser().getUserId())) {
             throw new CustomException(ErrorCode.NOT_COMMENT_OWNER);
         }
@@ -141,7 +130,6 @@ public class CommentService {
 
         String redirectUrl = "https://make-cake.com/post/" + foundPost.getPostId();
 
-        // 알림 찾기
         Noti foundNoti = notiRepository.findByType(NotiType.COMMENT);
 
         // personalNoti 생성
@@ -152,7 +140,6 @@ public class CommentService {
                 .redirectUrl(redirectUrl)
                 .build();
 
-        // 저장
         personalNotiRepository.save(personalNoti);
     }
 }

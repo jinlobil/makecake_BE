@@ -4,6 +4,8 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.makecake.dto.user.LoginRequestDto;
+import com.project.makecake.exceptionhandler.CustomException;
+import com.project.makecake.exceptionhandler.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,7 +30,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private final AuthenticationManager authenticationManager;
 
-
     // /login 요청을 하면 로그인 시도를 위해서 실행되는 함수
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
@@ -40,6 +41,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             requestDto = om.readValue(request.getInputStream(), LoginRequestDto.class);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        // username과 password가 들어왔는지 확인
+        if (requestDto.getUsername() == null || requestDto.getPassword() == null) {
+            throw new CustomException(ErrorCode.EMAIL_PASSWORD_NULL);
         }
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(requestDto.getUsername(), requestDto.getPassword());
         // loadUserByUsername 실행됨

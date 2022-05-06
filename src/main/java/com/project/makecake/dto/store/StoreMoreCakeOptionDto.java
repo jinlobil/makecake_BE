@@ -6,6 +6,7 @@ import lombok.Getter;
 
 @Getter
 public class StoreMoreCakeOptionDto {
+
     private String name;
     private String price;
     private String moreInfo;
@@ -16,4 +17,5 @@ public class StoreMoreCakeOptionDto {
         this.price = storeOption.getAddedPrice();
         this.moreInfo = storeOption.getMoreInfo();
     }
+
 }

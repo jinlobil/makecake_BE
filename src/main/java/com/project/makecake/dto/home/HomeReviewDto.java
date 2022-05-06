@@ -6,6 +6,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class HomeReviewDto {
+
     private long reviewId;
     private String nickname;
     private String createdDate;
@@ -13,4 +14,5 @@ public class HomeReviewDto {
     private String img;
     private long storeId;
     private String storeName;
+
 }

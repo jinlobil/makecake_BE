@@ -14,4 +14,5 @@ public class GlobalExceptionHandler {
         log.info("Error response  : " + e.getErrorCode().name());
         return ErrorResponse.responseEntity(e.getErrorCode());
     }
+
 }

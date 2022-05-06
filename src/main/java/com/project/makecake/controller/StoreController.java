@@ -20,10 +20,10 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 public class StoreController {
+
     private final StoreService storeService;
     private final CakeService cakeService;
     private final ReviewService reviewService;
-
 
     // (홈탭) 인기 매장, 인기 케이크 5개 조회 API
     @GetMapping("/home")
@@ -40,7 +40,6 @@ public class StoreController {
     public List<HomeReviewDto> getReviewListAtHome(){
         return reviewService.getReviewListAtHome();
     }
-
 
     // 매장 검색 결과 반환 API (original)
     @GetMapping("/search-before-renewal")
@@ -66,7 +65,6 @@ public class StoreController {
         return storeService.getStoreDetailsAtSearch(storeId);
     }
 
-
     // 매장 상세페이지 조회 API
     @GetMapping("/stores/{storeId}")
     public StoreDetailResponseDto getStoreDetails(
@@ -85,7 +83,6 @@ public class StoreController {
         return  storeService.getCakeListAtStore(storeId, userDetails);
     }
 
-
     // (매장 상세페이지) 매장 리뷰 조회 API (3개씩)
     @GetMapping("/stores/{storeId}/reviews")
     public List<ReviewResponseDto> getReviewListAtStore(
@@ -94,7 +91,6 @@ public class StoreController {
     ) {
         return  storeService.getReviewListAtStore(storeId, page);
     }
-
 
     // 매장 좋아요 API
     @PostMapping("/stores/{storeId}/likes")
@@ -105,4 +101,5 @@ public class StoreController {
     ) {
         return storeService.likeStore(requestDto.isMyLike(), storeId, userDetails);
     }
+
 }

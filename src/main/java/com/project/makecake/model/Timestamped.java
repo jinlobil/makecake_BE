@@ -16,6 +16,7 @@ import java.time.format.DateTimeFormatter;
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public abstract class Timestamped {
+
     @CreatedDate
     private String createdAt;
 
@@ -32,4 +33,5 @@ public abstract class Timestamped {
     public void onPreUpdate(){
         this.modifiedAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
+
 }

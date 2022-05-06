@@ -17,8 +17,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 public class PostController {
-    private final PostService postService;
 
+    private final PostService postService;
 
     // 도안 게시글 리스트 조회 API (54개씩)
     @GetMapping("/posts")
@@ -77,4 +77,5 @@ public class PostController {
     ) {
         return postService.savePostLike(postId, requestDto, userDetails);
     }
+
 }

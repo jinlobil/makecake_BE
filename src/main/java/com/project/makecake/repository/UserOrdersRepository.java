@@ -8,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserOrdersRepository extends JpaRepository<UserOrders, Long> {
+
     Page<UserOrders> findByUserOrderByCreatedAtDesc(User foundUser, Pageable pageable);
     void deleteByDesign(Design design);
+
 }

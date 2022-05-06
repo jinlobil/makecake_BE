@@ -19,11 +19,11 @@ public class Post extends Timestamped{
     @Column(nullable = false)
     private String title;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="designId")
     private Design design;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="userId")
     private User user;
 
@@ -98,4 +98,5 @@ public class Post extends Timestamped{
             this.commentCnt -=1;
         }
     }
+
 }

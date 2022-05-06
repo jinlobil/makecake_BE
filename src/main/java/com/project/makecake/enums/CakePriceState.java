@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum CakePriceState {
+
     FIXED("FIXED"),
     UNFIXED("UNFIXED"),
     RANGE("RANGE");
@@ -13,4 +14,5 @@ public enum CakePriceState {
     CakePriceState(String value){
         this.value = value;
     }
+
 }

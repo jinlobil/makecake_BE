@@ -15,7 +15,7 @@ public class FixNoti extends Timestamped {
     @Id
     private Long fixNotiId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="notiId")
     private Noti noti;
 

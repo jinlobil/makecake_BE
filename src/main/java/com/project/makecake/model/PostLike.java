@@ -15,11 +15,11 @@ public class PostLike extends Timestamped{
     @Id
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="postId")
     private Post post;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="userId")
     private User user;
 
@@ -28,4 +28,5 @@ public class PostLike extends Timestamped{
         this.post = post;
         this.user = user;
     }
+
 }

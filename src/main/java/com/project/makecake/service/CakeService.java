@@ -28,10 +28,11 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class CakeService {
+
     private final CakeRepository cakeRepository;
     private final CakeLikeRepository cakeLikeRepository;
 
-    //홈탭 케이크 불러오기
+    //홈탭 케이크 불러오기 메소드
     @Transactional
     public List<HomeCakeDto> getCakeListAtHome() {
         List<HomeCakeDto> homeCakeDtoList = new ArrayList<>();
@@ -72,28 +73,24 @@ public class CakeService {
     // 케이크 사진 상세 조회 메소드
     public CakeResponseDto getCakeDetails(UserDetailsImpl userDetails, long cakeId) {
 
-        // 비로그인 유저는 null 처리
         User user = null;
         if (userDetails!=null) {
             user = userDetails.getUser();
         }
 
-        // 케이크 찾아오기
         Cake foundCake = cakeRepository.findById(cakeId)
                 .orElseThrow(()->new CustomException(ErrorCode.CAKE_NOT_FOUND));
 
-        // myLike 디폴트는 false
         boolean myLike = false;
 
-        // 로그인 유저는 좋아요 여부 반영
+        // 좋아요 여부 반영
         if(user!=null) {
-            Optional<CakeLike> foundCakeLike = cakeLikeRepository.findByUserAndCake(user, foundCake);
-            if (foundCakeLike.isPresent()) {
+            boolean foundCakeLike = cakeLikeRepository.existsByUserAndCake(user, foundCake);
+            if (foundCakeLike) {
                 myLike = true;
             }
         }
 
-        // DTO에 담아 반환
         return CakeResponseDto.builder()
                 .cake(foundCake)
                 .myLike(myLike)
@@ -107,17 +104,14 @@ public class CakeService {
 
         User user = userDetails.getUser();
 
-        // 케이크 찾기
         Cake foundCake = cakeRepository.findById(cakeId)
                 .orElseThrow(()->new CustomException(ErrorCode.CAKE_NOT_FOUND));
 
-        // 케이크 좋아요 찾기
         boolean existsCakeLike = cakeLikeRepository.existsByUserAndCake(user,foundCake);
 
-        // myLike가 true이면 새로운 cakeLike 저장
+        // 좋아요를 누른 경우
         if (requestDto.isMyLike()) {
 
-            // 이미 좋아요를 누른 케이크이면 exception
             if (existsCakeLike) {
                 throw new CustomException(ErrorCode.LIKE_ALREADY_EXIST);
             }
@@ -128,27 +122,21 @@ public class CakeService {
                     .build();
             cakeLikeRepository.save(cakeLike);
 
-        // myLike가 false이면 기존 cakeLike 삭제
+        // 좋아요를 취소한 경우
         } else {
-
-            // 좋아요를 누르지 않은 케이크이면 exception
             if (!existsCakeLike) {
                 throw new CustomException(ErrorCode.LIKE_NOT_EXIST);
             }
-
             cakeLikeRepository.deleteByUserAndCake(user, foundCake);
         }
 
-        // likeCnt 변경
         foundCake.editLikeCnt(requestDto.isMyLike());
 
         return LikeResponseDto.builder()
                 .myLike(requestDto.isMyLike())
                 .likeCnt(foundCake.getLikeCnt())
                 .build();
-
     }
-
 
     // 케이크 리스트 찾기 메소드
     public List<Cake> findCakeListBySortType(int page, String sortType) {
@@ -156,7 +144,10 @@ public class CakeService {
         List<Cake> foundCakeList = new ArrayList<>();
 
         if (sortType.equals("likeCnt")) {
-            Sort sort = Sort.by(new Sort.Order(Sort.Direction.DESC,"likeCnt"), new Sort.Order(Sort.Direction.DESC,"cakeId"));
+            Sort sort = Sort.by(
+                    new Sort.Order(Sort.Direction.DESC,"likeCnt"),
+                    new Sort.Order(Sort.Direction.DESC,"cakeId")
+            );
             Pageable pageable = PageRequest.of(page,54,sort);
             Page<Cake> foundCakePage = cakeRepository.findAll(pageable);
 

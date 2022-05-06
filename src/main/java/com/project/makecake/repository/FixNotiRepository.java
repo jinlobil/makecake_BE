@@ -8,4 +8,5 @@ import java.util.List;
 public interface FixNotiRepository extends JpaRepository<FixNoti,Long> {
 
     List<FixNoti> findAllByReveal(boolean b);
+
 }

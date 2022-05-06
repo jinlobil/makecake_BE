@@ -7,6 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ReviewResponseTempDto {
+
     private Long reviewId;
     private Long storeId;
     private String writerNickname;
@@ -22,4 +23,5 @@ public class ReviewResponseTempDto {
         this.content = review.getContent();
         this.reviewImage = reviewImage;
     }
+
 }

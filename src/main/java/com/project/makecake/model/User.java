@@ -8,7 +8,6 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
-
 @NoArgsConstructor
 @Getter
 @Setter
@@ -48,7 +47,17 @@ public class User  extends Timestamped{
     private String providerId;
 
     @Builder
-    public User(String username, String nickname, String password, String profileImgUrl,String profileImgName, String providerEmail, UserRoleEnum role, String provider, String providerId){
+    public User(
+            String username,
+            String nickname,
+            String password,
+            String profileImgUrl,
+            String profileImgName,
+            String providerEmail,
+            UserRoleEnum role,
+            String provider,
+            String providerId
+    ){
         this.username = username;
         this.nickname = nickname;
         this.password = password;

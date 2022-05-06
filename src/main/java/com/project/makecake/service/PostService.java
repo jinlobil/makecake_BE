@@ -35,23 +35,24 @@ public class PostService {
     private final NotiRepository notiRepository;
     private final PersonalNotiRepository personalNotiRepository;
 
-    // 도안 게시글 리스트 조회 메소드 (54개씩)
+    // 도안 게시글 리스트 조회 메소드
     public List<PostSimpleResponseDto> getPostList(UserDetailsImpl userDetails, int page, String sortType) {
 
-        // 비로그인 유저는 null 처리
         User user = null;
         if (userDetails!=null) {
             user = userDetails.getUser();
         }
 
-        // 15개씩 가져오기
         Page<Post> foundPostList;
         if (sortType==null || sortType.equals("createdDate")) {
             Sort sort = Sort.by(Sort.Direction.DESC,"postId");
             Pageable pageable = PageRequest.of(page,54,sort);
             foundPostList = postRepository.findAll(pageable);
         } else {
-            Sort sort = Sort.by(new Sort.Order(Sort.Direction.DESC,sortType), new Sort.Order(Sort.Direction.DESC,"postId"));
+            Sort sort = Sort.by(
+                    new Sort.Order(Sort.Direction.DESC,sortType),
+                    new Sort.Order(Sort.Direction.DESC,"postId")
+            );
             Pageable pageable = PageRequest.of(page,54,sort);
             foundPostList = postRepository.findAll(pageable);
         }
@@ -60,16 +61,14 @@ public class PostService {
         List<PostSimpleResponseDto> responseDtoList = new ArrayList<>();
         for (Post post : foundPostList) {
 
-            // myLike 디폴트는 false
             boolean myLike = false;
-
-            // 로그인 유저는 좋아요 여부 반영
             if(user!=null) {
                 Optional<PostLike> foundPostLike = postLikeRepository.findByUserAndPost(user, post);
                 if (foundPostLike.isPresent()) {
                     myLike = true;
                 }
             }
+
             PostSimpleResponseDto responseDto = PostSimpleResponseDto.builder()
                     .post(post)
                     .myLike(myLike)
@@ -83,23 +82,17 @@ public class PostService {
     @Transactional
     public PostDetailResponseDto getPostDetails(long postId, UserDetailsImpl userDetails) {
 
-        // 비로그인 유저는 null 처리
         User user = null;
         if (userDetails!=null) {
             user = userDetails.getUser();
         }
 
-        // 게시글 찾기
         Post foundPost = postRepository.findById(postId)
                 .orElseThrow(()->new CustomException(ErrorCode.POST_NOT_FOUND));
-
-        // 조회수 추가
         foundPost.addViewCnt();
 
-        // myLike 디폴트 false
+        // 좋아요 반영
         boolean myLike = false;
-
-        // 로그인한 회원이면 좋아요 내역 찾아서 반영
         if(user!=null) {
             Optional<PostLike> foundPostLike = postLikeRepository.findByUserAndPost(user,foundPost);
             if (foundPostLike.isPresent()) {
@@ -107,7 +100,6 @@ public class PostService {
             }
         }
 
-        // 댓글 수 세기
         int commentCnt = commentRepository.countByPost(foundPost).intValue();
 
         return PostDetailResponseDto.builder()
@@ -123,21 +115,17 @@ public class PostService {
 
         User user = userDetails.getUser();
 
-        // 도안 찾기
         Design foundDesign = designRepository.findById(designId)
                 .orElseThrow(()->new CustomException(ErrorCode.DESIGN_NOT_FOUND));
 
-        // 이미 게시글이 작성된 도안인지 확인 (도안 하나당 게시글 하나만 작성 가능)
         if (foundDesign.isPost()) {
             throw new CustomException(ErrorCode.DESIGN_ALREADY_POST);
         }
 
-        // 게시글 제목 길이 체크(20)
         if (requestDto.getTitle().length() > 20) {
             throw new CustomException(ErrorCode.TITLE_LENGTH_WRONG);
         }
 
-        // 게시글 내용 길이 체크(250)
         if (requestDto.getContent().length() > 250) {
             throw new CustomException(ErrorCode.CONTENT_LENGTH_WRONG);
         }
@@ -149,11 +137,8 @@ public class PostService {
                 .design(foundDesign)
                 .build();
         Post savedPost = postRepository.save(post);
-
-        // 도안 post true로 변경
         foundDesign.editPostState(true);
 
-        // 반환 객체 생성
         HashMap<String,Long> responseDto = new HashMap<>();
         responseDto.put("postId", savedPost.getPostId());
         return responseDto;
@@ -163,28 +148,23 @@ public class PostService {
     @Transactional
     public void editPost(long postId, UserDetailsImpl userDetails, PostRequestDto requestDto) {
 
-        // 게시글 제목 길이 체크(20)
         if (requestDto.getTitle().length() > 20) {
             throw new CustomException(ErrorCode.TITLE_LENGTH_WRONG);
         }
 
-        // 게시글 내용 길이 체크(250)
         if (requestDto.getContent().length() > 250) {
             throw new CustomException(ErrorCode.CONTENT_LENGTH_WRONG);
         }
 
         User user = userDetails.getUser();
 
-        // 게시글 찾기
         Post foundPost = postRepository.findById(postId)
                 .orElseThrow(()->new CustomException(ErrorCode.POST_NOT_FOUND));
 
-        // 동일 유저인지 확인
         if (!foundPost.getUser().getUserId().equals(user.getUserId())) {
             throw new CustomException(ErrorCode.NOT_POST_OWNER);
         }
 
-        // 게시글 수정
         foundPost.edit(requestDto);
         postRepository.save(foundPost);
     }
@@ -195,46 +175,38 @@ public class PostService {
 
         User user = userDetails.getUser();
 
-        // 게시글 찾기
         Post foundPost = postRepository.findById(postId)
                 .orElseThrow(()->new CustomException(ErrorCode.POST_NOT_FOUND));
 
-        // 동일 유저인지 확인
         if (!foundPost.getUser().getUserId().equals(user.getUserId())) {
             throw new CustomException(ErrorCode.NOT_POST_OWNER);
         }
 
-        // 도안과 관계 끊고 도안 post를 false로 바꾸기
+        // 도안 연결 끊기
         Design connectDesign = foundPost.getDesign();
         foundPost.deleteRelation();
         connectDesign.editPostState(false);
 
-        // 도안 게시글 좋아요 삭제
+        // 삭제
         postLikeRepository.deleteAllByPost(foundPost);
-
-        // 도안 게시글 댓글 삭제
         commentRepository.deleteAllByPost(foundPost);
-
-        // 게시글 삭제
         postRepository.delete(foundPost);
     }
 
     // 도안 게시글 좋아요 등록 및 삭제 메소드
     @Transactional
     public LikeResponseDto savePostLike(long postId, LikeRequestDto requestDto, UserDetailsImpl userDetails) {
+
         User user = userDetails.getUser();
 
-        // 게시글 찾기
         Post foundPost = postRepository.findById(postId)
                 .orElseThrow(()->new CustomException(ErrorCode.POST_NOT_FOUND));
 
-        // 게시글 좋아요 찾기
         boolean existsPostLike = postLikeRepository.existsByUserAndPost(user,foundPost);
 
-        // myLike가 true이면 새로운 postLike 저장
+        // (1) 좋아요를 누른 경우
         if (requestDto.isMyLike()) {
 
-            // 이미 좋아요를 누른 게시글이면 exception
             if (existsPostLike) {
                 throw new CustomException(ErrorCode.LIKE_ALREADY_EXIST);
             }
@@ -246,25 +218,20 @@ public class PostService {
             postLikeRepository.save(postLike);
 
             // 좋아요 누른 유저와 게시글 작성자가 다를 경우에만 좋아요 알림 발송
-            if (
-                    !user.getUserId().equals(foundPost.getUser().getUserId())
-                    && foundPost.getUser().getRole()!=null
-            ) {
+            if (!user.getUserId().equals(foundPost.getUser().getUserId())
+                    && foundPost.getUser().getRole()!=null) {
                 addLikeNoti(foundPost, user);
             }
 
-        // myLike가 false이면 기존 postLike 삭제
+        // (2) 좋아요를 취소한 경우
         } else {
 
-            // 좋아요를 누르지 않은 게시글이면 exception
             if (!existsPostLike) {
                 throw new CustomException(ErrorCode.LIKE_NOT_EXIST);
             }
-
             postLikeRepository.deleteByUserAndPost(user,foundPost);
         }
 
-        // likeCnt 변경
         foundPost.addLikeCnt(requestDto.isMyLike());
 
         return LikeResponseDto.builder()
@@ -278,10 +245,8 @@ public class PostService {
 
         String redirectUrl = "https://make-cake.com/post/" + foundPost.getPostId();
 
-        // 알림 찾기
         Noti foundNoti = notiRepository.findByType(NotiType.LIKE);
 
-        // personalNoti 생성
         PersonalNoti personalNoti = PersonalNoti.builder()
                 .recieveUser(foundPost.getUser())
                 .createUser(createUser)
@@ -289,7 +254,6 @@ public class PostService {
                 .redirectUrl(redirectUrl)
                 .build();
 
-        // 저장
         personalNotiRepository.save(personalNoti);
     }
 }

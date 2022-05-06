@@ -9,6 +9,7 @@ import java.util.List;
 
 @Getter
 public class OrderFormDetailResponseDto {
+
     private long orderFormId, storeId;
     private String name;
     private List<String> formList;
@@ -16,7 +17,12 @@ public class OrderFormDetailResponseDto {
     private StoreMoreDetailsDto moreDetails;
 
     @Builder
-    OrderFormDetailResponseDto (OrderForm orderForm, List<String> formList, List<String> instructionList, StoreMoreDetailsDto moreDetails){
+    OrderFormDetailResponseDto (
+            OrderForm orderForm,
+            List<String> formList,
+            List<String> instructionList,
+            StoreMoreDetailsDto moreDetails
+    ){
         this.orderFormId = orderForm.getOrderFormId();
         this.storeId = orderForm.getStore().getStoreId();
         this.name = orderForm.getName();

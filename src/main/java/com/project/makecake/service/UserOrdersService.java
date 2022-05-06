@@ -24,7 +24,6 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-
 public class UserOrdersService {
 
     private final UserRepository userRepository;
@@ -36,7 +35,12 @@ public class UserOrdersService {
 
 
     // (마이페이지 > 케이크 주문) 주문 안 된/된 도안 리스트 조회 메소드
-    public List<MyOrderListResponseDto> getMyOrderList(UserDetailsImpl userDetails, String option, int page) {
+    public List<MyOrderListResponseDto> getMyOrderList(
+            UserDetailsImpl userDetails,
+            String option,
+            int page
+    ) {
+
         if (userDetails == null) {
             throw new CustomException(ErrorCode.UNAUTHORIZED_MAMBER);
         }
@@ -48,7 +52,9 @@ public class UserOrdersService {
         List<MyOrderListResponseDto> responseDtoList = new ArrayList<>();
         if (option.equals("notOrdered")){
             Pageable pageable = PageRequest.of(page, 54);
-            Page<Design> foundDesignList = designRepository.findByUserAndOrdersOrderByCreatedAtDesc(foundUser, false, pageable);
+            Page<Design> foundDesignList = designRepository
+                    .findByUserAndOrdersOrderByCreatedAtDesc(foundUser, false, pageable);
+
             for (Design design : foundDesignList){
                 MyOrderListResponseDto responseDto = MyOrderListResponseDto.builder()
                         .designId(design.getDesignId())
@@ -58,7 +64,9 @@ public class UserOrdersService {
             }
         } else if (option.equals("ordered")){
             Pageable pageable = PageRequest.of(page, 54);
-            Page<UserOrders> foundUserOrdersList = userOrdersRepository.findByUserOrderByCreatedAtDesc(foundUser, pageable);
+            Page<UserOrders> foundUserOrdersList = userOrdersRepository
+                    .findByUserOrderByCreatedAtDesc(foundUser, pageable);
+
             for (UserOrders userOrders : foundUserOrdersList){
                 MyOrderListResponseDto responseDto = MyOrderListResponseDto.builder()
                         .userOrdersId(userOrders.getUserOrdersId())
@@ -73,7 +81,11 @@ public class UserOrdersService {
 
     // (주문하기) 케이크 주문서 작성 메소드
     @Transactional
-    public HashMap<String, Long> addUserOrders(Long orderFormId, UserOrderRequestDto requestDto, UserDetailsImpl userDetails) {
+    public HashMap<String, Long> addUserOrders(
+            Long orderFormId,
+            UserOrderRequestDto requestDto,
+            UserDetailsImpl userDetails
+    ) {
 
         String formFilled = "";
         for(String input : requestDto.getUserInput()){
@@ -152,8 +164,8 @@ public class UserOrdersService {
         }
 
         //storeUrl
-        StoreUrl foundStoreUrl = storeUrlRepository.findByTypeAndStore_StoreId("normal", orderForm.getStore().getStoreId());
-
+        StoreUrl foundStoreUrl = storeUrlRepository
+                .findByTypeAndStore_StoreId("normal", orderForm.getStore().getStoreId());
 
         UserOrdersDetailResponseDto responseDto = UserOrdersDetailResponseDto.builder()
                 .userOrders(userOrders)
@@ -169,6 +181,7 @@ public class UserOrdersService {
 
 
     public void deleteUserOrders(Long userOrdersId, UserDetailsImpl userDetails) {
+
         User user = userDetails.getUser();
 
         UserOrders userOrders = userOrdersRepository.findById(userOrdersId)

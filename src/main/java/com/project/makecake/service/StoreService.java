@@ -12,24 +12,24 @@ import com.project.makecake.exceptionhandler.ErrorCode;
 import com.project.makecake.model.*;
 import com.project.makecake.repository.*;
 import com.project.makecake.security.UserDetailsImpl;
-import com.project.makecake.service.backoffice.OrderFormService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class StoreService {
@@ -49,6 +49,7 @@ public class StoreService {
 
     // (홈탭) 인기 매장 리스트 조회 메소드
     public List<HomeStoreDto> getStoreListAtHome() {
+
         List<HomeStoreDto> responseDtoList = new ArrayList<>();
 
         List<Store> foundStoreList = storeRepository.findTop5ByOrderByLikeCntDesc();
@@ -74,6 +75,7 @@ public class StoreService {
     // 매장 좋아요 메소드
     @Transactional
     public LikeResponseDto likeStore(Boolean myLike, Long storeId, UserDetailsImpl userDetails) {
+
         User user = userDetails.getUser();
 
         //true 추가(좋아요 누르기), false 삭제(좋아요 취소)
@@ -99,17 +101,13 @@ public class StoreService {
     // 매장 상세 조회 메소드
     public StoreDetailResponseDto getStoreDetails(Long storeId, UserDetailsImpl userDetails) {
 
-        // store
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(()-> new CustomException(ErrorCode.STORE_NOT_FOUND));
 
-        // openTimeToday
         OpenTimeResponseDto openTimeToday = getOpenTime(storeId);
 
-        // urlList
         List<StoreDetailUrlDto> urlList = getUrlList(storeId);
 
-        // myLike
         boolean myLike = false;
 
         if(userDetails != null){
@@ -118,7 +116,6 @@ public class StoreService {
             }
         }
 
-        //menuList
         List<StoreDetailMenuDto> menuList = new ArrayList<>();
         List<CakeMenu> foundMenuList = cakeMenuRepository.findAllByStore_StoreId(storeId);
         for(CakeMenu menu : foundMenuList){
@@ -128,28 +125,9 @@ public class StoreService {
 
         StoreMoreDetailsDto moreDetails = orderFormService.getMoreDetails(storeId);
 
-        //cakeImgList 최근 9개
-        List<StoreDetailCakeResponseDto> cakeImgList = new ArrayList<>();
         List<Cake> foundCakeList = cakeRepository.findTop9ByStoreOrderByCreatedAtDesc(store);
 
-        for (Cake cake : foundCakeList) {
-            boolean myCakeLike = false;
-            if (userDetails != null){
-                User user = userDetails.getUser();
-                if (cakeLikeRepository.findByUserAndCake(user, cake).isPresent()) {
-                    myCakeLike = true;
-                }
-            }
-
-            StoreDetailCakeResponseDto cakeDto = StoreDetailCakeResponseDto
-                    .builder()
-                    .cake(cake)
-                    .myLike(myCakeLike)
-                    .build();
-            cakeImgList.add(cakeDto);
-        }
-
-        StoreDetailResponseDto responseDto = StoreDetailResponseDto.builder()
+        return StoreDetailResponseDto.builder()
                 .store(store)
                 .openTimeToday(openTimeToday)
                 .urlList(urlList)
@@ -157,55 +135,34 @@ public class StoreService {
                 .likeCnt(store.getLikeCnt())
                 .menuList(menuList)
                 .moreDetails(moreDetails)
-                .cakeImgList(cakeImgList)
+                .cakeImgList(getCakeList(foundCakeList, userDetails))
                 .build();
-        return responseDto;
     }
 
     // (매장 상세) 케이크 조회 메소드
     public List<StoreDetailCakeResponseDto> getCakeListAtStore(long storeId, UserDetailsImpl userDetails) {
 
         List<Cake> foundCakeList = cakeRepository.findAllByStore_StoreId(storeId);
-
-
-        List<StoreDetailCakeResponseDto> responseDtoList = new ArrayList<>();
-
-        //이 아래부분 겹치는 코드 - 코드 리팩토링 필요
-        for(Cake cake : foundCakeList){
-            boolean myCakeLike = false;
-            if(userDetails != null){
-                User user = userDetails.getUser();
-                if(cakeLikeRepository.findByUserAndCake(user, cake).isPresent()){
-                    myCakeLike = true;
-                }
-            }
-            //dto 값 담고, 리스트에 추가하기
-            StoreDetailCakeResponseDto cakeDto = StoreDetailCakeResponseDto
-                    .builder()
-                    .cake(cake)
-                    .myLike(myCakeLike)
-                    .build();
-
-            responseDtoList.add(cakeDto);
-        }
-        return responseDtoList;
+        return getCakeList(foundCakeList, userDetails);
     }
 
     // (매장 상세) 리뷰 조회 메소드
     public List<ReviewResponseDto> getReviewListAtStore(Long storeId, int page){
-        //5개 씩 페이징
-        Sort sort = Sort.by(new Sort.Order(Sort.Direction.DESC, "createdAt"), new Sort.Order(Sort.Direction.DESC,"reviewId"));
+
+        Sort sort = Sort.by(
+                new Sort.Order(Sort.Direction.DESC, "createdAt"),
+                new Sort.Order(Sort.Direction.DESC,"reviewId")
+        );
         Pageable pageable = PageRequest.of(page, 5, sort);
         Page<Review> foundReviewList = reviewRepository.findAllByStore_StoreId(storeId, pageable);
 
         List<ReviewResponseDto> responseDtoList = new ArrayList<>();
 
         for(Review review : foundReviewList){
+
             // 리뷰 이미지 리스트 반환
             List<String> reviewImgList = new ArrayList<>();
-
             List<ReviewImg> rawReviewImgList = reviewImgRepository.findAllByReview_ReviewId(review.getReviewId());
-
             for (ReviewImg rawReviewImg : rawReviewImgList) {
                 reviewImgList.add(rawReviewImg.getImgUrl());
             }
@@ -228,23 +185,31 @@ public class StoreService {
                 foundStoreList = storeRepository.findAllByNameContainingOrderByLikeCntDesc(searchText);
         } else if (searchType.equals("address")) {
                 foundStoreList = storeRepository.findByFullAddressContainingOrderByLikeCntDesc(searchText);
-        } else { //플레이스로 검색하기
+        } else {
+            //플레이스로 검색하기
             float minX = 0;
             float maxX = 0;
             float minY = 0;
             float maxY = 0;
-
             String urlString = "";
+
             // 네이버 지도 검색 api url
             if (searchText.startsWith("서울")){
-                urlString = "https://map.naver.com/v5/api/search?caller=pcweb&query=" + URLEncoder.encode(searchText, "UTF-8") + "&type=all&searchCoord=127.0234346;37.4979517&page=1&displayCount=20&isPlaceRecommendationReplace=true&lang=ko";
+                urlString = "https://map.naver.com/v5/api/search?caller=pcweb&query="
+                        + URLEncoder.encode(searchText, "UTF-8")
+                        + "&type=all&searchCoord=127.0234346;37.4979517&page=1&displayCount=20&isPlaceRecommendationReplace=true&lang=ko";
             } else {
-                urlString = "https://map.naver.com/v5/api/search?caller=pcweb&query=" + URLEncoder.encode("서울" + searchText, "UTF-8") + "&type=all&searchCoord=127.0234346;37.4979517&page=1&displayCount=20&isPlaceRecommendationReplace=true&lang=ko";
+                urlString = "https://map.naver.com/v5/api/search?caller=pcweb&query="
+                        + URLEncoder.encode("서울" + searchText, "UTF-8")
+                        + "&type=all&searchCoord=127.0234346;37.4979517&page=1&displayCount=20&isPlaceRecommendationReplace=true&lang=ko";
             }
 
             JsonElement element = openApiService.getOpenApiResult(urlString);
 
-            JsonArray rawJsonArray = element.getAsJsonObject().get("result").getAsJsonObject().get("place").getAsJsonObject().get("boundary").getAsJsonArray();
+            JsonArray rawJsonArray = element.getAsJsonObject()
+                    .get("result").getAsJsonObject()
+                    .get("place").getAsJsonObject()
+                    .get("boundary").getAsJsonArray();
 
             List<Float> foundBoundaryList = new ArrayList<>();
 
@@ -266,8 +231,7 @@ public class StoreService {
 
         // Dto에 담아 반환
         List<SearchResponseDto> responseDtoList = new ArrayList<>();
-
-        for(Store store : foundStoreList){
+        for (Store store : foundStoreList){
             responseDtoList.add(StoreDetailsAtSearch(store));
         }
         return responseDtoList;
@@ -276,17 +240,15 @@ public class StoreService {
     // 매장 검색 결과 반환 메소드 2
     @Transactional
     public List<SearchResponseDto> getStoreListRenewal(String searchType, String searchText) throws IOException {
-        List<Store> foundStoreList = new ArrayList<>();
 
+        List<Store> foundStoreList = new ArrayList<>();
 
         // 1. 매장명을 검색한 경우
         if(searchType.equals("store")) {
             foundStoreList = storeRepository.findAllByNameContainingOrderByLikeCntDesc(searchText);
-
         } else {
 
         // 2. 주소 또는 플레이스로 검색한 경우
-
             // 2-(1). store DB의 fullAddress에서 해당 검색어를 포함할 경우 결과 반환
             foundStoreList = storeRepository.findByFullAddressContainingOrderByLikeCntDesc(searchText);
 
@@ -294,7 +256,6 @@ public class StoreService {
             if(foundStoreList.size()==0){
                 Optional<SearchKeyword> foundKeyWordOpt = searchKeywordRepository.findBySearchInput(searchText);
 
-                // searchKeyword에 검색어가 존재하는 경우 결과 반환 & searchCnt +1
                 if(foundKeyWordOpt.isPresent()){
                     SearchKeyword foundKeyWord = foundKeyWordOpt.get();
                     foundStoreList = storeRepository.findByXBetweenAndYBetweenOrderByLikeCntDesc(
@@ -306,8 +267,10 @@ public class StoreService {
 
                     foundKeyWord.addSearchCnt();
 
-                // 2-(3) 검색어가 searchKeyword에 없을 경우엔 api 검색 결과 반환 & searchKeyword에 데이터 추가
                 } else {
+
+                // 2-(3) 검색어가 searchKeyword에 없을 경우엔 api 검색 결과 반환 & searchKeyword에 데이터 추가
+
                     float minX = 0;
                     float maxX = 0;
                     float minY = 0;
@@ -316,20 +279,25 @@ public class StoreService {
                     String urlString = "";
 
                     // 네이버 지도로 검색하기
-
                     // 검색어가 '서울'로 시작할 경우 그대로 검색
                     if (searchText.startsWith("서울")){
-                        urlString = "https://map.naver.com/v5/api/search?caller=pcweb&query=" + URLEncoder.encode(searchText, "UTF-8") + "&type=all&searchCoord=127.0234346;37.4979517&page=1&displayCount=20&isPlaceRecommendationReplace=true&lang=ko";
+                        urlString = "https://map.naver.com/v5/api/search?caller=pcweb&query="
+                                + URLEncoder.encode(searchText, "UTF-8")
+                                + "&type=all&searchCoord=127.0234346;37.4979517&page=1&displayCount=20&isPlaceRecommendationReplace=true&lang=ko";
 
                     // 검색어가 '서울' 시작하지 않는 경우 '서울'을 붙여서 검색
                     } else {
-                        urlString = "https://map.naver.com/v5/api/search?caller=pcweb&query=" + URLEncoder.encode("서울" + searchText, "UTF-8") + "&type=all&searchCoord=127.0234346;37.4979517&page=1&displayCount=20&isPlaceRecommendationReplace=true&lang=ko";
+                        urlString = "https://map.naver.com/v5/api/search?caller=pcweb&query="
+                                + URLEncoder.encode("서울" + searchText, "UTF-8")
+                                + "&type=all&searchCoord=127.0234346;37.4979517&page=1&displayCount=20&isPlaceRecommendationReplace=true&lang=ko";
                     }
 
-                    // api 검색 결과 반환
                     JsonElement element = openApiService.getOpenApiResult(urlString);
 
-                    JsonArray rawJsonArray = element.getAsJsonObject().get("result").getAsJsonObject().get("place").getAsJsonObject().get("boundary").getAsJsonArray();
+                    JsonArray rawJsonArray = element.getAsJsonObject()
+                            .get("result").getAsJsonObject()
+                            .get("place").getAsJsonObject()
+                            .get("boundary").getAsJsonArray();
 
                     List<Float> foundBoundaryList = new ArrayList<>();
 
@@ -367,15 +335,63 @@ public class StoreService {
 
         // foundStoreList를 Dto에 담아 반환
         List<SearchResponseDto> responseDtoList = new ArrayList<>();
-
         for(Store store : foundStoreList){
             responseDtoList.add(StoreDetailsAtSearch(store));
         }
         return responseDtoList;
     }
 
+    // 밤12시마다 오타 검색 키워드 삭제 메소드
+    @Transactional
+    @Scheduled(cron = "0 0 3 * * ?", zone = "Asia/Seoul")
+    public void deleteSearchKeyword() {
+
+        System.out.println("안녕");
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date now = new Date();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(now);
+        calendar.add(Calendar.DATE,-7);
+
+        String standard = formatter.format(calendar.getTime());
+
+        List<SearchKeyword> searchKeywordList = searchKeywordRepository.findWrongKeyword(standard);
+        for (SearchKeyword searchKeyword : searchKeywordList) {
+            log.info("검색어 삭제 : " + searchKeyword.getSearchInput());
+            searchKeywordRepository.delete(searchKeyword);
+        }
+    }
+
+    // (매장 상세 페이지 조회 메소드) 케이크 이미지 반환 메소드
+    public List<StoreDetailCakeResponseDto> getCakeList(List<Cake> foundCakeList, UserDetailsImpl userDetails){
+
+        List<StoreDetailCakeResponseDto> responseDtoList = new ArrayList<>();
+
+        for(Cake cake : foundCakeList){
+            boolean myCakeLike = false;
+            if(userDetails != null){
+                User user = userDetails.getUser();
+                if(cakeLikeRepository.findByUserAndCake(user, cake).isPresent()){
+                    myCakeLike = true;
+                }
+            }
+            //dto 값 담고, 리스트에 추가하기
+            StoreDetailCakeResponseDto cakeDto = StoreDetailCakeResponseDto
+                    .builder()
+                    .cake(cake)
+                    .myLike(myCakeLike)
+                    .build();
+
+            responseDtoList.add(cakeDto);
+        }
+        return responseDtoList;
+    }
+
     // (매장 상세 페이지 조회 메소드) 매장 홈페이지 url 2개 반환 메소드
     public List<StoreDetailUrlDto> getUrlList(long storeId){
+
         List<StoreDetailUrlDto> urlList = new ArrayList<>();
         List<StoreUrl> foundUrlList = storeUrlRepository.findAllByStore_StoreId(storeId);
 
@@ -480,6 +496,7 @@ public class StoreService {
     }
 
     public SearchResponseDto getStoreDetailsAtSearch(Long storeId) {
+
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(()-> new CustomException(ErrorCode.STORE_NOT_FOUND));
         return StoreDetailsAtSearch(store);
@@ -487,6 +504,7 @@ public class StoreService {
 
     // 내부 메소드
     public SearchResponseDto StoreDetailsAtSearch(Store store){
+
         String addressSimple = "";
 
         //"서울 OO구 OO동"

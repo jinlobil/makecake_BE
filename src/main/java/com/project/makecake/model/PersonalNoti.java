@@ -15,15 +15,15 @@ public class PersonalNoti extends Timestamped{
     @Id
     private Long personalNotiId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="receiveUserId")
     private User recieveUser;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="createUserId")
     private User createUser;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="notiId")
     private Noti noti;
 
@@ -46,4 +46,5 @@ public class PersonalNoti extends Timestamped{
     public void editChecked() {
         this.checked=true;
     }
+
 }

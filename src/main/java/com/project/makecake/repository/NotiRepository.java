@@ -5,5 +5,7 @@ import com.project.makecake.model.Noti;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface NotiRepository extends JpaRepository<Noti,Long> {
+
     Noti findByType(NotiType comment);
+
 }

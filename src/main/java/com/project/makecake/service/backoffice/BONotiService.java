@@ -36,7 +36,6 @@ public class BONotiService {
 
         NotiType type;
 
-        // 알림 타입 확인
         try {
             type = NotiType.valueOf(requestDto.getType().toUpperCase());
         } catch (Exception e) {
@@ -48,9 +47,7 @@ public class BONotiService {
             throw new CustomException(ErrorCode.NOT_ADD_NOTITYPE);
         }
 
-        // 알림 생성
         Noti noti = new Noti(requestDto);
-        // 저장
         notiRepository.save(noti);
     }
 
@@ -58,12 +55,10 @@ public class BONotiService {
     @Transactional
     public void editNoti(long notiId, NotiContentRequestDto requestDto) {
 
-        // mainContent 값이 있는지 확인
         if (requestDto.getMainContent()==null || requestDto.getMainContent().equals("")) {
             throw new CustomException(ErrorCode.NOTI_MAIN_CONTENT_NULL);
         }
 
-        // 알림 찾기
         Noti foundNoti = notiRepository.findById(notiId)
                 .orElseThrow(()->new CustomException(ErrorCode.NOTI_NOT_FOUND));
 
@@ -72,7 +67,6 @@ public class BONotiService {
             throw new CustomException(ErrorCode.NOTI_NICKNAME_NULL);
         }
 
-        // 알림 내용 수정
         foundNoti.editContent(requestDto);
     }
 
@@ -80,16 +74,13 @@ public class BONotiService {
     @Transactional
     public void addFixNoti(long notiId, RedirectUrlRequestDto requestDto) {
 
-        // 알림 찾기
         Noti foundNoti = notiRepository.findById(notiId)
                 .orElseThrow(()->new CustomException(ErrorCode.NOTI_NOT_FOUND));
 
-        // 알림 타입 확인
         if(!foundNoti.getType().isAdminManage()) {
             throw new CustomException(ErrorCode.NOT_FIX_NOTITYPE);
         }
 
-        // 고정 알림 생성
         FixNoti fixNoti = FixNoti.builder()
                 .noti(foundNoti)
                 .redirectUrl(requestDto.getRedirectUrl())
@@ -102,11 +93,9 @@ public class BONotiService {
     @Transactional
     public void editFixNoti(long fixNotiId) {
 
-        // 알림 찾기
         FixNoti foundFixNoti = fixNotiRepository.findById(fixNotiId)
                 .orElseThrow(()->new CustomException(ErrorCode.FIXNOTI_NOT_FOUND));
 
-        // 고정 알림 내림
         foundFixNoti.editReveal();
     }
 
@@ -114,19 +103,15 @@ public class BONotiService {
     @Transactional
     public void addPersonalNoti(long notiId, RedirectUrlRequestDto requestDto) {
 
-        // 알림 찾기
         Noti foundNoti = notiRepository.findById(notiId)
                 .orElseThrow(()->new CustomException(ErrorCode.NOTI_NOT_FOUND));
 
-        // 알림 타입 확인
         if(!foundNoti.getType().isAdminManage()) {
             throw new CustomException(ErrorCode.NOT_SEND_NOTITYPE);
         }
 
-        // 모든 유저 찾기
         List<User> foundUserList = userRepository.findAllByRole(UserRoleEnum.USER);
 
-        // 모든 유저에 대해 personalNoti 생성
         for (User user : foundUserList) {
             PersonalNoti personalNoti = PersonalNoti.builder()
                     .recieveUser(user)

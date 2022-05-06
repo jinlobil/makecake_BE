@@ -6,6 +6,7 @@ import lombok.Getter;
 
 @Getter
 public class StoreMoreCakeMenuDto {
+
     private String type;
     private String size;
     private String price;

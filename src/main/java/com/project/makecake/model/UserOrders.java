@@ -10,6 +10,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 public class UserOrders extends Timestamped{
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long userOrdersId;
@@ -17,20 +18,18 @@ public class UserOrders extends Timestamped{
     @Column
     private String formFilled;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ORDER_FORM_ID")
     private OrderForm orderForm;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
     private User user;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="DESIGN_ID")
     private Design design;
 
-    //json으로 데이터 담아주면 그대로 받아서 데이터 베이스에 저장하는 방법 알아야함....
-    //일단은 미봉책으로 <br> 이라는 애를 넣어서 stringify하겠음
     @Builder
     public UserOrders(String formFilled, OrderForm orderForm, User user, Design design){
         this.formFilled = formFilled;

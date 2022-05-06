@@ -12,6 +12,7 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor
 public class CakeMenu extends Timestamped{
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cakeMenuId;
@@ -32,11 +33,12 @@ public class CakeMenu extends Timestamped{
     @Column
     private String moreInfo;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="STORE_ID")
     private Store store;
 
     //생성자
+    @Builder
     public CakeMenu(CakeMenuRowDto menuRowDto, Store store, CakePriceState priceState){
         this.type = menuRowDto.getType();
         this.size = menuRowDto.getSize();
@@ -45,7 +47,6 @@ public class CakeMenu extends Timestamped{
         this.priceState = priceState;
         this.store = store;
     }
-
 
     // (백오피스) 수정 메소드
     @Builder

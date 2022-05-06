@@ -1,7 +1,7 @@
 package com.project.makecake.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.project.makecake.dto.*;
+import com.project.makecake.dto.ImageInfoDto;
 import com.project.makecake.dto.mypage.MypageResponseDto;
 import com.project.makecake.dto.user.LoginCheckResponseDto;
 import com.project.makecake.dto.user.SignupRequestDto;
@@ -83,7 +83,7 @@ public class UserController {
     public ImageInfoDto userImage(
             @RequestParam(value = "imgFile", required = false) MultipartFile imgFile
     ) throws IOException {
-        ImageInfoDto imageInfoDto = s3Service.uploadOriginalFile(imgFile, FolderName.PROFILE.name());
+        ImageInfoDto imageInfoDto = s3Service.uploadImg(imgFile, FolderName.PROFILE.name());
         return imageInfoDto;
     }
 

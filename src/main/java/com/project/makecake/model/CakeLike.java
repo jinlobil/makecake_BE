@@ -10,15 +10,16 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor
 public class CakeLike extends Timestamped{
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cakeLikeId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="cakeId")
     private Cake cake;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="userId")
     private User user;
 
@@ -27,4 +28,5 @@ public class CakeLike extends Timestamped{
         this.cake = cake;
         this.user = user;
     }
+
 }

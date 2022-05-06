@@ -6,6 +6,7 @@ import lombok.Getter;
 
 @Getter
 public class PostDetailResponseDto {
+
     private Long postId, designId;
     private String title, img, profileImg, nickname, createdDate, content, size, shape, purpose;
     private int likeCnt, viewCnt, commentCnt;

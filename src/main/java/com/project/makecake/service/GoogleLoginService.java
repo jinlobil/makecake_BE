@@ -5,7 +5,6 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.makecake.MakeCakeApplication;
 import com.project.makecake.enums.UserRoleEnum;
 import com.project.makecake.model.User;
 import com.project.makecake.repository.UserRepository;
@@ -14,7 +13,6 @@ import com.project.makecake.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.SpringApplication;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -49,6 +47,7 @@ public class GoogleLoginService {
 
     // 구글 로그인
     public void googleLogin(String code, HttpServletResponse response) throws JsonProcessingException {
+
         // 인가코드로 엑세스토큰 가져오기
         String accessToken = getAccessToken(code);
 
@@ -67,6 +66,7 @@ public class GoogleLoginService {
 
     // 인가코드로 엑세스토큰 가져오기
     private String getAccessToken(String code) throws JsonProcessingException {
+
         // 헤더에 Content-type 지정
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
@@ -82,7 +82,11 @@ public class GoogleLoginService {
         // POST 요청 보내기
         HttpEntity<MultiValueMap<String, String>> googleToken = new HttpEntity<>(body, headers);
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> response = restTemplate.exchange("https://oauth2.googleapis.com/token", HttpMethod.POST, googleToken, String.class);
+        ResponseEntity<String> response = restTemplate.exchange(
+                "https://oauth2.googleapis.com/token",
+                HttpMethod.POST, googleToken,
+                String.class
+        );
 
         // response에서 엑세스토큰 가져오기
         String responseBody = response.getBody();
@@ -94,6 +98,7 @@ public class GoogleLoginService {
 
     // 엑세스토큰으로 유저정보 가져오기
     private JsonNode getGoogleUserInfo(String accessToken) throws JsonProcessingException {
+
         // 헤더에 엑세스토큰 담기, Content-type 지정
         HttpHeaders headers = new HttpHeaders();
         headers.add(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + accessToken);
@@ -102,7 +107,11 @@ public class GoogleLoginService {
         // POST 요청 보내기
         HttpEntity<MultiValueMap<String, String>> googleUser = new HttpEntity<>(headers);
         RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> response = restTemplate.exchange("https://openidconnect.googleapis.com/v1/userinfo", HttpMethod.POST, googleUser, String.class);
+        ResponseEntity<String> response = restTemplate.exchange(
+                "https://openidconnect.googleapis.com/v1/userinfo",
+                HttpMethod.POST, googleUser,
+                String.class
+        );
 
         // response에서 유저정보 가져오기
         String responseBody = response.getBody();
@@ -113,6 +122,7 @@ public class GoogleLoginService {
 
     // 유저확인 & 회원가입
     private User getUser(JsonNode googleUserInfo) {
+
         // 유저정보 작성
         String providerId = googleUserInfo.get("sub").asText();
         String providerEmail = googleUserInfo.get("email").asText();
@@ -157,11 +167,16 @@ public class GoogleLoginService {
 
     // 시큐리티 강제 로그인
     private UserDetailsImpl securityLogin(User findUser) {
+
         // userDetails 생성
         UserDetailsImpl userDetails = new UserDetailsImpl(findUser);
         log.info("google 로그인 완료 : " + userDetails.getUser().getUsername());
         // UsernamePasswordAuthenticationToken 발급
-        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                userDetails,
+                null,
+                userDetails.getAuthorities()
+        );
         // 강제로 시큐리티 세션에 접근하여 authentication 객체를 저장
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return userDetails;
@@ -169,6 +184,7 @@ public class GoogleLoginService {
 
     // jwt 토큰 발급
     private void jwtToken(HttpServletResponse response, UserDetailsImpl userDetails) {
+
         String jwtToken = JWT.create()
                 // 토큰이름
                 .withSubject("JwtToken : " + userDetails.getUser().getUsername())
