@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,5 +22,11 @@ public interface CakeRepository extends JpaRepository<Cake, Long> {
 
     @Query(value = "SELECT * FROM cake ORDER BY RAND() LIMIT 54", nativeQuery = true)
     List<Cake> findByRandom();
+
+    @Query(value = "SELECT * FROM cake"
+            + " WHERE (LIKE_CNT,CAKE_ID) < (:likeCnt, :cakeId)"
+            + " ORDER BY LIKE_CNT DESC, CAKE_ID DESC LIMIT :size",
+            nativeQuery = true)
+    List<Cake> findOrderByLikeCnt2(@Param("size") int size, @Param("cakeId") Long cakeId, @Param("likeCnt") int likeCnt);
 
 }

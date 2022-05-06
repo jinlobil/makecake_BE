@@ -1,5 +1,6 @@
 package com.project.makecake.service;
 
+import com.project.makecake.dto.cake.CakeListResponseDto;
 import com.project.makecake.dto.cake.CakeResponseDto;
 import com.project.makecake.dto.cake.CakeSimpleResponseDto;
 import com.project.makecake.dto.home.HomeCakeDto;
@@ -24,6 +25,8 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static java.lang.Math.min;
 
 @Service
 @RequiredArgsConstructor
@@ -159,5 +162,25 @@ public class CakeService {
         }
 
         return foundCakeList;
+    }
+
+    public CakeListResponseDto getCakeListByCursor(int size, long cakeId, int likeCnt) {
+
+        List<Cake> foundCakeList = cakeRepository.findOrderByLikeCnt2(size+1, cakeId, likeCnt);
+
+        List<CakeSimpleResponseDto> responseDtoList = new ArrayList<>();
+        int responseSize = min(size, foundCakeList.size());
+        for (int i=0; i<responseSize; i++) {
+            Cake foundCake = foundCakeList.get(i);
+            CakeSimpleResponseDto responseDto = new CakeSimpleResponseDto(foundCake);
+            responseDtoList.add(responseDto);
+        }
+
+        CakeListResponseDto responseDto = CakeListResponseDto.builder()
+                .dtoList(responseDtoList)
+                .hasNext(foundCakeList.size()==(size+1))
+                .build();
+
+        return responseDto;
     }
 }

@@ -1,5 +1,6 @@
 package com.project.makecake.controller;
 
+import com.project.makecake.dto.cake.CakeListResponseDto;
 import com.project.makecake.dto.cake.CakeResponseDto;
 import com.project.makecake.dto.cake.CakeSimpleResponseDto;
 import com.project.makecake.dto.like.LikeRequestDto;
@@ -44,6 +45,16 @@ public class CakeController {
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         return cakeService.saveCakeLike(cakeId, requestDto, userDetails);
+    }
+
+    // 케이크 사진 리스트 조회 API (54개씩) 뉴버전
+    @GetMapping("/cakes/cursor")
+    public CakeListResponseDto getCakeListBycursor(
+            @RequestParam int size,
+            @RequestParam long cakeId,
+            @RequestParam int likeCnt
+    ) {
+        return cakeService.getCakeListByCursor(size, cakeId, likeCnt);
     }
 
 }
