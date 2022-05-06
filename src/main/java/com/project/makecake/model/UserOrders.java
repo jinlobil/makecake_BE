@@ -18,15 +18,15 @@ public class UserOrders extends Timestamped{
     @Column
     private String formFilled;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ORDER_FORM_ID")
     private OrderForm orderForm;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
     private User user;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="DESIGN_ID")
     private Design design;
 
