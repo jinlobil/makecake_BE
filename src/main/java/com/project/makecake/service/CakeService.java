@@ -15,16 +15,11 @@ import com.project.makecake.repository.CakeLikeRepository;
 import com.project.makecake.repository.CakeRepository;
 import com.project.makecake.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static java.lang.Math.min;
 
@@ -57,21 +52,60 @@ public class CakeService {
     }
 
     // 케이크 사진 리스트 조회 메소드
-    public List<CakeSimpleResponseDto> getCakeList(int page, String sortType) {
+    public CakeListResponseDto getCakeList(
+            String sortType,
+            int size,
+            long standard,
+            int subStandard
+    ) {
 
-        if (page>=60 && sortType.equals("random")) {
-            return new ArrayList<>();
+        return sortType.equals("random") ?
+                getCakeListByRandom(size, standard) :
+                getCakeListBySortType(sortType, size, standard, subStandard);
+
+    }
+
+    // 정렬타입에 따른 케이크 사진 리스트 조회 메소드
+    public CakeListResponseDto getCakeListBySortType(String sortType, int size, long cakeId, int likeCnt) {
+
+//        String type = CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_UNDERSCORE,sortType);
+
+        List<Cake> foundCakeList = cakeId==0 ?
+                cakeRepository.findOrderByLikeCnt(size+1) :
+                cakeRepository.findOrderByLikeCntAndCursor(size+1, cakeId, likeCnt);
+
+        List<CakeSimpleResponseDto> responseDtoList = new ArrayList<>();
+        int responseSize = min(size, foundCakeList.size());
+        for (int i=0; i<responseSize; i++) {
+            Cake foundCake = foundCakeList.get(i);
+            CakeSimpleResponseDto responseDto = new CakeSimpleResponseDto(foundCake);
+            responseDtoList.add(responseDto);
         }
 
-        List<Cake> foundCakeList = findCakeListBySortType(page, sortType);
+        return CakeListResponseDto.builder()
+                .dtoList(responseDtoList)
+                .hasNext(foundCakeList.size()==(size+1))
+                .build();
+    }
+
+    // 케이크 사진 랜덤 조회 메소드
+    public CakeListResponseDto getCakeListByRandom(int size, long page) {
+
+        List<Cake> foundCakeList = cakeRepository.findByRandom(size);
 
         List<CakeSimpleResponseDto> responseDtoList = new ArrayList<>();
         for (Cake cake : foundCakeList) {
             CakeSimpleResponseDto responseDto = new CakeSimpleResponseDto(cake);
             responseDtoList.add(responseDto);
         }
-        return responseDtoList;
-    }
+
+        return CakeListResponseDto.builder()
+                .dtoList(responseDtoList)
+                .hasNext(page<60)
+                .build();
+
+        }
+
 
     // 케이크 사진 상세 조회 메소드
     public CakeResponseDto getCakeDetails(UserDetailsImpl userDetails, long cakeId) {
@@ -141,46 +175,4 @@ public class CakeService {
                 .build();
     }
 
-    // 케이크 리스트 찾기 메소드
-    public List<Cake> findCakeListBySortType(int page, String sortType) {
-
-        List<Cake> foundCakeList = new ArrayList<>();
-
-        if (sortType.equals("likeCnt")) {
-            Sort sort = Sort.by(
-                    new Sort.Order(Sort.Direction.DESC,"likeCnt"),
-                    new Sort.Order(Sort.Direction.DESC,"cakeId")
-            );
-            Pageable pageable = PageRequest.of(page,54,sort);
-            Page<Cake> foundCakePage = cakeRepository.findAll(pageable);
-
-            for (Cake cake : foundCakePage) {
-                foundCakeList.add(cake);
-            }
-        } else {
-            foundCakeList = cakeRepository.findByRandom();
-        }
-
-        return foundCakeList;
-    }
-
-    public CakeListResponseDto getCakeListByCursor(int size, long cakeId, int likeCnt) {
-
-        List<Cake> foundCakeList = cakeRepository.findOrderByLikeCnt2(size+1, cakeId, likeCnt);
-
-        List<CakeSimpleResponseDto> responseDtoList = new ArrayList<>();
-        int responseSize = min(size, foundCakeList.size());
-        for (int i=0; i<responseSize; i++) {
-            Cake foundCake = foundCakeList.get(i);
-            CakeSimpleResponseDto responseDto = new CakeSimpleResponseDto(foundCake);
-            responseDtoList.add(responseDto);
-        }
-
-        CakeListResponseDto responseDto = CakeListResponseDto.builder()
-                .dtoList(responseDtoList)
-                .hasNext(foundCakeList.size()==(size+1))
-                .build();
-
-        return responseDto;
-    }
 }

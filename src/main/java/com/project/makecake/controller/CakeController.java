@@ -21,11 +21,13 @@ public class CakeController {
 
     // 케이크 사진 리스트 조회 API (54개씩)
     @GetMapping("/cakes")
-    public List<CakeSimpleResponseDto> getCakeList(
-            @RequestParam int page,
-            @RequestParam String sortType
+    public CakeListResponseDto getCakeList(
+            @RequestParam String sortType,
+            @RequestParam int size,
+            @RequestParam(required = false, defaultValue = "0") long standard,
+            @RequestParam(required = false, defaultValue = "0") int subStandard
     ) {
-        return cakeService.getCakeList(page, sortType);
+        return cakeService.getCakeList(sortType, size, standard, subStandard);
     }
 
     // 케이크 사진 상세 조회 API
@@ -45,16 +47,6 @@ public class CakeController {
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         return cakeService.saveCakeLike(cakeId, requestDto, userDetails);
-    }
-
-    // 케이크 사진 리스트 조회 API (54개씩) 뉴버전
-    @GetMapping("/cakes/cursor")
-    public CakeListResponseDto getCakeListBycursor(
-            @RequestParam int size,
-            @RequestParam long cakeId,
-            @RequestParam int likeCnt
-    ) {
-        return cakeService.getCakeListByCursor(size, cakeId, likeCnt);
     }
 
 }

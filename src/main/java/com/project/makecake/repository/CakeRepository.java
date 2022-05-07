@@ -9,7 +9,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface CakeRepository extends JpaRepository<Cake, Long> {
 
@@ -20,13 +19,22 @@ public interface CakeRepository extends JpaRepository<Cake, Long> {
     List<Cake> findAllByStore_StoreId(long storeId);
     void deleteAllByStore_StoreId(Long storeId);
 
-    @Query(value = "SELECT * FROM cake ORDER BY RAND() LIMIT 54", nativeQuery = true)
-    List<Cake> findByRandom();
+    @Query(value = "SELECT * FROM cake ORDER BY RAND() LIMIT :size", nativeQuery = true)
+    List<Cake> findByRandom(@Param("size") int size);
+
+    @Query(value = "SELECT * FROM cake"
+            + " ORDER BY LIKE_CNT DESC, CAKE_ID DESC LIMIT :size",
+            nativeQuery = true)
+    List<Cake> findOrderByLikeCnt(@Param("size") int size);
 
     @Query(value = "SELECT * FROM cake"
             + " WHERE (LIKE_CNT,CAKE_ID) < (:likeCnt, :cakeId)"
             + " ORDER BY LIKE_CNT DESC, CAKE_ID DESC LIMIT :size",
             nativeQuery = true)
-    List<Cake> findOrderByLikeCnt2(@Param("size") int size, @Param("cakeId") Long cakeId, @Param("likeCnt") int likeCnt);
+    List<Cake> findOrderByLikeCntAndCursor(
+            @Param("size") int size,
+            @Param("cakeId") Long cakeId,
+            @Param("likeCnt") int likeCnt
+    );
 
 }
