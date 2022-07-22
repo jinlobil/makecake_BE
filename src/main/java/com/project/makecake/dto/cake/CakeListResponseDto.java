@@ -8,12 +8,12 @@ import java.util.List;
 @Getter
 public class CakeListResponseDto {
 
-    private List<CakeSimpleResponseDto> cakeSimpleResponseDtoList;
+    private List<CakeSimpleResponseDto> cakeList;
     private boolean hasNext;
 
     @Builder
     public CakeListResponseDto(List<CakeSimpleResponseDto> dtoList, boolean hasNext) {
-        this.cakeSimpleResponseDtoList = dtoList;
+        this.cakeList = dtoList;
         this.hasNext = hasNext;
     }
 

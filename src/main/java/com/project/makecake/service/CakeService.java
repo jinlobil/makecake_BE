@@ -68,8 +68,6 @@ public class CakeService {
     // 정렬타입에 따른 케이크 사진 리스트 조회 메소드
     public CakeListResponseDto getCakeListBySortType(String sortType, int size, long cakeId, int likeCnt) {
 
-//        String type = CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_UNDERSCORE,sortType);
-
         List<Cake> foundCakeList = cakeId==0 ?
                 cakeRepository.findOrderByLikeCnt(size+1) :
                 cakeRepository.findOrderByLikeCntAndCursor(size+1, cakeId, likeCnt);
@@ -88,7 +86,7 @@ public class CakeService {
                 .build();
     }
 
-    // 케이크 사진 랜덤 조회 메소드
+    // 케이크 사진 리스트 랜덤 조회 메소드
     public CakeListResponseDto getCakeListByRandom(int size, long page) {
 
         List<Cake> foundCakeList = cakeRepository.findByRandom(size);
